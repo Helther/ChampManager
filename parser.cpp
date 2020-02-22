@@ -48,12 +48,12 @@ FileType parser::GetFileType()
         qDebug() << "Race\n";
         return FileType::RaceLog;
     }
-    else if(xml.name() == "Qualify")
+    if(xml.name() == "Qualify")
     {
         qDebug() << "Quali\n";
         return FileType::QualiLog;
     }
-    else if(xml.name().contains("Practice"))
+    if(xml.name().contains("Practice"))
     {
         qDebug() << "Practice\n";
         return FileType::Practice;
@@ -69,14 +69,10 @@ bool parser::openFile(QFile& file,const QIODevice::OpenMode mode)
         {
             if(file.open(mode) | QIODevice::Text)
                 return true;
-            else
-                qDebug() << "Can't open file\n";
+            qDebug() << "Can't open file\n";
         }
-        else
-        {
-            qDebug() << "Is already open!\n";
+        qDebug() << "Is already open!\n";
             return true;
-        }
         qDebug()<< "File doesn't exist\n";
     }
     return false;
@@ -196,10 +192,8 @@ void parser::MainInfo(LogInfo &log)
               }
                 xml.readNext();
                 log.numberOfLaps = xml.text().toUInt();
-                break;
            }
-           else
-               break;
+           break;
        }
     }
     //output debug
@@ -254,7 +248,7 @@ void parser::Incidents(LogInfo& log)
             auto secondDriver = stringList.at(stringList.size()-2).split("vehicle ",
                                                QString::SkipEmptyParts).last();
             bool isEqual = false;
-            for(auto j : incidentData)
+            for(const auto& j : incidentData)
             {
                 if(j.first == secondDriver && j.second == firstDriver)
                 {
@@ -266,7 +260,7 @@ void parser::Incidents(LogInfo& log)
                 incidentData.push_back(DriverPair(firstDriver,secondDriver));
     }
     //output
-    for(auto i : incidentData)
+    for(const auto& i : incidentData)
     {
         qDebug()<< "collision between " << i.first << " and " << i.second <<endl;
     }
@@ -293,7 +287,7 @@ void parser::DriverMain(LogInfo &log)
             {
                 //Parsing Laps
                 driver.lapTimes = DriverLaps();
-                auto bestLap = 0.f;
+                float bestLap{};
                 for(auto lap : driver.lapTimes)
                 {
                     if(lap.second > bestLap)
@@ -326,7 +320,7 @@ QList<QPair<uint,float>> parser::DriverLaps()
             }
             else
             {
-                LapTimes.push_back(QPair<uint,float>(LapNumber,0.f));
+                LapTimes.push_back(QPair<uint,float>(LapNumber,0.F));
             }
             LapNumber++;
        }
