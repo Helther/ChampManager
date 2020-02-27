@@ -3,9 +3,9 @@
 
 #include <QtCore>
 
-using DriverPair = QPair<QString,QString> ;
+typedef QPair<QString,QString> DriverPair;
 
-enum FileType
+enum class FileType
 {
     RaceLog = 0,
     QualiLog,
