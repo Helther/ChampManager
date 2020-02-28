@@ -61,7 +61,7 @@ FileType parser::GetFileType()
     return FileType::Error;
 }
 
-bool parser::openFile(QFile& file,const QIODevice::OpenMode mode)
+bool parser::openFile(QFile& file,const QIODevice::OpenMode& mode)
 {
     if(file.exists())
     {
@@ -73,8 +73,8 @@ bool parser::openFile(QFile& file,const QIODevice::OpenMode mode)
         }
         qDebug() << "Is already open!\n";
             return true;
-        qDebug()<< "File doesn't exist\n";
     }
+    qDebug()<< "File doesn't exist\n";
     return false;
 }
 
@@ -287,7 +287,7 @@ void parser::DriverMain(LogInfo &log)
             {
                 //Parsing Laps
                 driver.lapTimes = DriverLaps();
-                float bestLap{};
+                double bestLap{};
                 for(auto lap : driver.lapTimes)
                 {
                     if(lap.second > bestLap)
@@ -300,9 +300,9 @@ void parser::DriverMain(LogInfo &log)
     }
 }
 
-QList<QPair<uint,float>> parser::DriverLaps()
+QList<QPair<uint,double>> parser::DriverLaps()
 {
-    QList<QPair<uint,float>> LapTimes;
+    QList<QPair<uint,double>> LapTimes;
     QXmlStreamReader xml(fileData);
     QXmlStreamReader::TokenType token = xml.tokenType();
     while(!xml.hasError() && token != QXmlStreamReader::TokenType::StartElement &&
@@ -316,11 +316,11 @@ QList<QPair<uint,float>> parser::DriverLaps()
             xml.readNext();
             if(xml.text() != "--.----")
             {
-                LapTimes.push_back(QPair<uint,float>(LapNumber,xml.text().toFloat()));
+                LapTimes.push_back(QPair<uint,double>(LapNumber,xml.text().toDouble()));
             }
             else
             {
-                LapTimes.push_back(QPair<uint,float>(LapNumber,0.F));
+                LapTimes.push_back(QPair<uint,double>(LapNumber,0.0));
             }
             LapNumber++;
        }

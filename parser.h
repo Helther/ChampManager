@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-typedef QPair<QString,QString> DriverPair;
+using DriverPair = QPair<QString,QString>;
 
 enum class FileType
 {
@@ -35,8 +35,8 @@ struct DriverInfo
          gridPos,
          classGridPos,
          pitstopsNum;
-    float bestLapTime;
-    QList<QPair<uint,float>> lapTimes;
+    double bestLapTime;
+    QList<QPair<uint,double>> lapTimes;
 };
 struct LogInfo
 {
@@ -84,7 +84,7 @@ public:
     parser(const QString& fileName);
 
     //just opens file with error catching
-    bool openFile(QFile& file,const QIODevice::OpenMode mode);
+    bool openFile(QFile& file,const QIODevice::OpenMode& mode);
     // straightforward name
     static bool backupFile(const QString& filePath, const QString& backupPath,
                            const QString& backupName = "_backup");
@@ -103,7 +103,7 @@ public:
     //parse drivers info
     void DriverMain(LogInfo& log);
     //parse driver lap times
-    QList<QPair<uint,float>> DriverLaps();
+    QList<QPair<uint,double>> DriverLaps();
 
     /////////////////// parse config files/////////////////////////////
     ///read and write different types of config files
