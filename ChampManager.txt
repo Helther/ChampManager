@@ -207,23 +207,31 @@ fileparser
 		записать в тхт нужные данные в нужное место
 		форматирование считанных данных в удобный для записи в бд тип данных
 	методы
-		getLogType	
+		FileType getLogType	
 		bool backupFIle(backup_path, file_path)
+		bool openFile
 		
-		
-		parseRaceLog
-		parseQLog
-		parsePLog
+		LogInfo parseLog
+        
 			
-			парсить список пройденных кругов и время
-			вычислить среднее время круга и ср. отклонение от него
-			сравнить его с другими командами и их успехами
-		
-		readVEH //driver and team info
-		readHDV // car perfomance info
-		readRCD //driver perfomance info
-		
+		//объединить их
+		parseVEH //driver and team info
+		parseHDV // car perfomance info
+		parseRCD //driver perfomance info
+        в
+        parseModFile()
 
+        //изменить заданные поля в заданном файле
+        writeModFile()
+	dataType	
+        enum class FileType
+        struct DriverInfo
+        struct LogInfo
+
+    data
+        QString fileName;
+        QString fileData;
+        FileType fileType;
 DBParser
 	функции
 		Запись инфы о заезде из логов в таблицы базы данных
