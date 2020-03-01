@@ -201,29 +201,38 @@
 классы:
 		
 fileparser
-	функции
-		открыть xml для чтения, txt для чтения или записи
-		считать открытый файл на предмет нужной инфы
-		записать в тхт нужные данные в нужное место
-		форматирование считанных данных в удобный для записи в бд тип данных
-	методы
-		FileType getLogType	
-		bool backupFIle(backup_path, file_path)
-		bool openFile
-		
-		LogInfo parseLog
-        
-			
-		//объединить их
-		parseVEH //driver and team info
-		parseHDV // car perfomance info
-		parseRCD //driver perfomance info
-        в
-        parseModFile()
+    функции
+            открыть xml для чтения, txt для чтения или записи
+            считать открытый файл на предмет нужной инфы
+            записать в тхт нужные данные в нужное место
+            форматирование считанных данных в удобный для записи в бд тип данных
 
-        //изменить заданные поля в заданном файле
-        writeModFile()
-	dataType	
+            xml,veh,rcd,hdv
+            открыть-считать-закрыть
+                ошибки: не существует, не открывается, неверный тип, неполные данные
+            veh,rcd,hdv
+            открыть-бэкап-записать-закрыть
+                ошибки: те же + не пишется
+            как и в каком виде передать данные файлов дальше?
+    методы
+
+            public parseFile
+            //изменить заданные поля в заданном файле
+            public writeModFile()
+        private:
+            //объединить их
+            LogInfo parseLog
+            parseVEH //driver and team info
+            parseHDV //car perfomance info
+            parseRCD //driver perfomance info
+            parseModFile()
+
+            FileType getLogType
+            bool backupFIle(backup_path, file_path) в бд?
+            bool openFile
+
+
+    dataType
         enum class FileType
         struct DriverInfo
         struct LogInfo
