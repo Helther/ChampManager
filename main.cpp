@@ -4,8 +4,8 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    parser testParser = parser("./P.xml");
-    testParser.ReadXMLLog();
+    Parser testParser = Parser("./P.xml");
+    testParser.getFileData();
     //parser::pXMLLog("./R.xml");
     //parser::pXMLLog("./Q.xml");
     //parser::pXMLLog("./P.xml");

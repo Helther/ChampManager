@@ -215,10 +215,17 @@ fileparser
                 ошибки: те же + не пишется
             как и в каком виде передать данные файлов дальше?
     методы
+            //читает по файлу в поисках последнего элемента аргумента
+            //попает его, добавляет в мапу, читает дальше, пока колво шагов не превысит
+            //начальный размер аргумента,не находит - ошибка
+            public parseFile(vector(nameString))
+                return map(name,value)
 
-            public parseFile
             //изменить заданные поля в заданном файле
-            public writeModFile()
+            //аналогично парсу искать поля вектора и писать в них значения аргумента
+            public bool writeModFile(vector(pair(name,value)))
+                если не тру то восстановить бэкап
+
         private:
             //объединить их
             LogInfo parseLog
@@ -228,7 +235,8 @@ fileparser
             parseModFile()
 
             FileType getLogType
-            bool backupFIle(backup_path, file_path) в бд?
+            // в бд
+            bool backupFIle(backup_path, file_path)
             bool openFile
 
 
@@ -241,7 +249,7 @@ fileparser
         QString fileName;
         QString fileData;
         FileType fileType;
-DBParser
+DBManager
 	функции
 		Запись инфы о заезде из логов в таблицы базы данных
 		Чтение сохраненных данных для расчетов и вывода статы

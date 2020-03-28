@@ -1,20 +1,20 @@
 #include "parser.h"
 #include "QXmlStreamReader"
-
-parser::parser(const QString &FileName)
+//#ifdef QT_DEBUG
+//#endif
+Parser::Parser(const QString &FileName) : fileName(FileName)
 {
-    fileName = FileName;
     QFile file(FileName);
     if(openFile(file,QIODevice::ReadWrite))
     {
         auto buffer = file.readAll();
         fileData = QString(buffer).toUtf8();
-        fileType = GetFileType();
+        fileType = readFileType();
         file.close();
     }
 }
 
-FileType parser::GetFileType()
+FileType Parser::readFileType()
 {
     //find log type token
     QXmlStreamReader xml(fileData);
@@ -61,7 +61,7 @@ FileType parser::GetFileType()
     return FileType::Error;
 }
 
-bool parser::openFile(QFile& file,const QIODevice::OpenMode& mode)
+bool Parser::openFile(QFile& file,const QIODevice::OpenMode& mode)
 {
     if(file.exists())
     {
@@ -78,7 +78,7 @@ bool parser::openFile(QFile& file,const QIODevice::OpenMode& mode)
     return false;
 }
 
-bool parser::backupFile(const QString &filePath,
+bool Parser::backupFile(const QString &filePath,
                         const QString &backupPath,
                         const QString &backupName)
 {
@@ -90,6 +90,7 @@ bool parser::backupFile(const QString &filePath,
     fileinfo = file.fileName().split("/",QString::KeepEmptyParts);
     fileinfo = fileinfo.at(fileinfo.size()-1).split(".",QString::KeepEmptyParts);
     const QString fileName = fileinfo.at(0);
+    //if no backup name was given set to date
     bFile.setFileName(QString(backupPath + fileName + backupName+ "." + fileExt));
 
     //open and write files
@@ -105,12 +106,14 @@ bool parser::backupFile(const QString &filePath,
                     <<" backed up succesfully. New file is"
                    << bFile.fileName() << "\n";
         }
+        else
+            file.close();
     }
     return false;
 }
 /*
 template<>
-void parser::pParams<QVector<QString>>(QXmlStreamReader &xml, QVector<QString>& data,const QVector<QString>& elemNames)
+void Parser::pParams<QVector<QString>>(QXmlStreamReader &xml, QVector<QString>& data,const QVector<QString>& elemNames)
 {
     if(data.size() != elemNames.size())
     {
@@ -129,7 +132,7 @@ void parser::pParams<QVector<QString>>(QXmlStreamReader &xml, QVector<QString>& 
 }
 */
 
-LogInfo parser::ReadXMLLog()
+LogInfo Parser::readFileContent()
 {
     LogInfo log{};
     switch(fileType)
@@ -156,7 +159,7 @@ LogInfo parser::ReadXMLLog()
     return log;
 }
 
-void parser::MainInfo(LogInfo &log)
+void Parser::MainInfo(LogInfo &log)
 {
     QXmlStreamReader xml(fileData);
     QXmlStreamReader::TokenType token;
@@ -191,7 +194,7 @@ void parser::MainInfo(LogInfo &log)
                 xml.readNext();
               }
                 xml.readNext();
-                log.numberOfLaps = xml.text().toUInt();
+                log.numberOfLaps = xml.text().toInt();
            }
            break;
        }
@@ -202,7 +205,7 @@ void parser::MainInfo(LogInfo &log)
             << endl;
 }
 
-void parser::Incidents(LogInfo& log)
+void Parser::Incidents(LogInfo& log)
 {
     QVector<DriverPair> incidentData;
     QXmlStreamReader xml(fileData);
@@ -268,7 +271,7 @@ void parser::Incidents(LogInfo& log)
 }
 
 
-void parser::DriverMain(LogInfo &log)
+void Parser::DriverMain(LogInfo &log)
 {
     QXmlStreamReader xml(fileData);
     QXmlStreamReader::TokenType token = xml.tokenType();
@@ -300,15 +303,15 @@ void parser::DriverMain(LogInfo &log)
     }
 }
 
-QList<QPair<uint,double>> parser::DriverLaps()
+QList<QPair<int,double>> Parser::DriverLaps()
 {
-    QList<QPair<uint,double>> LapTimes;
+    QList<QPair<int,double>> LapTimes;
     QXmlStreamReader xml(fileData);
     QXmlStreamReader::TokenType token = xml.tokenType();
     while(!xml.hasError() && token != QXmlStreamReader::TokenType::StartElement &&
           xml.name() != "BestLapTime")
     {
-       uint LapNumber = 1;
+       int LapNumber = 1;
        token = xml.readNext();
        if(token == QXmlStreamReader::TokenType::StartElement &&
                xml.name() == "Lap")
@@ -316,11 +319,11 @@ QList<QPair<uint,double>> parser::DriverLaps()
             xml.readNext();
             if(xml.text() != "--.----")
             {
-                LapTimes.push_back(QPair<uint,double>(LapNumber,xml.text().toDouble()));
+                LapTimes.push_back(QPair<int,double>(LapNumber,xml.text().toDouble()));
             }
             else
             {
-                LapTimes.push_back(QPair<uint,double>(LapNumber,0.0));
+                LapTimes.push_back(QPair<int,double>(LapNumber,0.0));
             }
             LapNumber++;
        }
@@ -340,10 +343,10 @@ DriverInfo::DriverInfo()
     stringValues.insert(4,QPair<QString,QString>("CarClass",""));
     stringValues.insert(5,QPair<QString,QString>("CarNumber",""));
     stringValues.insert(6,QPair<QString,QString>("FinishedStatus",""));
-    uintValues.insert(0,QPair<QString,uint>("Position",0));
-    uintValues.insert(1,QPair<QString,uint>("ClassPosition",0));
-    uintValues.insert(2,QPair<QString,uint>("Position",0));
-    uintValues.insert(3,QPair<QString,uint>("GridPos",0));
-    uintValues.insert(4,QPair<QString,uint>("ClassGridPos",0));
-    uintValues.insert(5,QPair<QString,uint>("Pitstops",0));
+    intValues.insert(0,QPair<QString,int>("Position",0));
+    intValues.insert(1,QPair<QString,int>("ClassPosition",0));
+    intValues.insert(2,QPair<QString,int>("Position",0));
+    intValues.insert(3,QPair<QString,int>("GridPos",0));
+    intValues.insert(4,QPair<QString,int>("ClassGridPos",0));
+    intValues.insert(5,QPair<QString,int>("Pitstops",0));
 }

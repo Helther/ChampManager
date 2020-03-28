@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef parser_H
+#define parser_H
 
 #include <QtCore>
 
@@ -19,9 +19,8 @@ enum class FileType
 struct DriverInfo
 {
     DriverInfo();
-    //добавить методы для цикличн парса по типам
-    QMap<uint, QPair<QString,QString>> stringValues;
-    QMap<uint, QPair<QString,uint>> uintValues;
+    QMap<int, QPair<QString,QString>> stringValues;
+    QMap<int, QPair<QString,int>> intValues;
     QString name,
             vehFile,
             vehName,
@@ -30,13 +29,13 @@ struct DriverInfo
             carClass,
             carNumber,
             finishedStatus;
-    uint position,
+    int position,
          classPosition,
          gridPos,
          classGridPos,
          pitstopsNum;
     double bestLapTime;
-    QList<QPair<uint,double>> lapTimes;
+    QList<QPair<int,double>> lapTimes;
 };
 struct LogInfo
 {
@@ -69,7 +68,7 @@ Driver - parse list of drivers
     QString playerName,
             modName,
             trackName;
-    uint numberOfLaps;
+    int numberOfLaps;
     FileType logType;
     QList<DriverInfo> drivers;
     //race log
@@ -78,24 +77,31 @@ Driver - parse list of drivers
 };
 
 
-class parser
+class Parser
 {
 public:
-    parser(const QString& fileName);
+    Parser(const QString& fileName);
+
+    // straightforward name
+    static bool backupFile(const QString& filePath, const QString& backupPath,
+                           const QString& backupName);
+
+    //read file for all onfo
+    LogInfo readFileContent();
+
+    /////////////////////////////getters/////////////////
+    inline FileType getFileType() const {return fileType;}
+    inline const QString getFileData() const {return fileData;}
+    inline QString& getFileData() {return fileData;}
+    inline const QString getFileName() const {return fileName;}
+    //inline QString& getFileName() {return fileName;}
+
+private:
 
     //just opens file with error catching
     bool openFile(QFile& file,const QIODevice::OpenMode& mode);
-    // straightforward name
-    static bool backupFile(const QString& filePath, const QString& backupPath,
-                           const QString& backupName = "_backup");
     // finds type of file
-    FileType GetFileType();
-
-    //////////////////////parsing methods for xml logs////////////////////////////
-
-    //parse sequence of parameters to vectors of data
-    //main parsing methods
-    LogInfo ReadXMLLog();
+    FileType readFileType();
     //specific parsing sub methods
     void Incidents(LogInfo& log);
     //parse general log info
@@ -103,16 +109,14 @@ public:
     //parse drivers info
     void DriverMain(LogInfo& log);
     //parse driver lap times
-    QList<QPair<uint,double>> DriverLaps();
+    QList<QPair<int,double>> DriverLaps();
 
-    /////////////////// parse config files/////////////////////////////
-    ///read and write different types of config files
-private:
+    /////////////////data/////////////////
     QString fileName;
     QString fileData;
     FileType fileType;
 };
-#endif // PARSER_H
+#endif // Parser_H
 
 
 /*
@@ -173,7 +177,7 @@ RCD file
 ///////for writing files
 /*
 QFile test("./ASR_F1_2018.rcd");
-parser::openFile(test, QIODevice::ReadWrite);
+Parser::openFile(test, QIODevice::ReadWrite);
 QString data = test.readAll();
 QString name = "Lance Stroll";
 auto index = data.indexOf(name);
