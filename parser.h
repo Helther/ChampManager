@@ -106,14 +106,14 @@ struct DriverInfo
 struct RaceLogInfo
 {
     QMap<QString,QString> SeqElems;
-    QList<DriverInfo> drivers;
+    QVector<DriverInfo> drivers;
     QVector<DriverPair> incidents;
 };
 
 struct PractQualiLogInfo
 {
     QMap<QString,QString> SeqElems;
-    QList<DriverInfo> drivers;
+    QVector<DriverInfo> drivers;
 };
 
 
@@ -157,9 +157,9 @@ private:
     //parse incident elements
     QVector<DriverPair> Incidents(QXmlStreamReader& xml);
     //parse drivers info
-    DriverInfo DriverMain(QXmlStreamReader& xml);
+    QVector<DriverInfo> Drivers(QXmlStreamReader& xml);
     //parse driver lap times
-    QList<QPair<int,double>> DriverLaps(QXmlStreamReader& xml);
+    QVector<QPair<int,double>> DriverLaps(QXmlStreamReader& xml);
 
     /////////////////data/////////////////
     QString fileName;
