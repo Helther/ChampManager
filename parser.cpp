@@ -132,31 +132,43 @@ void Parser::pParams<QVector<QString>>(QXmlStreamReader &xml, QVector<QString>& 
 }
 */
 
-LogInfo Parser::readFileContent()
+bool Parser::readFileContent()
 {
-    LogInfo log{};
+    SeqDataStruct elements;
     switch(fileType)
     {
-    case FileType::Error :
-    case FileType::HDV :
-    case FileType::RCD :
-    case FileType::VEH :
-    {
-        qDebug()<< "XMLLog: wrong file type\n";
-        break;
-    }
-    case FileType::RaceLog :
-    case FileType::QualiLog :
-    case FileType::PracticeLog :
-    {
+        case FileType::Error :
+        {
+            return false;
+        }
+        case FileType::HDV :
+        {
+            break;
+        }
+        case FileType::RCD :
+        {
+            break;
+        }
+        case FileType::VEH :
+        {
+            break;
+        }
+        case FileType::RaceLog :
+        {
+            break;
+        }
+        case FileType::QualiLog :
+        case FileType::PracticeLog :
+        {
 
-        MainInfo(log);
-        Incidents(log);
-        DriverMain(log);
-        break;
+            break;
+        }
+        default:
+            return false;
     }
-    }
-    return log;
+
+    //catch excepts
+    return false;
 }
 
 void Parser::MainInfo(LogInfo &log)
@@ -205,7 +217,7 @@ void Parser::MainInfo(LogInfo &log)
             << endl;
 }
 
-void Parser::Incidents(LogInfo& log)
+QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)
 {
     QVector<DriverPair> incidentData;
     QXmlStreamReader xml(fileData);
@@ -267,7 +279,7 @@ void Parser::Incidents(LogInfo& log)
     {
         qDebug()<< "collision between " << i.first << " and " << i.second <<endl;
     }
-    log.incidents = incidentData;
+    xml.incidents = incidentData;
 }
 
 
@@ -303,7 +315,7 @@ void Parser::DriverMain(LogInfo &log)
     }
 }
 
-QList<QPair<int,double>> Parser::DriverLaps()
+QList<QPair<int,double>> Parser::DriverLaps(QXmlStreamReader& xml)
 {
     QList<QPair<int,double>> LapTimes;
     QXmlStreamReader xml(fileData);
@@ -332,9 +344,4 @@ QList<QPair<int,double>> Parser::DriverLaps()
     for(auto lap : LapTimes)
         qDebug()<< "Lap  num " << lap.first << "time " << lap.second << endl;
     return LapTimes;
-}
-
-DriverInfo::DriverInfo()
-{
-
 }

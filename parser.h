@@ -15,80 +15,105 @@ enum class FileType
     VEH,
     Error
 };
-struct DataStruct
-{
-    /*
-    PlayerFile
-    Mod
-    TrackVenue
-    Laps
-    Stream/Incident - parse incidents
-    Driver - parse list of drivers
-        Name
-        VehFile
-        VehName
-        CarType
-        CarClass
-        CarNumber
-        TeamName
-        GridPos
-        Position
-        ClassGridPos
-        ClassPosition
-        Lap - list of  lap times
-        BestLapTime - double
-        Pitstops
-        FinishStatus
-        DNFReason
 
-    stringValues.insert(0,QPair<QString,QString>("Name",""));
-    stringValues.insert(1,QPair<QString,QString>("VehFile",""));
-    stringValues.insert(2,QPair<QString,QString>("VehName",""));
-    stringValues.insert(3,QPair<QString,QString>("CarType",""));
-    stringValues.insert(4,QPair<QString,QString>("CarClass",""));
-    stringValues.insert(5,QPair<QString,QString>("CarNumber",""));
-    stringValues.insert(6,QPair<QString,QString>("FinishedStatus",""));
-    intValues.insert(0,QPair<QString,int>("Position",0));
-    intValues.insert(1,QPair<QString,int>("ClassPosition",0));
-    intValues.insert(2,QPair<QString,int>("Position",0));
-    intValues.insert(3,QPair<QString,int>("GridPos",0));
-    intValues.insert(4,QPair<QString,int>("ClassGridPos",0));
-    intValues.insert(5,QPair<QString,int>("Pitstops",0));
-    */
+struct SeqDataStruct
+{
+    //names of xml elements
+    //all values would be strings, except when specified
+    const QVector<QString> PraciceLogElements{
+        "PlayerFile",
+        "Mod",
+        "TrackVenue",
+        "Laps",//int
+        "Driver"//vector
+    };
+    const QVector<QString> QualiLogElements{
+        "PlayerFile",
+        "Mod",
+        "TrackVenue",
+        "Laps",//int
+        "Driver"//vector
+    };
+    const QVector<QString> RaceLogElements{
+        "PlayerFile",
+        "Mod",
+        "TrackVenue",
+        "Laps",//int
+        "Stream",//vector
+        "Driver"//vector
+    };
+    const QVector<QString> DriversElements{
+        "Name",
+        "VehFile",
+        "VehName",
+        "CarType",
+        "CarClass",
+        "CarNumber",
+        "TeamName",
+        "GridPos", //int
+        "Position", //int
+        "ClassGridPos", //int
+        "ClassPosition", //int
+        "Lap", //vector of lap times
+        "BestLapTime", //double
+        "Pitstops", //int
+        "FinishStatus",
+        "DNFReason"
+    };
+    const QVector<QString> RCDElements{
+        "Aggression", //double
+        "Composure", //double
+        "Speed", //double
+        "StartSkill", //double
+        "MinRacingSkill" //double
+    };
+    const QVector<QString> HDVElements{
+        "FWSetting", //int
+        "FWDragParams", //double
+        "FWLiftParams", //double
+        "RWSetting", //int
+        "RWDragParams", //double
+        "RWLiftParams", //double
+        "BodyDragBase", //double
+        "RadiatorDrag", //double
+        "RadiatorLift", //double
+        "BrakeDuctDrag", //double
+        "BrakeDuctLift", //double
+        "DiffuserBasePlus", //double
+        "DiffuserDraftLiftMult", //double
+        "DiffuserSideways", //double
+        "GeneralTorqueMult", //double
+        "GeneralPowerMult", //double
+        "GeneralEngineBrakeMult" //double
+    };
+    const QVector<QString> VEHElements{
+        "DefaultLivery",
+        "HDVehicle",
+        "Driver",
+        "Team",
+        "Engine",
+        "Classes",
+        "Category"
+    };
 };
 
 struct DriverInfo
 {
-    DriverInfo();
-    QMap<int, QPair<QString,QString>> stringValues;
-    QMap<int, QPair<QString,int>> intValues;
-    QString name,
-            vehFile,
-            vehName,
-            teamName,
-            carType,
-            carClass,
-            carNumber,
-            finishedStatus;
-    int position,
-         classPosition,
-         gridPos,
-         classGridPos,
-         pitstopsNum;
-    double bestLapTime;
-    QList<QPair<int,double>> lapTimes;
+    QMap<QString,QString> SeqElems;
+    QVector<QPair<int,double>> lapTimes;
 };
-struct LogInfo
+
+struct RaceLogInfo
 {
-    QString playerName,
-            modName,
-            trackName;
-    int numberOfLaps;
-    FileType logType;
+    QMap<QString,QString> SeqElems;
     QList<DriverInfo> drivers;
-    //race log
-    //Stream/Incident - parse incidents
     QVector<DriverPair> incidents;
+};
+
+struct PractQualiLogInfo
+{
+    QMap<QString,QString> SeqElems;
+    QList<DriverInfo> drivers;
 };
 
 
@@ -101,8 +126,10 @@ public:
     static bool backupFile(const QString& filePath, const QString& backupPath,
                            const QString& backupName);
 
-    //read file for all info, args depend on filetype
-    LogInfo readFileContent();
+    //read file for all info, depending on filetype
+    bool readFileContent();
+    //write values into specific element names given names/values list
+    bool writeModFile(QVector<QPair<QString,QString>> NamesValues);
 
     /////////////////////////////getters/////////////////
     inline FileType getFileType() const {return fileType;}
@@ -117,14 +144,22 @@ private:
     bool openFile(QFile& file,const QIODevice::OpenMode& mode);
     // finds type of file
     FileType readFileType();
+    //
+    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);
+    //log parsers
+    PractQualiLogInfo readPractQualiLog();
+    RaceLogInfo readRaceLog();
+    QMap<QString,QString> readHDV();
+    QMap<QString,QString> readVEH();
+    QMap<QString,QString> readRCD();
+
     //specific parsing sub methods
-    void Incidents(LogInfo& log);
-    //parse general log info
-    void MainInfo(LogInfo& log);
+    //parse incident elements
+    QVector<DriverPair> Incidents(QXmlStreamReader& xml);
     //parse drivers info
-    void DriverMain(LogInfo& log);
+    DriverInfo DriverMain(QXmlStreamReader& xml);
     //parse driver lap times
-    QList<QPair<int,double>> DriverLaps();
+    QList<QPair<int,double>> DriverLaps(QXmlStreamReader& xml);
 
     /////////////////data/////////////////
     QString fileName;
@@ -188,7 +223,30 @@ RCD file
     }
 
  */
-
+/*
+PlayerFile
+Mod
+TrackVenue
+Laps
+Stream/Incident - parse incidents
+Driver - parse list of drivers
+    Name
+    VehFile
+    VehName
+    CarType
+    CarClass
+    CarNumber
+    TeamName
+    GridPos
+    Position
+    ClassGridPos
+    ClassPosition
+    Lap - list of  lap times
+    BestLapTime - double
+    Pitstops
+    FinishStatus
+    DNFReason
+*/
 ///////for writing files
 /*
 QFile test("./ASR_F1_2018.rcd");
