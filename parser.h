@@ -9,11 +9,52 @@ enum class FileType
 {
     RaceLog = 0,
     QualiLog,
-    Practice,
+    PracticeLog,
     RCD,
     HDV,
     VEH,
     Error
+};
+struct DataStruct
+{
+    /*
+    PlayerFile
+    Mod
+    TrackVenue
+    Laps
+    Stream/Incident - parse incidents
+    Driver - parse list of drivers
+        Name
+        VehFile
+        VehName
+        CarType
+        CarClass
+        CarNumber
+        TeamName
+        GridPos
+        Position
+        ClassGridPos
+        ClassPosition
+        Lap - list of  lap times
+        BestLapTime - double
+        Pitstops
+        FinishStatus
+        DNFReason
+
+    stringValues.insert(0,QPair<QString,QString>("Name",""));
+    stringValues.insert(1,QPair<QString,QString>("VehFile",""));
+    stringValues.insert(2,QPair<QString,QString>("VehName",""));
+    stringValues.insert(3,QPair<QString,QString>("CarType",""));
+    stringValues.insert(4,QPair<QString,QString>("CarClass",""));
+    stringValues.insert(5,QPair<QString,QString>("CarNumber",""));
+    stringValues.insert(6,QPair<QString,QString>("FinishedStatus",""));
+    intValues.insert(0,QPair<QString,int>("Position",0));
+    intValues.insert(1,QPair<QString,int>("ClassPosition",0));
+    intValues.insert(2,QPair<QString,int>("Position",0));
+    intValues.insert(3,QPair<QString,int>("GridPos",0));
+    intValues.insert(4,QPair<QString,int>("ClassGridPos",0));
+    intValues.insert(5,QPair<QString,int>("Pitstops",0));
+    */
 };
 
 struct DriverInfo
@@ -39,32 +80,6 @@ struct DriverInfo
 };
 struct LogInfo
 {
-
-/*
-PlayerFile
-Mod
-TrackVenue
-Laps
-Stream/Incident - parse incidents
-Driver - parse list of drivers
-    Name
-    VehFile
-    VehName
-    CarType
-    CarClass
-    CarNumber
-    TeamName
-    GridPos
-    Position
-    ClassGridPos
-    ClassPosition
-    Lap - list of  lap times
-    BestLapTime
-    Pitstops
-    FinishStatus
-    DNFReason
-*/
-
     QString playerName,
             modName,
             trackName;
@@ -86,7 +101,7 @@ public:
     static bool backupFile(const QString& filePath, const QString& backupPath,
                            const QString& backupName);
 
-    //read file for all onfo
+    //read file for all info, args depend on filetype
     LogInfo readFileContent();
 
     /////////////////////////////getters/////////////////

@@ -32,7 +32,7 @@ function(enable_sanitizers project_name)
       list(APPEND SANITIZERS "thread")
     endif()
 
-    list(JOIN SANITIZERS "," LIST_OF_SANITIZERS)
+    list(APPEND SANITIZERS "," LIST_OF_SANITIZERS)
 
   endif()
 

@@ -35,7 +35,7 @@ FileType Parser::readFileType()
            break;
        }
     }
-    //debug
+    //error handling
     if (xml.hasError())
     {
         qDebug() << "XML error: " << xml.errorString() << '\n';
@@ -56,7 +56,7 @@ FileType Parser::readFileType()
     if(xml.name().contains("Practice"))
     {
         qDebug() << "Practice\n";
-        return FileType::Practice;
+        return FileType::PracticeLog;
     }
     return FileType::Error;
 }
@@ -147,7 +147,7 @@ LogInfo Parser::readFileContent()
     }
     case FileType::RaceLog :
     case FileType::QualiLog :
-    case FileType::Practice :
+    case FileType::PracticeLog :
     {
 
         MainInfo(log);
@@ -336,17 +336,5 @@ QList<QPair<int,double>> Parser::DriverLaps()
 
 DriverInfo::DriverInfo()
 {
-    stringValues.insert(0,QPair<QString,QString>("Name",""));
-    stringValues.insert(1,QPair<QString,QString>("VehFile",""));
-    stringValues.insert(2,QPair<QString,QString>("VehName",""));
-    stringValues.insert(3,QPair<QString,QString>("CarType",""));
-    stringValues.insert(4,QPair<QString,QString>("CarClass",""));
-    stringValues.insert(5,QPair<QString,QString>("CarNumber",""));
-    stringValues.insert(6,QPair<QString,QString>("FinishedStatus",""));
-    intValues.insert(0,QPair<QString,int>("Position",0));
-    intValues.insert(1,QPair<QString,int>("ClassPosition",0));
-    intValues.insert(2,QPair<QString,int>("Position",0));
-    intValues.insert(3,QPair<QString,int>("GridPos",0));
-    intValues.insert(4,QPair<QString,int>("ClassGridPos",0));
-    intValues.insert(5,QPair<QString,int>("Pitstops",0));
+
 }
