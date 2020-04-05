@@ -114,6 +114,7 @@ bool Parser::backupFile(const QString &filePath,
 
 bool Parser::readFileContent()/////////finish
 {
+    ///after reading call static methods for writing to db
     SeqDataStruct elements;
     switch(fileType)
     {
@@ -153,18 +154,18 @@ bool Parser::readFileContent()/////////finish
 
 QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)/////////////fix
 {
-    const QString XMLName = "Incident";
+    const QString XMLIncName = "Incident";
+    const QString XMLEndName = "Stream";
     QVector<DriverPair> incidentData;
     QXmlStreamReader::TokenType token;
     QVector<QString> incidents;
     //parse and save incident strings
-    qDebug() << "found " << xml.name() <<endl;
     QString prevDriverName;
     do
     {
     token = xml.readNext();
     if(token == QXmlStreamReader::TokenType::StartElement &&
-            xml.name() == XMLName)
+            xml.name() == XMLIncName)
     {
         xml.readNext();
         auto currentDriverName = xml.text().split("(",QString::SkipEmptyParts).
@@ -175,7 +176,7 @@ QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)/////////////fix
     }
     }
     while(!(token == QXmlStreamReader::TokenType::EndElement &&
-         xml.name() == "Stream"));
+         xml.name() == XMLEndName));
 
     //ignore equal driver combinations
     QString currentString;
