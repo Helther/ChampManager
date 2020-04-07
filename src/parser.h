@@ -121,7 +121,7 @@ class Parser
 {
 public:
     Parser(const QString& fileName);
-
+    ~Parser();
     // straightforward name
     static bool backupFile(const QString& filePath, const QString& backupPath,
                            const QString& backupName);
@@ -144,18 +144,21 @@ private:
     bool openFile(QFile& file,const QIODevice::OpenMode& mode);
     // finds type of file
     FileType readFileType();
+    FileType readModFileType();//////////define
     //
-    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);
+    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);//////////define
     //log parsers
-    PractQualiLogInfo readPractQualiLog();
-    RaceLogInfo readRaceLog();
-    QMap<QString,QString> readHDV();
-    QMap<QString,QString> readVEH();
-    QMap<QString,QString> readRCD();
+    PractQualiLogInfo readPractQualiLog();//////////define
+    RaceLogInfo readRaceLog();//////////define
+    QMap<QString,QString> readHDV();//////////define
+    QMap<QString,QString> readVEH();//////////define
+    QMap<QString,QString> readRCD();//////////define
 
     //specific parsing sub methods
     //parse incident elements
     QVector<DriverPair> Incidents(QXmlStreamReader& xml);
+    //constructs vector of incidents without equal pairings
+    QVector<DriverPair> processEqualCombinations(const QVector<QString>& incindents);
     //parse drivers info
     QVector<DriverInfo> Drivers(QXmlStreamReader& xml);
     //parse driver lap times

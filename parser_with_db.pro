@@ -1,7 +1,7 @@
 QT -= gui
 QT += core
 
-CONFIG += c++11 console
+CONFIG += c++17 console
 CONFIG -= app_bundle
 
 # The following define makes your compiler emit warnings if you use
@@ -15,10 +15,10 @@ CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
+INCLUDEPATH += src/
 SOURCES += \
-        main.cpp \
-    parser.cpp
+        src/main.cpp \
+    src/parser.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -26,5 +26,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    parser.h
+    src/parser.h
 

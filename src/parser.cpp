@@ -1,4 +1,4 @@
-#include "parser.h"
+#include <parser.h>
 #include "QXmlStreamReader"
 //#ifdef QT_DEBUG
 //#endif
@@ -10,20 +10,26 @@ Parser::Parser(const QString &FileName) : fileName(FileName)
         auto buffer = file.readAll();
         fileData = QString(buffer).toUtf8();
         fileType = readFileType();
-        file.close();
     }
+}
+Parser::~Parser()
+{
+    QFile file(this->fileName);
+    if(file.isOpen())
+        file.close();
 }
 
 FileType Parser::readFileType()
 {
     //find log type token
+    const auto tokenName = "FixedUpgrades";
     QXmlStreamReader xml(fileData);
     QXmlStreamReader::TokenType token;
     while(!xml.atEnd() && !xml.hasError())
     {
        token = xml.readNext();
        if(token == QXmlStreamReader::TokenType::StartElement &&
-               xml.name() == "FixedUpgrades")
+               xml.name() == tokenName)
        {
            qDebug() << "found FixedUpgrades line\n";
            do
@@ -38,9 +44,10 @@ FileType Parser::readFileType()
     //error handling
     if (xml.hasError())
     {
+        if(xml.error() == QXmlStreamReader::Error::NotWellFormedError)
+            return readModFileType();
         qDebug() << "XML error: " << xml.errorString() << '\n';
         return FileType::Error;
-        ///add get non xml file types
     }
     //return the correct type of the log
     if(xml.name() == "Race")
@@ -58,6 +65,11 @@ FileType Parser::readFileType()
         qDebug() << "Practice\n";
         return FileType::PracticeLog;
     }
+    return FileType::Error;
+}
+
+FileType Parser::readModFileType()
+{
     return FileType::Error;
 }
 
@@ -99,7 +111,10 @@ bool Parser::backupFile(const QString &filePath,
         if(bFile.open(QIODevice::WriteOnly))
         {
             if(bFile.write(file.readAll()) == -1)
+            {
+                bFile.remove();
                 return false;
+            }
             file.close();
             bFile.close();
             qDebug()<< "File " << file.fileName()
@@ -156,7 +171,6 @@ QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)/////////////fix
 {
     const QString XMLIncName = "Incident";
     const QString XMLEndName = "Stream";
-    QVector<DriverPair> incidentData;
     QXmlStreamReader::TokenType token;
     QVector<QString> incidents;
     //parse and save incident strings
@@ -168,7 +182,7 @@ QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)/////////////fix
             xml.name() == XMLIncName)
     {
         xml.readNext();
-        auto currentDriverName = xml.text().split("(",QString::SkipEmptyParts).
+        const auto currentDriverName = xml.text().split("(",QString::SkipEmptyParts).
                 first().toString();
         if(prevDriverName != currentDriverName)
             incidents.push_back(xml.text().toString());
@@ -176,32 +190,31 @@ QVector<DriverPair> Parser::Incidents(QXmlStreamReader& xml)/////////////fix
     }
     }
     while(!(token == QXmlStreamReader::TokenType::EndElement &&
-         xml.name() == XMLEndName));
+         xml.name() == XMLEndName));//////////////fix infinite loop
 
+    return processEqualCombinations(incidents);
+}
+
+QVector<DriverPair> Parser::processEqualCombinations(const QVector<QString>& incindents)
+{
+    QVector<DriverPair> incidentData;
+    const QString incLineSplitter = "vehicle";
     //ignore equal driver combinations
     QString currentString;
-    for(auto i = incidents.cbegin(); i < incidents.cend();++i)
+    const int minValidLineLength = 4;
+    for(const auto& i : incindents)
     {
-            currentString = *i;
-            auto stringList = currentString.split("(",QString::SkipEmptyParts);
-            if(stringList.size() < 4)
-                continue;
-            auto firstDriver = stringList.first();
-            auto secondDriver = stringList.at(stringList.size()-2).split("vehicle ",
-                                               QString::SkipEmptyParts).last();
-            bool isEqual = false;
-            for(const auto& j : incidentData)
-            {
-                if(j.first == secondDriver && j.second == firstDriver)
-                {
-                    isEqual = true;
-                    break;
-                }
-            }
-            if(!isEqual)
-                incidentData.push_back(DriverPair(firstDriver,secondDriver));
+        currentString = i;
+        auto stringList = currentString.split("(",QString::SkipEmptyParts);
+        if(stringList.size() < minValidLineLength)
+            continue;
+        const auto firstDriver = stringList.first();
+        const auto secondDriver = stringList.at(stringList.size()-2).split(incLineSplitter,
+                                                                             QString::SkipEmptyParts).last();
+        if(incidentData.indexOf(qMakePair(secondDriver,firstDriver)) == -1)
+            incidentData.push_back(DriverPair(firstDriver,secondDriver));
     }
-    //output
+
     for(const auto& i : incidentData)
     {
         qDebug()<< "collision between " << i.first << " and " << i.second <<endl;
@@ -214,7 +227,7 @@ QVector<DriverInfo> Parser::Drivers(QXmlStreamReader& xml)////////fix
 {
     QVector<DriverInfo> drivers;
     const QString XMLName = "Driver";
-    QXmlStreamReader::TokenType token = xml.tokenType();
+    QXmlStreamReader::TokenType token;
     while(!xml.hasError() && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement &&
           xml.name() == "RaceResults"))
     {
@@ -224,13 +237,12 @@ QVector<DriverInfo> Parser::Drivers(QXmlStreamReader& xml)////////fix
         {
             token = xml.readNext();
             DriverInfo driver;
-            //infinite loop fix condition
             while(!xml.hasError() && token != QXmlStreamReader::TokenType::EndElement &&
-                  xml.name() !=XMLName)
+                  xml.name() !=XMLName)/////infinite loop fix condition
             {
                 //Parsing Laps
-                driver.lapTimes = DriverLaps(xml);
                 //parse seq elems
+                driver.lapTimes = DriverLaps(xml);
             }
             drivers.append(driver);
         }
@@ -241,24 +253,25 @@ QVector<DriverInfo> Parser::Drivers(QXmlStreamReader& xml)////////fix
 QVector<QPair<int,double>> Parser::DriverLaps(QXmlStreamReader& xml)/////////fix
 {
     const QString XMLName = "Lap";
+    const QString notTimedLapText ="--.----";
     QVector<QPair<int,double>> LapTimes;
     QXmlStreamReader::TokenType token = xml.tokenType();
     while(!xml.hasError() && token != QXmlStreamReader::TokenType::StartElement &&
-          xml.name() != "BestLapTime")
+          xml.name() != "BestLapTime")////////////if read error break with flushing Lap times
     {
-       int LapNumber = 1;
        token = xml.readNext();
        if(token == QXmlStreamReader::TokenType::StartElement &&
                xml.name() == XMLName)
        {
+            int LapNumber = 1;
             xml.readNext();
-            if(xml.text() != "--.----")
+            if(xml.text() != notTimedLapText)
             {
                 LapTimes.push_back(QPair<int,double>(LapNumber,xml.text().toDouble()));
             }
             else
             {
-                LapTimes.push_back(QPair<int,double>(LapNumber,0.0));
+                LapTimes.push_back(QPair<int,double>(LapNumber,0.));
             }
             LapNumber++;
        }

@@ -9,7 +9,7 @@ add_library(project_options INTERFACE)
 #target_compile_features(project_options INTERFACE cxx_std_17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(project_warnings INTERFACE)
 
@@ -31,11 +31,5 @@ if(ENABLE_TESTING)
   )
   #add_subdirectory(tests)
 endif()
+add_subdirectory(src)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(Qt5Core)
-add_executable(ChampManager
-  main.cpp
-  parser.cpp
-)
-target_link_libraries(ChampManager Qt5::Core)

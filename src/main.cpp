@@ -5,8 +5,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QString testPath = "D:/Dev/PARSER_tests/";
-    QVector<QString> tests{"P.xml","Q.xml","R.xml"};
-    for(auto test : tests)
+    QVector<QString> tests{"HDV_guide","Q.xml","R.xml"};
+    for(const auto& test : tests)
     {
         Parser testParser = Parser(testPath + test);
         testParser.readFileContent();
