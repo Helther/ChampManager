@@ -29,7 +29,7 @@ if(ENABLE_TESTING)
   message(
     "Building Tests."
   )
-  #add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()
 add_subdirectory(src)
 
