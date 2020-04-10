@@ -84,7 +84,7 @@ function(set_project_warnings project_name)
   else()
     set(PROJECT_WARNINGS ${GCC_WARNINGS})
   endif()
-
+    #set(PROJECT_WARNINGS ${CLANG_WARNINGS} -Werror)
   target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
 
 endfunction()

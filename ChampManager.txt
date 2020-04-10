@@ -199,7 +199,8 @@
 	
 Реализация		
 классы:
-		
+файл со структурами данных инклюдится в файл парсер и дб манагер
+
 fileparser
     функции
             открыть xml для чтения, txt для чтения или записи
@@ -250,9 +251,11 @@ fileparser
         QString fileData;
         FileType fileType;
 DBManager
+        содержит объект дб
 	функции
-		Запись инфы о заезде из логов в таблицы базы данных
-		Чтение сохраненных данных для расчетов и вывода статы
+            инициализация дб и таблиц
+            запись строк в дб
+            чтение строк из дб
 
 Championship(карьера)
 	функции
@@ -291,3 +294,98 @@ Season
 	
 	составление таблиц и запись в базу данных по сезонам
 
+
+/*
+Veh file
+    DefaultLivery
+    HDVehicle
+    Driver
+    Team
+    Engine
+    Classes
+    Category
+HDV file
+    [FRONTWING]
+        FWSetting=34
+        FWDragParams=(0.07432, 0.00313, 0.000012)
+        FWLiftParams=(-0.2902,-0.0116, 0.000026)
+    [REARWING]
+        RWSetting=32
+        RWDragParams=(0.08001, 0.00770, 0.000022)
+        RWLiftParams=(-0.3224,-0.0141, 0.000064)
+    [BODYAERO]
+        BodyDragBase=(0.3112)
+        RadiatorDrag
+        RadiatorLift
+        BrakeDuctDrag
+        BrakeDuctLift
+    [DIFFUSER]
+        DiffuserBasePlus=(-1.2995, 0.01,0.10, 0.90) // Base lift and Half/1st/2nd order with rear ride height
+        DiffuserDraftLiftMult=1.0          // Effect of draft on diffuser's lift response
+        DiffuserSideways=(0.232)            // Dropoff with yaw (0.0 = none, 1.0 = max)
+
+    [ENGINE]
+        GeneralTorqueMult*=1.0
+        GeneralPowerMult*=1.01141
+        GeneralEngineBrakeMult*=1.0
+RCD file
+    ASR_F1_2018
+    {
+     Lance Stroll
+      {
+        Aggression = 50.00
+        //Reputation = 50.00
+        //Courtesy = 42.00
+        Composure = 49.00 (if AI Mistakes is > 0 in the playerfile)
+        Speed = 77.50
+        //QualifySpeed = 78.5
+        //WetSpeed = 55.0
+        StartSkill = 92.0
+        Crash = 10.50 Only used in auto completing laps
+        //Recovery = 82.00
+        //CompletedLaps = 86.00 Only used in auto completing laps
+        MinRacingSkill = 65.50
+      }
+    }
+
+ */
+/*
+PlayerFile
+Mod
+TrackVenue
+Laps
+Stream/Incident - parse incidents
+Driver - parse list of drivers
+    Name
+    VehFile
+    VehName
+    CarType
+    CarClass
+    CarNumber
+    TeamName
+    GridPos
+    Position
+    ClassGridPos
+    ClassPosition
+    Lap - list of  lap times
+    BestLapTime - double
+    Pitstops
+    FinishStatus
+    DNFReason
+*/
+///////for writing files
+/*
+QFile test("./ASR_F1_2018.rcd");
+Parser::openFile(test, QIODevice::ReadWrite);
+QString data = test.readAll();
+QString name = "Lance Stroll";
+auto index = data.indexOf(name);
+data.remove(index,name.size());
+data.insert(index,"Fernando Alonso");
+test.seek(0);
+if(test.write(data.toUtf8()) == -1)
+{
+    qDebug()<<"write failed";
+}
+test.close();
+*/

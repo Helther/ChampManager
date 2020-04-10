@@ -20,29 +20,15 @@ struct SeqDataStruct
 {
     //names of xml elements
     //all values would be strings, except when specified
-    const QVector<QString> PraciceLogElements{
+    const QVector<QString> MainLogElements{
         "PlayerFile",
         "Mod",
         "TrackVenue",
-        "Laps",//int
-        "Driver"//vector
-    };
-    const QVector<QString> QualiLogElements{
-        "PlayerFile",
-        "Mod",
-        "TrackVenue",
-        "Laps",//int
-        "Driver"//vector
-    };
-    const QVector<QString> RaceLogElements{
-        "PlayerFile",
-        "Mod",
-        "TrackVenue",
-        "Laps",//int
+        "RaceLaps",//int
         "Stream",//vector
         "Driver"//vector
     };
-    const QVector<QString> DriversElements{
+    const QVector<QString> DriversRaceElements{
         "Name",
         "VehFile",
         "VehName",
@@ -59,6 +45,19 @@ struct SeqDataStruct
         "Pitstops", //int
         "FinishStatus",
         "DNFReason"
+    };
+    const QVector<QString> DriversPQElements{
+        "Name",
+        "VehFile",
+        "VehName",
+        "CarType",
+        "CarClass",
+        "CarNumber",
+        "TeamName",
+        "Position", //int
+        "ClassPosition", //int
+        "Lap", //vector of lap times
+        "BestLapTime", //double
     };
     const QVector<QString> RCDElements{
         "Aggression", //double
@@ -110,12 +109,6 @@ struct RaceLogInfo
     QVector<DriverPair> incidents;
 };
 
-struct PractQualiLogInfo
-{
-    QMap<QString,QString> SeqElems;
-    QVector<DriverInfo> drivers;
-};
-
 
 class Parser
 {
@@ -127,142 +120,48 @@ public:
                            const QString& backupName);
 
     //read file for all info, depending on filetype
-    bool readFileContent();
+    bool readFileContent() const;
     //write values into specific element names given names/values list
-    bool writeModFile(QVector<QPair<QString,QString>> NamesValues);
+    [[nodiscard]] bool writeModFile(QVector<QPair<QString,QString>> NamesValues);
 
     /////////////////////////////getters/////////////////
-    inline FileType getFileType() const {return fileType;}
-    inline const QString getFileData() const {return fileData;}
-    inline QString& getFileData() {return fileData;}
-    inline const QString getFileName() const {return fileName;}
-    //inline QString& getFileName() {return fileName;}
+    [[nodiscard]] constexpr FileType getFileType() const {return fileType;}
+    [[nodiscard]] const QString getFileData() const {return fileData;}
+    [[nodiscard]] const QString getFileName() const {return fileName;}
 
+    void setFileData(const QString& inData) {fileData = inData;}
 private:
-
+    //set a parsing error
+    void raiseError(const QString& msg);
     //just opens file with error catching
-    bool openFile(QFile& file,const QIODevice::OpenMode& mode);
+    [[nodiscard]] bool openFile(QFile& file,const QIODevice::OpenMode& mode) const;
     // finds type of file
-    FileType readFileType();
-    FileType readModFileType();//////////define
+    [[nodiscard]] FileType readFileType();
+    [[nodiscard]] FileType readModFileType() const;//////////define
     //
-    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);//////////define
+    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);
     //log parsers
-    PractQualiLogInfo readPractQualiLog();//////////define
-    RaceLogInfo readRaceLog();//////////define
-    QMap<QString,QString> readHDV();//////////define
-    QMap<QString,QString> readVEH();//////////define
-    QMap<QString,QString> readRCD();//////////define
+    [[nodiscard]] RaceLogInfo readPractQualiLog() const;//////////define///////add error check at the begining
+    [[nodiscard]] RaceLogInfo readRaceLog() const;//////////define
+    [[nodiscard]] QMap<QString,QString> readHDV() const;//////////define
+    [[nodiscard]] QMap<QString,QString> readVEH() const;//////////define
+    [[nodiscard]] QMap<QString,QString> readRCD() const;//////////define
 
     //specific parsing sub methods
     //parse incident elements
-    QVector<DriverPair> Incidents(QXmlStreamReader& xml);
+    [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader& xml) const;
     //constructs vector of incidents without equal pairings
-    QVector<DriverPair> processEqualCombinations(const QVector<QString>& incindents);
+    [[nodiscard]] QVector<DriverPair> processEqualCombinations(const QVector<QString>& incindents) const;
     //parse drivers info
-    QVector<DriverInfo> Drivers(QXmlStreamReader& xml);
+    [[nodiscard]] QVector<DriverInfo> processDrivers(QXmlStreamReader& xml) const;
     //parse driver lap times
-    QVector<QPair<int,double>> DriverLaps(QXmlStreamReader& xml);
+    [[nodiscard]] QVector<QPair<int,double>> processDriverLaps(QXmlStreamReader& xml) const;
 
     /////////////////data/////////////////
     QString fileName;
     QString fileData;
     FileType fileType;
+    bool hasError{};
+    QString errorMessage;
 };
 #endif // Parser_H
-
-
-/*
-Veh file
-    DefaultLivery
-    HDVehicle
-    Driver
-    Team
-    Engine
-    Classes
-    Category
-HDV file
-    [FRONTWING]
-        FWSetting=34
-        FWDragParams=(0.07432, 0.00313, 0.000012)
-        FWLiftParams=(-0.2902,-0.0116, 0.000026)
-    [REARWING]
-        RWSetting=32
-        RWDragParams=(0.08001, 0.00770, 0.000022)
-        RWLiftParams=(-0.3224,-0.0141, 0.000064)
-    [BODYAERO]
-        BodyDragBase=(0.3112)
-        RadiatorDrag
-        RadiatorLift
-        BrakeDuctDrag
-        BrakeDuctLift
-    [DIFFUSER]
-        DiffuserBasePlus=(-1.2995, 0.01,0.10, 0.90) // Base lift and Half/1st/2nd order with rear ride height
-        DiffuserDraftLiftMult=1.0          // Effect of draft on diffuser's lift response
-        DiffuserSideways=(0.232)            // Dropoff with yaw (0.0 = none, 1.0 = max)
-
-    [ENGINE]
-        GeneralTorqueMult*=1.0
-        GeneralPowerMult*=1.01141
-        GeneralEngineBrakeMult*=1.0
-RCD file
-    ASR_F1_2018
-    {
-     Lance Stroll
-      {
-        Aggression = 50.00
-        //Reputation = 50.00
-        //Courtesy = 42.00
-        Composure = 49.00 (if AI Mistakes is > 0 in the playerfile)
-        Speed = 77.50
-        //QualifySpeed = 78.5
-        //WetSpeed = 55.0
-        StartSkill = 92.0
-        Crash = 10.50 Only used in auto completing laps
-        //Recovery = 82.00
-        //CompletedLaps = 86.00 Only used in auto completing laps
-        MinRacingSkill = 65.50
-      }
-    }
-
- */
-/*
-PlayerFile
-Mod
-TrackVenue
-Laps
-Stream/Incident - parse incidents
-Driver - parse list of drivers
-    Name
-    VehFile
-    VehName
-    CarType
-    CarClass
-    CarNumber
-    TeamName
-    GridPos
-    Position
-    ClassGridPos
-    ClassPosition
-    Lap - list of  lap times
-    BestLapTime - double
-    Pitstops
-    FinishStatus
-    DNFReason
-*/
-///////for writing files
-/*
-QFile test("./ASR_F1_2018.rcd");
-Parser::openFile(test, QIODevice::ReadWrite);
-QString data = test.readAll();
-QString name = "Lance Stroll";
-auto index = data.indexOf(name);
-data.remove(index,name.size());
-data.insert(index,"Fernando Alonso");
-test.seek(0);
-if(test.write(data.toUtf8()) == -1)
-{
-    qDebug()<<"write failed";
-}
-test.close();
-*/
