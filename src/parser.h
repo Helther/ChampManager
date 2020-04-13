@@ -1,106 +1,29 @@
 #ifndef parser_H
 #define parser_H
-
-#include <QtCore>
+#include <parserConsts.h>
 
 using DriverPair = QPair<QString,QString>;
-
-enum class FileType
-{
-    RaceLog = 0,
-    QualiLog,
-    PracticeLog,
-    RCD,
-    HDV,
-    VEH,
-    Error
-};
-
-struct SeqDataStruct
-{
-    //names of xml elements
-    //all values would be strings, except when specified
-    const QVector<QString> MainLogElements{
-        "PlayerFile",
-        "Mod",
-        "TrackVenue",
-        "RaceLaps",//int
-        "Stream",//vector
-        "Driver"//vector
-    };
-    const QVector<QString> DriversRaceElements{
-        "Name",
-        "VehFile",
-        "VehName",
-        "CarType",
-        "CarClass",
-        "CarNumber",
-        "TeamName",
-        "GridPos", //int
-        "Position", //int
-        "ClassGridPos", //int
-        "ClassPosition", //int
-        "Lap", //vector of lap times
-        "BestLapTime", //double
-        "Pitstops", //int
-        "FinishStatus",
-        "DNFReason"
-    };
-    const QVector<QString> DriversPQElements{
-        "Name",
-        "VehFile",
-        "VehName",
-        "CarType",
-        "CarClass",
-        "CarNumber",
-        "TeamName",
-        "Position", //int
-        "ClassPosition", //int
-        "Lap", //vector of lap times
-        "BestLapTime", //double
-    };
-    const QVector<QString> RCDElements{
-        "Aggression", //double
-        "Composure", //double
-        "Speed", //double
-        "StartSkill", //double
-        "MinRacingSkill" //double
-    };
-    const QVector<QString> HDVElements{
-        "FWSetting", //int
-        "FWDragParams", //double
-        "FWLiftParams", //double
-        "RWSetting", //int
-        "RWDragParams", //double
-        "RWLiftParams", //double
-        "BodyDragBase", //double
-        "RadiatorDrag", //double
-        "RadiatorLift", //double
-        "BrakeDuctDrag", //double
-        "BrakeDuctLift", //double
-        "DiffuserBasePlus", //double
-        "DiffuserDraftLiftMult", //double
-        "DiffuserSideways", //double
-        "GeneralTorqueMult", //double
-        "GeneralPowerMult", //double
-        "GeneralEngineBrakeMult" //double
-    };
-    const QVector<QString> VEHElements{
-        "DefaultLivery",
-        "HDVehicle",
-        "Driver",
-        "Team",
-        "Engine",
-        "Classes",
-        "Category"
-    };
-};
 
 struct DriverInfo
 {
     QMap<QString,QString> SeqElems;
     QVector<QPair<int,double>> lapTimes;
 };
+inline QDebug operator<<(QDebug debug,const DriverInfo& dr)
+{
+    auto it = dr.SeqElems.cbegin();
+    QDebugStateSaver saver(debug);
+    debug<<"==========Driver data========\n";
+    while(it != dr.SeqElems.cend())
+    {
+        debug<<it.key()<<" "<<it.value()<<'\n';
+        ++it;
+    }
+    debug<<"===========Laps==============\n";
+    for(const auto i : dr.lapTimes)
+        debug<<"№ "<<i.first<<" "<<i.second<<'\n';
+    return debug;
+}
 
 struct RaceLogInfo
 {
@@ -109,18 +32,34 @@ struct RaceLogInfo
     QVector<DriverPair> incidents;
 };
 
+inline QDebug operator<<(QDebug debug,const RaceLogInfo& log)
+{
+    auto it = log.SeqElems.cbegin();
+    QDebugStateSaver saver(debug);
+    debug<<"==========Race log data========\n";
+    while(it != log.SeqElems.cend())
+    {
+        debug.nospace()<<it.key()<<" "<<it.value()<<'\n';
+        ++it;
+    }
+    for(const auto i : log.drivers)
+        debug<<i;
+    debug<<"==========Incidents============\n";
+    for(const auto i : log.incidents)
+        debug<<"Incident between "<<i.first<<" and "<<i.second<<'\n';
+    return debug;
+}
 
 class Parser
 {
 public:
     Parser(const QString& fileName);
     ~Parser();
-    // straightforward name
-    static bool backupFile(const QString& filePath, const QString& backupPath,
-                           const QString& backupName);
+    // straightforward name, gives backup a name with a current date
+    static bool backupFile(const QString& filePath, const QString& backupPath);////TODO: fix date locale
 
     //read file for all info, depending on filetype
-    bool readFileContent() const;
+    bool readFileContent();
     //write values into specific element names given names/values list
     [[nodiscard]] bool writeModFile(QVector<QPair<QString,QString>> NamesValues);
 
@@ -134,33 +73,34 @@ private:
     //set a parsing error
     void raiseError(const QString& msg);
     //just opens file with error catching
-    [[nodiscard]] bool openFile(QFile& file,const QIODevice::OpenMode& mode) const;
+    [[nodiscard]] bool openFile(QFile& file,const QIODevice::OpenMode& mode);
     // finds type of file
     [[nodiscard]] FileType readFileType();
-    [[nodiscard]] FileType readModFileType() const;//////////define
-    //
-    const QString findXMLElement(QXmlStreamReader& xml,const QString& elemName);
-    //log parsers
-    [[nodiscard]] RaceLogInfo readPractQualiLog() const;//////////define///////add error check at the begining
-    [[nodiscard]] RaceLogInfo readRaceLog() const;//////////define
-    [[nodiscard]] QMap<QString,QString> readHDV() const;//////////define
-    [[nodiscard]] QMap<QString,QString> readVEH() const;//////////define
-    [[nodiscard]] QMap<QString,QString> readRCD() const;//////////define
+    [[nodiscard]] FileType readModFileType();
+    // reads through file using xml reader reference in search of given element name
+    //returns element value, if never found returns empty qstring
+    QString findXMLElement(QXmlStreamReader& xml, const QString& elemName, const QString& stopEndElem = "atEnd", bool okIfDidntFind = false);
+    //file parsers
+    [[nodiscard]] RaceLogInfo readPractQualiLog();//////////TODO: finish and combine with racelog
+    [[nodiscard]] RaceLogInfo readRaceLog();//////////TODO: finish
+    [[nodiscard]] QMap<QString,QString> readHDV() const;//////////TODO: define
+    [[nodiscard]] QMap<QString,QString> readVEH() const;//////////TODO: define
+    [[nodiscard]] QMap<QString,QString> readRCD() const;//////////TODO: define
 
     //specific parsing sub methods
     //parse incident elements
-    [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader& xml) const;
+    [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader& xml);
     //constructs vector of incidents without equal pairings
     [[nodiscard]] QVector<DriverPair> processEqualCombinations(const QVector<QString>& incindents) const;
     //parse drivers info
-    [[nodiscard]] QVector<DriverInfo> processDrivers(QXmlStreamReader& xml) const;
+    [[nodiscard]] QVector<DriverInfo> processDrivers(QXmlStreamReader& xml, const QVector<QString>& seqData);
     //parse driver lap times
     [[nodiscard]] QVector<QPair<int,double>> processDriverLaps(QXmlStreamReader& xml) const;
 
     /////////////////data/////////////////
     QString fileName;
     QString fileData;
-    FileType fileType;
+    FileType fileType = FileType::Error;
     bool hasError{};
     QString errorMessage;
 };

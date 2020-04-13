@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
         Parser testParser = Parser(testPath + test);
         testParser.readFileContent();
     }
-    //parser::backupFile("./P.xml","./", "_b");
-    //parser::backupFile("/home/helther/P.xml", "/home/helther/");
+    //Parser::backupFile(testPath + "P.xml",testPath);
     return QCoreApplication::exec();
 }

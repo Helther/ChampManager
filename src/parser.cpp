@@ -1,7 +1,10 @@
 #include <parser.h>
-#include "QXmlStreamReader"
-//#ifdef QT_DEBUG
+#include <QXmlStreamReader>
+#include <QDateTime>
+//#ifdef QT_DEBUG QT_NO_DEBUG_OUTPUT
 //#endif
+using namespace parserConsts;
+
 Parser::Parser(const QString &FileName) : fileName(FileName)
 {
     QFile file(FileName);
@@ -9,7 +12,8 @@ Parser::Parser(const QString &FileName) : fileName(FileName)
     {
         auto buffer = file.readAll();
         fileData = QString(buffer).toUtf8();
-        fileType = readFileType();
+        if(!hasError)
+            fileType = readFileType();
     }
 }
 Parser::~Parser()
@@ -19,99 +23,112 @@ Parser::~Parser()
         file.close();
 }
 
-FileType Parser::readFileType()////////////////////add precompiled string values for types and such
+FileType Parser::readFileType()
 {
-    const QString Racetype = "Race";
-    const QString Qualtype = "Qualify";
-    const QString Practtype = "Practice";
-    const auto tokenName = "FixedUpgrades";
+    const auto tokenName = "FixedUpgrades";//elem prior to one needed
     //find log type token
     QXmlStreamReader xml(fileData);
-
-    //is file xml file
-    if(!xml.readNextStartElement())
+    if(!xml.readNextStartElement())//is file xml file
     {
         qDebug()<<"file not xml\n";
         return readModFileType();
     }
     findXMLElement(xml,tokenName);
-    xml.readNext();
-    xml.readNext();
-    xml.readNext();
-    xml.readNext();//x4 to get to next token
-    //xml error handling
-    if(xml.hasError())
+    for(int i = 0;i<4;++i)//x4 to get to type token
     {
-        qDebug() << "XML error: " << xml.errorString() << '\n';
-        return FileType::Error;
+        xml.readNext();
+        if(xml.hasError())
+        {
+            raiseError(xml.errorString());
+            return FileType::Error;
+        }
     }
-    //return the correct type of the log
-    if(xml.name() == Racetype)
+    if(xml.name() == typeName::Racetype)
     {
         qDebug() << "Race\n";
         return FileType::RaceLog;
     }
-    if(xml.name() == Qualtype)
+    if(xml.name() == typeName::Qualtype)
     {
         qDebug() << "Quali\n";
         return FileType::QualiLog;
     }
-    if(xml.name().contains(Practtype))
+    if(xml.name().contains(typeName::Practtype))
     {
         qDebug() << "Practice\n";
         return FileType::PracticeLog;
     }
-    qDebug() << "No valid log type was found\n";
+    raiseError("No valid log type was found");
     return FileType::Error;
 }
 
-FileType Parser::readModFileType() const
+FileType Parser::readModFileType()
 {
-    const QString rcdFile = "rcd";
-    const QString hdvFile = "HDV";
-    const QString vehFile = "veh";
     QFile file(fileName);
     auto fileinfo = file.fileName().split(".",QString::KeepEmptyParts);
-    const QString fileExt = fileinfo.at(fileinfo.size()-1);
-    if(fileExt == rcdFile)
+    const QString& fileExt = fileinfo.at(fileinfo.size()-1);
+    if(fileExt == typeName::rcdFile)
     {
         qDebug() << "rcd\n";
         return FileType::RCD;
     }
-    if(fileExt == hdvFile)
+    if(fileExt == typeName::hdvFile)
     {
         qDebug() << "hdv\n";
         return FileType::HDV;
     }
-    if(fileExt == vehFile)
+    if(fileExt == typeName::vehFile)
     {
         qDebug() << "veh\n";
         return FileType::VEH;
     }
+    raiseError("No valid file type was found");
     return FileType::Error;
 }
 
-const QString Parser::findXMLElement(QXmlStreamReader& xml, const QString& elemName)
+QString Parser::findXMLElement(QXmlStreamReader& xml, const QString& elemName,
+                                     const QString& stopEndElem,bool okIfDidntFind)
 {
     QXmlStreamReader::TokenType token;
     QString result;
+    bool reachedStop = false;
     while(!xml.atEnd() && !xml.hasError())
     {
-        token = xml.readNext();
+
+        if(token == QXmlStreamReader::TokenType::EndElement && stopEndElem != "atEnd" &&
+            xml.name() == stopEndElem)
+        {
+            reachedStop = true;
+            qDebug()<< "findXMLElem: reached stop elem";
+            break;
+        }
         if(token == QXmlStreamReader::TokenType::StartElement && xml.name() == elemName)
         {
+            if(!xml.attributes().isEmpty())//////todo: consider variable number of attributes in elements
+                xml.readNext();
             result = xml.text().toString();
             break;
         }
+        token = xml.readNext();
     }
     if(xml.hasError())
         raiseError(xml.errorString());
-    if(xml.atEnd())
+    if (!okIfDidntFind && (xml.atEnd() || reachedStop))
         raiseError("xml reader couldn't find the element: " + elemName);
     return result;
 }
 
-RaceLogInfo Parser::readPractQualiLog() const
+RaceLogInfo Parser::readPractQualiLog()
+{
+    QXmlStreamReader xml(fileData);
+    RaceLogInfo result;
+    result.incidents = processIncidents(xml);
+    result.drivers = processDrivers(xml,parserConsts::seqElems::DriversPQElements);
+    qDebug()<<result;
+    return result;
+}
+
+RaceLogInfo Parser::readRaceLog()
 {
     QXmlStreamReader xml(fileData);
     RaceLogInfo result;
@@ -119,15 +136,7 @@ RaceLogInfo Parser::readPractQualiLog() const
     return result;
 }
 
-RaceLogInfo Parser::readRaceLog() const
-{
-    QXmlStreamReader xml(fileData);
-    RaceLogInfo result;
-    result.incidents = processIncidents(xml);
-    return result;
-}
-
-bool Parser::openFile(QFile& file,const QIODevice::OpenMode& mode) const
+bool Parser::openFile(QFile& file,const QIODevice::OpenMode& mode)
 {
     if(file.exists())
     {
@@ -135,30 +144,38 @@ bool Parser::openFile(QFile& file,const QIODevice::OpenMode& mode) const
         {
             if(file.open(mode) | QIODevice::Text)
                 return true;
-            qDebug() << "Can't open file\n";
+            raiseError("Can't open file");
         }
         qDebug() << "Is already open!\n";
             return true;
     }
-    qDebug()<< "File doesn't exist\n";
+    raiseError("File doesn't exist");
     return false;
 }
 
 bool Parser::backupFile(const QString &filePath,
-                        const QString &backupPath,
-                        const QString &backupName)
+                        const QString &backupPath)
 {
     QFile file(filePath);
     QFile bFile(backupPath);
     //set backup file new name
+    //get formatted current date and time
+    QString backupName{QDateTime::currentDateTime().date().toString() +
+                       QDateTime::currentDateTime().time().toString()};
+    for(auto it = backupName.begin(); it<backupName.end() ;++it)
+    {
+        if(*it == ':')
+            *it='_';
+    }
+    backupName.remove(" ");
+    //get file name format
     auto fileinfo = file.fileName().split(".",QString::KeepEmptyParts);
     const QString fileExt = fileinfo.at(fileinfo.size()-1);
     fileinfo = file.fileName().split("/",QString::KeepEmptyParts);
     fileinfo = fileinfo.at(fileinfo.size()-1).split(".",QString::KeepEmptyParts);
     const QString fileName = fileinfo.at(0);
-    //if no backup name was given set to date
+    //set new name
     bFile.setFileName(QString(backupPath + fileName + backupName+ "." + fileExt));
-
     //open and write files
     if(file.open(QIODevice::ReadOnly))
     {
@@ -181,9 +198,14 @@ bool Parser::backupFile(const QString &filePath,
     return false;
 }
 
-bool Parser::readFileContent() const/////////finish
+bool Parser::readFileContent()/////////TODO: finish
 {
     ///after reading call static methods for writing to db
+    if(hasError)
+    {
+        qDebug()<<"readFile: "<<errorMessage<<'\n';
+        return false;
+    }
     switch(fileType)
     {
         case FileType::Error :
@@ -213,8 +235,6 @@ bool Parser::readFileContent() const/////////finish
             auto data = readPractQualiLog();
             break;
         }
-        default:
-            return false;
     }
 
     //catch excepts
@@ -229,40 +249,38 @@ void Parser::raiseError(const QString& msg)
         {
             errorMessage = msg;
             hasError = true;
+            qDebug()<<"raiseError: "<<errorMessage<<'\n';///for debug
         }
         else
         {
-            qDebug()<<"raiseError: error msg is empty";
+            qDebug()<<"raiseError: error msg is empty\n";
         }
     }
     else
-        qDebug()<<"there is already an error: "<<errorMessage<<'\n';
+        qDebug()<<"there is already an error: "<<errorMessage<<'\n';///for debug
 }
 
-QVector<DriverPair> Parser::processIncidents(QXmlStreamReader& xml) const/////////////fix
+QVector<DriverPair> Parser::processIncidents(QXmlStreamReader& xml)
 {
-    const QString XMLIncName = "Incident";
+    const QString XMLName = "Incident";
     const QString XMLEndName = "Stream";
-    QXmlStreamReader::TokenType token;
     QVector<QString> incidents;
     //parse and save incident strings
     QString prevDriverName;
-    do
+    while(!hasError && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement &&
+             xml.name() == XMLEndName))
     {
-    token = xml.readNext();
-    if(token == QXmlStreamReader::TokenType::StartElement &&
-            xml.name() == XMLIncName)
-    {
-        xml.readNext();
-        const auto currentDriverName = xml.text().split("(",QString::SkipEmptyParts).
-                first().toString();
+        const auto currentElem = findXMLElement(xml,XMLName,XMLEndName,true);
+        if(currentElem.isEmpty())//check if found something, continue if empty
+            continue;
+        //process two names involved in incident
+        auto currentDriverName = currentElem.split("(",QString::SkipEmptyParts).first();
         if(prevDriverName != currentDriverName)
-            incidents.push_back(xml.text().toString());
+            incidents.push_back(currentElem);
         prevDriverName = currentDriverName;
     }
-    }
-    while(!(token == QXmlStreamReader::TokenType::EndElement &&
-         xml.name() == XMLEndName));//////////////fix infinite loop
+    if(incidents.isEmpty())//check if found something, return empty if not
+        return QVector<DriverPair>{};
     return processEqualCombinations(incidents);
 }
 
@@ -281,11 +299,12 @@ QVector<DriverPair> Parser::processEqualCombinations(const QVector<QString>& inc
             continue;
         const auto firstDriver = stringList.first();
         const auto secondDriver = stringList.at(stringList.size()-2).split(incLineSplitter,
-                                                                             QString::SkipEmptyParts).last();
+                                    QString::SkipEmptyParts).last();
         if(!incidentData.contains(qMakePair(secondDriver,firstDriver)))
             incidentData.push_back(DriverPair(firstDriver,secondDriver));
     }
-
+    if(incidentData.isEmpty())
+        qDebug()<<"Incidents: no incs were found";
     for(const auto& i : incidentData)
     {
         qDebug()<< "collision between " << i.first << " and " << i.second <<endl;
@@ -294,35 +313,36 @@ QVector<DriverPair> Parser::processEqualCombinations(const QVector<QString>& inc
 }
 
 
-QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader& xml) const////////fix
+QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader& xml,const QVector<QString>& seqData) ////////TODO: fix
 {
     QVector<DriverInfo> drivers;
     const QString XMLName = "Driver";
     const QString XMLEndName = "RaceResults";
-    QXmlStreamReader::TokenType token;
-    while(!xml.hasError() && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement &&
-                                xml.name() == XMLEndName))
+    while(!hasError && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement &&
+                          xml.name() == XMLEndName))
     {
-        token = xml.readNext();
-        if(token == QXmlStreamReader::TokenType::StartElement &&
-                xml.name() == XMLName)
+        findXMLElement(xml,XMLName,XMLEndName,true);
+        if(xml.name() != XMLName)
+            break;
+        DriverInfo currentDriver;
+        for(const auto i : seqData)
         {
-            token = xml.readNext();
-            DriverInfo driver;
-            while(!xml.hasError() && token != QXmlStreamReader::TokenType::EndElement &&
-                  xml.name() !=XMLName)/////infinite loop fix condition
-            {
-                //Parsing Laps
-                //parse seq elems
-                driver.lapTimes = processDriverLaps(xml);
-            }
-            drivers.append(driver);
+            if(hasError)
+                break;
+            findXMLElement(xml,i,XMLName);
+            //if(xml.name() == "Lap")/////todo
+            //    currentDriver.lapTimes = processDriverLaps(xml);
+            xml.readNext();
+            currentDriver.SeqElems.insert(i,xml.text().toString());
         }
+        drivers.push_back(currentDriver);
     }
+    if(hasError)
+        return QVector<DriverInfo>{};
     return drivers;
 }
 
-QVector<QPair<int,double>> Parser::processDriverLaps(QXmlStreamReader& xml) const/////////fix
+QVector<QPair<int,double>> Parser::processDriverLaps(QXmlStreamReader& xml) const/////////TODO: fix
 {
     const QString XMLName = "Lap";
     const QString notTimedLapText ="--.----";
