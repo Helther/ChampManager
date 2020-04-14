@@ -87,29 +87,29 @@ FileType Parser::readModFileType()
 }
 
 QString Parser::findXMLElement(QXmlStreamReader& xml, const QString& elemName,
-                                     const QString& stopEndElem,bool okIfDidntFind)
+                                     const QString& stopEndElem, bool okIfDidntFind,bool stopStartElem)////todo: look for infinite loops
 {
-    QXmlStreamReader::TokenType token;
     QString result;
     bool reachedStop = false;
+    auto stopToken = QXmlStreamReader::TokenType::EndElement;
+    if(stopStartElem)
+        stopToken = QXmlStreamReader::TokenType::StartElement;
     while(!xml.atEnd() && !xml.hasError())
     {
-
-        if(token == QXmlStreamReader::TokenType::EndElement && stopEndElem != "atEnd" &&
-            xml.name() == stopEndElem)
+        if(xml.tokenType() == stopToken && stopEndElem != "atEnd" && xml.name() == stopEndElem)
         {
             reachedStop = true;
-            qDebug()<< "findXMLElem: reached stop elem";
+            //qDebug()<< "findXMLElem: reached stop elem";
             break;
         }
-        if(token == QXmlStreamReader::TokenType::StartElement && xml.name() == elemName)
+        if(xml.tokenType() == QXmlStreamReader::TokenType::StartElement && xml.name() == elemName)
         {
             if(!xml.attributes().isEmpty())//////todo: consider variable number of attributes in elements
                 xml.readNext();
             result = xml.text().toString();
             break;
         }
-        token = xml.readNext();
+        xml.readNext();
     }
     if(xml.hasError())
         raiseError(xml.errorString());
@@ -118,21 +118,46 @@ QString Parser::findXMLElement(QXmlStreamReader& xml, const QString& elemName,
     return result;
 }
 
-RaceLogInfo Parser::readPractQualiLog()
+RaceLogInfo Parser::readXMLLog(bool isRace)
 {
     QXmlStreamReader xml(fileData);
     RaceLogInfo result;
+    QVector<QString> driverElems;
+    if(isRace)
+        driverElems = parserConsts::seqElems::DriversRaceElements;
+    else
+        driverElems = parserConsts::seqElems::DriversPQElements;
+    result.SeqElems = processMainLog(xml);
     result.incidents = processIncidents(xml);
-    result.drivers = processDrivers(xml,parserConsts::seqElems::DriversPQElements);
+    result.drivers = processDrivers(xml,driverElems);
     qDebug()<<result;
     return result;
 }
 
-RaceLogInfo Parser::readRaceLog()
+QMap<QString,QString> Parser::processMainLog(QXmlStreamReader& xml)
 {
-    QXmlStreamReader xml(fileData);
-    RaceLogInfo result;
-    result.incidents = processIncidents(xml);
+    QMap<QString,QString> result;
+    const auto seqData = parserConsts::seqElems::MainLogElements;
+    const QString XMLEndName = "RaceLaps";
+    while(!hasError && !(xml.tokenType() == QXmlStreamReader::TokenType::StartElement &&
+                          xml.name() == XMLEndName))
+    {
+        for(const auto elem : seqData)///check if got all elems
+        {
+            if(hasError)
+                break;
+            findXMLElement(xml,elem,XMLEndName);
+            qDebug()<<xml.name();
+            if(xml.name() == XMLEndName)
+                break;
+            xml.readNext();
+            const auto currentElem = xml.text().toString();
+            if(currentElem.isEmpty())
+                raiseError("readLog: elem values is empty");
+            else
+                result.insert(elem,currentElem);
+        }
+    }
     return result;
 }
 
@@ -226,13 +251,13 @@ bool Parser::readFileContent()/////////TODO: finish
         }
         case FileType::RaceLog :
         {
-            auto data = readRaceLog();
+            auto data = readXMLLog(true);
             break;
         }
         case FileType::QualiLog :
         case FileType::PracticeLog :
         {
-            auto data = readPractQualiLog();
+            auto data = readXMLLog(false);
             break;
         }
     }
@@ -280,7 +305,10 @@ QVector<DriverPair> Parser::processIncidents(QXmlStreamReader& xml)
         prevDriverName = currentDriverName;
     }
     if(incidents.isEmpty())//check if found something, return empty if not
+    {
+        qDebug()<<"Incidents: no incs were found";
         return QVector<DriverPair>{};
+    }
     return processEqualCombinations(incidents);
 }
 
@@ -303,8 +331,6 @@ QVector<DriverPair> Parser::processEqualCombinations(const QVector<QString>& inc
         if(!incidentData.contains(qMakePair(secondDriver,firstDriver)))
             incidentData.push_back(DriverPair(firstDriver,secondDriver));
     }
-    if(incidentData.isEmpty())
-        qDebug()<<"Incidents: no incs were found";
     for(const auto& i : incidentData)
     {
         qDebug()<< "collision between " << i.first << " and " << i.second <<endl;
@@ -325,52 +351,42 @@ QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader& xml,const QVector<Q
         if(xml.name() != XMLName)
             break;
         DriverInfo currentDriver;
-        for(const auto i : seqData)
+        for(const auto elem : seqData)
         {
             if(hasError)
                 break;
-            findXMLElement(xml,i,XMLName);
-            //if(xml.name() == "Lap")/////todo
-            //    currentDriver.lapTimes = processDriverLaps(xml);
-            xml.readNext();
-            currentDriver.SeqElems.insert(i,xml.text().toString());
+            findXMLElement(xml,elem,XMLName);
+            if(elem == "Lap")
+                currentDriver.lapTimes = processDriverLaps(xml);
+            else
+                xml.readNext();
+            currentDriver.SeqElems.insert(elem,xml.text().toString());
         }
         drivers.push_back(currentDriver);
     }
-    if(hasError)
-        return QVector<DriverInfo>{};
     return drivers;
 }
 
-QVector<QPair<int,double>> Parser::processDriverLaps(QXmlStreamReader& xml) const/////////TODO: fix
+QVector<QPair<int,double>> Parser::processDriverLaps(QXmlStreamReader& xml)/////////TODO: fix
 {
     const QString XMLName = "Lap";
-    const QString notTimedLapText ="--.----";
-    const QString XMLStartName = "BestLapTime";
+    const QString notTimedLapText = "--.----";
+    const QString XMLEndName = "BestLapTime";
     QVector<QPair<int,double>> LapTimes;
-    QXmlStreamReader::TokenType token = xml.tokenType();
-    while(!xml.hasError() && token != QXmlStreamReader::TokenType::StartElement &&
-          xml.name() != XMLStartName)////////////if read error break with flushing Lap times
+    int LapNumber = 1;
+    while(!hasError && !(xml.tokenType() == QXmlStreamReader::TokenType::StartElement &&
+                          xml.name() == XMLEndName))
     {
-       token = xml.readNext();
-       if(token == QXmlStreamReader::TokenType::StartElement &&
-               xml.name() == XMLName)
-       {
-            int LapNumber = 1;
-            xml.readNext();
-            if(xml.text() != notTimedLapText)
-            {
-                LapTimes.push_back(QPair<int,double>(LapNumber,xml.text().toDouble()));
-            }
-            else
-            {
-                LapTimes.push_back(QPair<int,double>(LapNumber,0.));
-            }
-            LapNumber++;
-       }
+        auto laptime = findXMLElement(xml,XMLName,XMLEndName,true,true);
+        if(xml.text() != notTimedLapText && !laptime.isEmpty())
+        {
+            LapTimes.push_back(QPair<int,double>(LapNumber,laptime.toDouble()));
+        }
+        else if(!laptime.isEmpty())
+        {
+            LapTimes.push_back(QPair<int,double>(LapNumber,0.));
+        }
+        ++LapNumber;
     }
-    //debug
-    for(auto lap : LapTimes)
-        qDebug()<< "Lap  num " << lap.first << "time " << lap.second << endl;
     return LapTimes;
 }

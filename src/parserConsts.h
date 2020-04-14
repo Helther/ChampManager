@@ -24,9 +24,7 @@ namespace parserConsts
             "PlayerFile",
             "Mod",
             "TrackVenue",
-            "RaceLaps",//int
-            "Stream",//vector
-            "Driver"//vector
+            "RaceLaps"//int
         };
         const QVector<QString> DriversRaceElements{
             "Name",
@@ -43,8 +41,8 @@ namespace parserConsts
             "Lap", //vector of lap times
             "BestLapTime", //double
             "Pitstops", //int
-            "FinishStatus",
-            "DNFReason"
+            "FinishStatus",//////todo figure out how to parse dnf
+           //"DNFReason"
         };
         const QVector<QString> DriversPQElements{
             "Name",

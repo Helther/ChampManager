@@ -36,7 +36,10 @@ inline QDebug operator<<(QDebug debug,const RaceLogInfo& log)
 {
     auto it = log.SeqElems.cbegin();
     QDebugStateSaver saver(debug);
-    debug<<"==========Race log data========\n";
+    debug<<"==========xml log data========\n";
+    debug<<"==========Incidents============\n";
+    for(const auto i : log.incidents)
+        debug<<"Incident between "<<i.first<<" and "<<i.second<<'\n';
     while(it != log.SeqElems.cend())
     {
         debug.nospace()<<it.key()<<" "<<it.value()<<'\n';
@@ -44,9 +47,6 @@ inline QDebug operator<<(QDebug debug,const RaceLogInfo& log)
     }
     for(const auto i : log.drivers)
         debug<<i;
-    debug<<"==========Incidents============\n";
-    for(const auto i : log.incidents)
-        debug<<"Incident between "<<i.first<<" and "<<i.second<<'\n';
     return debug;
 }
 
@@ -79,23 +79,26 @@ private:
     [[nodiscard]] FileType readModFileType();
     // reads through file using xml reader reference in search of given element name
     //returns element value, if never found returns empty qstring
-    QString findXMLElement(QXmlStreamReader& xml, const QString& elemName, const QString& stopEndElem = "atEnd", bool okIfDidntFind = false);
+    QString findXMLElement(QXmlStreamReader& xml, const QString& elemName,
+                           const QString& stopEndElem = "atEnd", bool okIfDidntFind = false,
+                           bool stopStartElem = false);
     //file parsers
-    [[nodiscard]] RaceLogInfo readPractQualiLog();//////////TODO: finish and combine with racelog
-    [[nodiscard]] RaceLogInfo readRaceLog();//////////TODO: finish
+    [[nodiscard]] RaceLogInfo readXMLLog(bool isRace);////////////todo: add error checks
     [[nodiscard]] QMap<QString,QString> readHDV() const;//////////TODO: define
     [[nodiscard]] QMap<QString,QString> readVEH() const;//////////TODO: define
     [[nodiscard]] QMap<QString,QString> readRCD() const;//////////TODO: define
 
-    //specific parsing sub methods
+    //specific log parsing sub methods
+
+    [[nodiscard]] QMap<QString,QString> processMainLog(QXmlStreamReader& xml);
     //parse incident elements
-    [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader& xml);
+    [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader& xml);//////todo: add elem values check
     //constructs vector of incidents without equal pairings
     [[nodiscard]] QVector<DriverPair> processEqualCombinations(const QVector<QString>& incindents) const;
     //parse drivers info
-    [[nodiscard]] QVector<DriverInfo> processDrivers(QXmlStreamReader& xml, const QVector<QString>& seqData);
+    [[nodiscard]] QVector<DriverInfo> processDrivers(QXmlStreamReader& xml, const QVector<QString>& seqData);//////todo: add elem values check
     //parse driver lap times
-    [[nodiscard]] QVector<QPair<int,double>> processDriverLaps(QXmlStreamReader& xml) const;
+    [[nodiscard]] QVector<QPair<int,double>> processDriverLaps(QXmlStreamReader& xml);//////todo: add elem values check
 
     /////////////////data/////////////////
     QString fileName;
