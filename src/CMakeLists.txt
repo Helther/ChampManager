@@ -4,5 +4,5 @@ add_executable(ChampManager
   main.cpp
   parser.cpp
   )
-
+set_project_warnings(ChampManager)
 target_link_libraries(ChampManager Qt5::Core)

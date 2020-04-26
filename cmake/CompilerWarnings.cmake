@@ -1,8 +1,3 @@
-# from here:
-#
-# https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Avai
-# lable.md
-
 function(set_project_warnings project_name)
   option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" TRUE)
 
@@ -84,7 +79,7 @@ function(set_project_warnings project_name)
   else()
     set(PROJECT_WARNINGS ${GCC_WARNINGS})
   endif()
-    #set(PROJECT_WARNINGS ${CLANG_WARNINGS} -Werror)
-  target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
+  target_compile_options(${project_name} PRIVATE ${PROJECT_WARNINGS})
+
 
 endfunction()
