@@ -18,7 +18,7 @@ CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 INCLUDEPATH += src/
 SOURCES += \
         src/main.cpp \
-    src/parser.cpp
+    src/parser.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -26,5 +26,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/parser.h
+    src/parser.h \
+    src/parserConsts.h \
 

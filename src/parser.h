@@ -4,23 +4,34 @@
 
 using DriverPair = QPair<QString, QString>;
 
+struct BackupData
+{
+  BackupData(bool inRes, const QString &inFilePath)
+    : result(inRes), fileFullPath(inFilePath)
+  {}
+  bool result = false;
+  QString fileFullPath;
+};
+
 struct DriverInfo
 {
   QMap<QString, QString> SeqElems;
   QVector<QPair<int, double>> lapTimes;
 };
+
 inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
 {
   auto it = dr.SeqElems.cbegin();
   QDebugStateSaver saver(debug);
-  debug << "==========Driver data========\n";
-  while (it != dr.SeqElems.cend()) {
+  debug.nospace() << "==========Driver data========\n";
+  while (it != dr.SeqElems.cend())
+  {
     debug << it.key() << " " << it.value() << '\n';
     ++it;
   }
-  debug << "===========Laps==============\n";
+  debug.nospace() << "===========Laps==============\n";
   for (const auto i : dr.lapTimes)
-    debug << "№ " << i.first << " " << i.second << '\n';
+    debug.nospace() << "# " << i.first << " " << i.second << '\n';
   return debug;
 }
 
@@ -35,19 +46,19 @@ inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
 {
   auto it = log.SeqElems.cbegin();
   QDebugStateSaver saver(debug);
-  debug << "==========xml log data========\n";
-  debug << "==========Incidents============\n";
+  debug.nospace() << "==========xml log data========\n";
+  debug.nospace() << "==========Incidents============\n";
   for (const auto i : log.incidents)
-    debug << "Incident between " << i.first << " and " << i.second << '\n';
-  while (it != log.SeqElems.cend()) {
+    debug.nospace() << "Incident between " << i.first << " and " << i.second
+                    << '\n';
+  while (it != log.SeqElems.cend())
+  {
     debug.nospace() << it.key() << " " << it.value() << '\n';
     ++it;
   }
-  for (const auto i : log.drivers)
-    debug << i;
+  for (const auto i : log.drivers) debug << i;
   return debug;
 }
-
 class Parser
 {
 public:
@@ -55,8 +66,9 @@ public:
   ~Parser();
 
   // straightforward name, gives backup a name with a current date
-  static bool backupFile(const QString &filePath,
-      const QString &backupPath);////TODO: fix date locale
+  // returns bool result and full backup file path
+  static BackupData backupFile(const QString &filePath,
+                               const QString &backupPath) noexcept;
 
   // read file for all info, depending on filetype
   bool readFileContent();
@@ -68,7 +80,6 @@ public:
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
   [[nodiscard]] const QString getFileData() const { return fileData; }
   [[nodiscard]] const QString getFileName() const { return fileName; }
-
 
   void setFileData(const QString &inData) { fileData = inData; }
 
@@ -87,15 +98,14 @@ private:
   // name
   // returns element value, if never found returns empty qstring
   QString findXMLElement(QXmlStreamReader &xml,
-      const QString &elemName,
-      const QString &stopEndElem = "atEnd",
-      bool okIfDidntFind = false,
-      bool stopStartElem = false);
+                         const QString &elemName,
+                         const QString &stopEndElem = "atEnd",
+                         bool okIfDidntFind = false,
+                         bool stopStartElem = false);
 
   //==================================file===============================
-  //parsers
-  [[nodiscard]] RaceLogInfo
-      readXMLLog(bool isRace);////////////todo: add error checks
+  // parsers
+  [[nodiscard]] RaceLogInfo readXMLLog(bool isRace);
   [[nodiscard]] QMap<QString, QString> readHDV() const;//////////TODO: define
   [[nodiscard]] QMap<QString, QString> readVEH() const;//////////TODO: define
   [[nodiscard]] QMap<QString, QString> readRCD() const;//////////TODO: define
@@ -105,21 +115,19 @@ private:
   [[nodiscard]] QMap<QString, QString> processMainLog(QXmlStreamReader &xml);
 
   // parse incident elements
-  [[nodiscard]] QVector<DriverPair>
-      processIncidents(QXmlStreamReader &xml);//////todo: add elem values check
+  [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader &xml);
 
   // constructs vector of incidents without equal pairings
   [[nodiscard]] QVector<DriverPair>
-      processEqualCombinations(const QVector<QString> &incindents) const;
+    processEqualCombinations(const QVector<QString> &incindents) const;
 
   // parse drivers info
-  [[nodiscard]] QVector<DriverInfo> processDrivers(
-      QXmlStreamReader &xml,
-      const QVector<QString> &seqData);//////todo: add elem values check
+  [[nodiscard]] QVector<DriverInfo>
+    processDrivers(QXmlStreamReader &xml, const QVector<QString> &seqData);
 
   // parse driver lap times
   [[nodiscard]] QVector<QPair<int, double>>
-      processDriverLaps(QXmlStreamReader &xml);//////todo: add elem values check
+    processDriverLaps(QXmlStreamReader &xml);
 
   //===================================class data======================
   QString fileName;

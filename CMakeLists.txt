@@ -1,14 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
-# Set the project name to your project name, my project isn't very descriptive
 project(ChampManager LANGUAGES CXX)
 include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
 add_library(project_options INTERFACE)
-#target_compile_features(project_options INTERFACE cxx_std_17)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(project_warnings INTERFACE)
@@ -16,6 +12,7 @@ add_library(project_warnings INTERFACE)
 # standard compiler warnings
 include(cmake/CompilerWarnings.cmake)
 
+# TODO: fix sanitizers
 # sanitizer options if supported by compiler
 include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
@@ -31,4 +28,3 @@ if(ENABLE_TESTING)
   add_subdirectory(tests)
 endif()
 add_subdirectory(src)
-
