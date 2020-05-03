@@ -16,6 +16,7 @@ Parser::Parser(const QString &FileName) : fileName(FileName)
     if (!hasError) fileType = readFileType();
   }
 }
+
 Parser::~Parser()
 {
   QFile file(fileName);
@@ -190,7 +191,6 @@ BackupData Parser::backupFile(const QString &filePath,
 {
   QRegExp dateFilter(R"(\d+_\d{2}_\d{2}_\d{2})");
   QFile file(filePath);
-  QFile bFile(backupPath);
   // set backup file new name
   // get formatted current date and time
   QString backupName{ QDateTime::currentDateTime().date().toString() + '_'
@@ -211,7 +211,7 @@ BackupData Parser::backupFile(const QString &filePath,
   const QString fileName = fileinfo.at(0);
   // set new name
   auto newFileName = backupPath + fileName + backupName + "." + fileExt;
-  bFile.setFileName(newFileName);
+  QFile bFile(newFileName);
   // open and write files
   if (file.open(QIODevice::ReadOnly) && bFile.open(QIODevice::WriteOnly)
       && bFile.write(file.readAll()) != -1)
@@ -224,8 +224,34 @@ BackupData Parser::backupFile(const QString &filePath,
   if (file.isOpen()) file.close();
   if (bFile.isOpen()) bFile.close();
   if (bFile.exists()) bFile.remove();
-  qDebug() << "backUp: couldn't open or write file";
+  qDebug() << "backUp: couldn't open or write file\n";
   return BackupData(false, QString{});
+}
+
+bool Parser::restoreFile(const QString &filePath,
+                         const QString &backupPath) noexcept
+{
+  QFile file(filePath);
+  QFile bFile(backupPath);
+  if (!file.exists() || !bFile.exists())
+  {
+    qDebug() << "Restore backup error: nowhere or nothing to restore\n";
+    return false;
+  }
+  file.resize(0);
+  if (bFile.open(QIODevice::ReadOnly) && file.open(QIODevice::WriteOnly)
+      && file.write(bFile.readAll()) != -1)
+  {
+    qDebug() << "restor Backup err: File " << file.fileName()
+             << " restored succesfully\n";
+    // delete backup
+    if (bFile.exists()) bFile.remove();
+    return true;
+  }
+  if (file.isOpen()) file.close();
+  if (bFile.isOpen()) bFile.close();
+  qDebug() << "restore backup err: could open or write the files\n";
+  return false;
 }
 
 bool Parser::readFileContent()/////////TODO: finish, return all data

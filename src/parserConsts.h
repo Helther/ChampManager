@@ -4,13 +4,13 @@
 #include <QtCore>
 
 enum class FileType {
-  RaceLog = 0,
-  QualiLog,
-  PracticeLog,
-  RCD,
-  HDV,
-  VEH,
-  Error
+  RaceLog = 1,
+  QualiLog = 2,
+  PracticeLog = 4,
+  RCD = 8,
+  HDV = 16,
+  VEH = 32,
+  Error = 64
 };
 
 namespace parserConsts {
@@ -19,7 +19,7 @@ namespace seqElems {
   // names of xml elements
   // all values would be strings, except when specified
   const QVector<QString> MainLogElements{
-    "PlayerFile",// str
+    "PlayerF``e",// str
     "Mod",// str
     "TrackVenue",
     "RaceLaps"// int

@@ -30,7 +30,7 @@ inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
     ++it;
   }
   debug.nospace() << "===========Laps==============\n";
-  for (const auto i : dr.lapTimes)
+  for (const auto &i : dr.lapTimes)
     debug.nospace() << "# " << i.first << " " << i.second << '\n';
   return debug;
 }
@@ -48,7 +48,7 @@ inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
   QDebugStateSaver saver(debug);
   debug.nospace() << "==========xml log data========\n";
   debug.nospace() << "==========Incidents============\n";
-  for (const auto i : log.incidents)
+  for (const auto &i : log.incidents)
     debug.nospace() << "Incident between " << i.first << " and " << i.second
                     << '\n';
   while (it != log.SeqElems.cend())
@@ -56,7 +56,7 @@ inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
     debug.nospace() << it.key() << " " << it.value() << '\n';
     ++it;
   }
-  for (const auto i : log.drivers) debug << i;
+  for (const auto &i : log.drivers) debug << i;
   return debug;
 }
 class Parser
@@ -69,12 +69,16 @@ public:
   // returns bool result and full backup file path
   static BackupData backupFile(const QString &filePath,
                                const QString &backupPath) noexcept;
+  static bool restoreFile(const QString &filePath,
+                          const QString &backupPath) noexcept;
 
   // read file for all info, depending on filetype
   bool readFileContent();
-
   // write values into specific element names given names/values list
-  [[nodiscard]] bool writeModFile(QVector<QPair<QString, QString>> NamesValues);
+  template<typename T>
+  /*[[nodiscard]]*/ bool
+    writeModFile(const QString &elemName, T oldVal, T newVal);
+  /// todo: maybe add multiple vals support
 
   //=============================getters===========================/
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
@@ -136,4 +140,74 @@ private:
   bool hasError{};
   QString errorMessage;
 };
+
+
+//===============================write mod file definition============
+template<typename T>
+/*[[nodiscard]]*/ bool
+  Parser::writeModFile(const QString &elemName, T oldVal, T newVal)
+{
+  if (!((fileType == FileType::HDV) || (fileType == FileType::RCD)
+        || (fileType == FileType::VEH)))
+  {
+    qDebug() << "write mod file: not a mod file type!";
+    return false;
+  }
+  QString oVal, nVal;// transform input values to string
+  QTextStream valS(&oVal);
+  valS << oldVal;
+  valS.setString(&nVal);
+  valS << newVal;
+  QTextStream data(&fileData);// look for element in the file
+  while (!data.atEnd())
+  {
+    auto line = data.readLine();
+    if (!line.isNull() && line.contains(elemName))
+    {
+      auto index = line.indexOf(oVal);
+      if (index == -1)
+      {
+        qDebug() << "write mod file: couldnt find the value!";
+        return false;
+      }
+      auto originalLineLength = line.size();
+      line.remove(index, oVal.size());
+      line.insert(index, nVal);
+      auto lineStartIndex = static_cast<int>(data.pos()) - line.size() - 1;
+      fileData.remove(lineStartIndex, originalLineLength);
+      fileData.insert(lineStartIndex, line);
+      // backup before write
+      /// temp backup path
+      auto pathWOname = fileName;
+      pathWOname = pathWOname.remove(fileName.split('/').last());
+      BackupData backUpRes{ backupFile(fileName, pathWOname) };
+      if (!backUpRes.result)
+      {
+        qDebug() << "write mod file: couldnt back up the file";
+        QFile bFile(backUpRes.fileFullPath);// delete backup
+        if (bFile.exists()) bFile.remove();
+        return false;
+      }
+      QFile file(fileName);
+      if (file.open(QIODevice::WriteOnly)
+          && file.write(fileData.toStdString().c_str()) != -1)
+      {
+        qDebug() << "write mod file: success!";
+        QFile bFile(backUpRes.fileFullPath);// delete backup
+        if (bFile.exists()) bFile.remove();/// todo: decide how to delete once
+        return true;
+      } else
+      {
+        // try to restore from backup
+        if (!restoreFile(fileName, backUpRes.fileFullPath))
+          qDebug() << "write mod file: couldnt restore backup";
+        qDebug() << "write mod file: couldnt open or write to the file";
+        return false;
+      }
+    }
+  }
+  qDebug() << "write mod file: couldnt find the element!";
+  return false;
+}/// TODO: divide this function!
+
 #endif// Parser_H
