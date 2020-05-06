@@ -76,8 +76,7 @@ public:
   bool readFileContent();
   // write values into specific element names given names/values list
   template<typename T>
-  /*[[nodiscard]]*/ bool
-    writeModFile(const QString &elemName, T oldVal, T newVal);
+  [[nodiscard]] bool writeModFile(const QString &elemName, T oldVal, T newVal);
   /// todo: maybe add multiple vals support
 
   //=============================getters===========================/
@@ -110,9 +109,9 @@ private:
   //==================================file===============================
   // parsers
   [[nodiscard]] RaceLogInfo readXMLLog(bool isRace);
-  [[nodiscard]] QMap<QString, QString> readHDV() const;//////////TODO: define
-  [[nodiscard]] QMap<QString, QString> readVEH() const;//////////TODO: define
-  [[nodiscard]] QMap<QString, QString> readRCD() const;//////////TODO: define
+  [[nodiscard]] QMap<QString, QString> readHDV();
+  [[nodiscard]] QMap<QString, QString> readVEH();
+  [[nodiscard]] QVector<QMap<QString, QString>> readRCD();
 
   //=========================specific log parsing sub methods ==========
   // xml
@@ -144,7 +143,7 @@ private:
 
 //===============================write mod file definition============
 template<typename T>
-/*[[nodiscard]]*/ bool
+[[nodiscard]] bool
   Parser::writeModFile(const QString &elemName, T oldVal, T newVal)
 {
   if (!((fileType == FileType::HDV) || (fileType == FileType::RCD)
@@ -158,7 +157,7 @@ template<typename T>
   valS << oldVal;
   valS.setString(&nVal);
   valS << newVal;
-  QTextStream data(&fileData);// look for element in the file
+  QTextStream data(&fileData);// look for element in the file line by line
   while (!data.atEnd())
   {
     auto line = data.readLine();
@@ -199,8 +198,7 @@ template<typename T>
       } else
       {
         // try to restore from backup
-        if (!restoreFile(fileName, backUpRes.fileFullPath))
-          qDebug() << "write mod file: couldnt restore backup";
+        restoreFile(fileName, backUpRes.fileFullPath);
         qDebug() << "write mod file: couldnt open or write to the file";
         return false;
       }

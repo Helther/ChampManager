@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ChampManager LANGUAGES CXX)
 include(cmake/StandardProjectSettings.cmake)
-
+# TODO: use this lib
 # Link this 'library' to set the c++ standard / compile-time options requested
 add_library(project_options INTERFACE)
 

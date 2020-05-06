@@ -103,7 +103,6 @@ QString
         && xml.name() == stopEndElem)
     {
       reachedStop = true;
-      // qDebug()<< "findXMLElem: reached stop elem";
       break;
     }
     if (xml.tokenType() == QXmlStreamReader::TokenType::StartElement
@@ -140,6 +139,122 @@ RaceLogInfo Parser::readXMLLog(bool isRace)
     qDebug() << result;
   }
   return result;
+}
+
+QMap<QString, QString> Parser::readHDV()
+{
+  /// look for element seq line by line, if found scan the line
+  /// with textstream>> for digits and read the first one
+  /// if stream cant get digits it returns 0
+  /// if not found elem or val raise error
+  QMap<QString, QString> data;
+  QTextStream dataStream(&fileData);
+  const auto seqData = parserConsts::seqElems::HDVElements;
+  auto currElem = seqData.begin();
+  while (!dataStream.atEnd())
+  {
+    auto line = dataStream.readLine();
+    double value = 0;
+    if (!line.isNull() && line.contains(*currElem))
+    {
+      QTextStream lineScan(&line);
+      while (!lineScan.atEnd())
+      {
+        lineScan.read(1);
+        lineScan >> value;
+        if (value != 0) break;
+      }
+      if (value == 0) break;
+      QString stringVal;// transform value to string
+      QTextStream valStream(&stringVal);
+      valStream << value;
+      data.insert(*currElem, stringVal);
+      ++currElem;
+    }
+    if (currElem == seqData.end()) return data;
+  }
+  raiseError("readHDV: haven't found elemen or its value " + *currElem);
+  return QMap<QString, QString>{};
+}
+
+QMap<QString, QString> Parser::readVEH()/// TODO: refactor
+{
+  /// look for element seq line by line, if found scan the line
+  /// read after "=" and remove " if any
+  QMap<QString, QString> data;
+  QTextStream dataStream(&fileData);
+  const auto seqData = parserConsts::seqElems::VEHElements;
+  auto currElem = seqData.begin();
+  while (!dataStream.atEnd())
+  {
+    auto line = dataStream.readLine();
+    if (!line.isNull() && line.contains(*currElem) && !line.contains("//"))
+    {
+      QString value = line;
+      value.remove('=');// remove useless chars
+      value.remove(*currElem);
+      value.remove('\"');
+      data.insert(*currElem, value);
+      ++currElem;
+    }
+    if (currElem == seqData.end()) return data;
+  }
+  raiseError("readVEH: haven't found element or its value " + *currElem);
+  return QMap<QString, QString>{};
+}
+
+QVector<QMap<QString, QString>> Parser::readRCD()
+{
+  /// todo: read first line get mod name
+  /// then cycle read next line and all seq elems within {}
+  /// do for all the drivers
+  auto modString = "Mod";
+  auto driverString = "Driver";
+  QVector<QMap<QString, QString>> data;
+  QTextStream dataStream(&fileData);
+  auto line = dataStream.readLine();// read first line which is mod name
+  QMap<QString, QString> mod{ { modString, line } };
+  data.push_back(mod);
+  dataStream.readLine();// set stream into posistion
+  const auto seqData = parserConsts::seqElems::RCDElements;
+  auto currElem = seqData.begin();
+  QString currDriver;
+  while (!dataStream.atEnd())
+  {
+    line = currDriver = dataStream.readLine();// find driver name line
+    if (line == '}') break;
+    if (line.isNull())
+    {
+      raiseError("readVEH: haven't found elemen or its value " + currDriver
+                 + ":" + *currElem);
+      return QVector<QMap<QString, QString>>{};
+    }// init driver data map and look for its seq elements
+    QMap<QString, QString> DriverData{ { driverString,
+                                         currDriver.simplified() } };
+    while (!line.contains("}"))
+    {
+      if (!line.isNull() && line.contains(*currElem))
+      {
+        // remove all but value
+        auto value = line.simplified().remove(0, currElem->size() + 3);
+        DriverData.insert(*currElem, value);
+        ++currElem;
+      }
+      line = dataStream.readLine();
+      if (dataStream.atEnd()) break;
+    }
+    if (currElem != seqData.end())
+    {
+      raiseError("readVEH: haven't found elemen or its value " + currDriver
+                 + ":" + *currElem);
+      return QVector<QMap<QString, QString>>{};
+    } else
+    {
+      data.push_back(DriverData);
+      currElem = seqData.begin();
+    }
+  }
+  return data;
 }
 
 QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
@@ -256,24 +371,53 @@ bool Parser::restoreFile(const QString &filePath,
 
 bool Parser::readFileContent()/////////TODO: finish, return all data
 {
-  /// after reading call static methods for writing to db
-  if (hasError)
-  {
-    qDebug() << "readFile: " << errorMessage << '\n';
-    return false;
-  }
+
+
   switch (fileType)
   {
   case FileType::Error: {
     return false;
   }
   case FileType::HDV: {
+    auto data = readHDV();
+    ///////// debug
+    auto it = data.cbegin();
+    qDebug() << "==========HDV data========\n";
+    while (it != data.cend())
+    {
+      qDebug() << it.key() << " " << it.value() << '\n';
+      ++it;
+    }
+    //////// end debug
     break;
   }
   case FileType::RCD: {
+    auto data = readRCD();
+    ///////// debug
+
+    qDebug() << "==========RCD data========\n";
+    for (const auto i : data)
+    {
+      auto it = i.cbegin();
+      while (it != i.cend())
+      {
+        qDebug() << it.key() << " " << it.value() << '\n';
+        ++it;
+      }
+    }
+    //////// end debug
     break;
   }
   case FileType::VEH: {
+    auto data = readVEH();
+    ///////// debug
+    auto it = data.cbegin();
+    qDebug() << "==========VEH data========\n";
+    while (it != data.cend())
+    {
+      qDebug() << it.key() << " " << it.value() << '\n';
+      ++it;
+    }
     break;
   }
   case FileType::RaceLog: {
@@ -286,8 +430,16 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     break;
   }
   }
-  // catch excepts
-  return false;
+  if (hasError)
+  {
+    qDebug() << "readFile: " << errorMessage << '\n';
+    return false;
+  } else
+  {
+    /// todo: figure out how to return
+    /// after reading call static methods for writing to db
+    return true;
+  }
 }
 
 void Parser::raiseError(const QString &msg)

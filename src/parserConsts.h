@@ -19,7 +19,7 @@ namespace seqElems {
   // names of xml elements
   // all values would be strings, except when specified
   const QVector<QString> MainLogElements{
-    "PlayerF``e",// str
+    "PlayerFile",// str
     "Mod",// str
     "TrackVenue",
     "RaceLaps"// int
@@ -85,8 +85,8 @@ namespace seqElems {
   const QVector<QString> VEHElements{
     "DefaultLivery",// str
     "HDVehicle",// str
-    "Driver",// str
     "Team",// str
+    "Driver",// str
     "Engine",// str
     "Classes",// str
     "Category"// str
