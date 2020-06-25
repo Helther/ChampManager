@@ -250,27 +250,117 @@ fileparser
         QString fileData;
         FileType fileType;
 DBManager
-    содержит объект дб
+    содержит
+        объект дб
     функции
-        инициализация дб
+        инициализация карьеры дб
+        удаление профиля карьеры(дб)
+        сброс карьеры
         инициализация таблиц
         запись строк в дб
-        чтение строк из дб
+        чтение строк из дб через
+        доступ к объекту дб
+
     базы:
         карьера
     таблицы:
-        профиль гг, настройки
+        профиль гг, настройки, правила, мод
         сезоны карьеры
+            столбцы: айди гонки сезона, айди результаты
         гонки сезона
+            столбцы: ключ, айди результаты гонки, трасса, круги
+        результаты гонки
+            столбцы: ключ, позиция, айди имя, всё остальное из драйвер структуры
+        результаты сезона
+            столбцы: ключ, позиция, айди гонщики, очки
         команды
+            столбцы: ключ имя, класс, имя скин файла, айди мотор, бюджет, философия, остальное из HDV
         гонщики
-        машины?
-
+            столбцы: ключ имя, айди команда, возраст, прошлые достижения, число сезонов в ф1, талант, параметры из RCD
+        поставщики моторов
+            столбцы: ключ имя, философия, кол-во клиентов, параметры движка
+            "create table career
+            (
+                season_fid int[] not null,
+                PlayerFile varchar(30),
+                Mod varchar(40),
+                Rules,//todo
+                Settings,//todo
+                constraint k_season_id_id foreign key (season_fid)
+                            references race_results(res_id)
+            )"
+            "create table seasons
+            (
+                season_id int not null,
+                race_fid int[] not null,
+                constraint k_season_id primary key (season_id),
+                constraint k_race_id foreign key (race_fid)
+                            references races(race_id)
+            )"
+            "create table races
+            (
+                race_id int not null,
+                race_res_fid int not null,
+                TrackVenue varchar(40),
+                RaceLaps int,
+                constraint k_race_id primary key (race_id),
+                constraint k_res_id foreign key (race_res_fid)
+                            references race_results(res_id)
+            )"
+            "create table race_results
+            (
+                res_id int not null,
+                ///todo DriversRaceElements
+                constraint k_res_id primary key (res_id)
+            )"
+            "create table teams
+            (
+                team_id int not null,
+                eng_fid int not null,
+                Name varchar(40),
+                Classes varchar(30),
+                DefaultLivery varchar(40),
+                Budget int,
+                PhyInd int,
+                CarHDVParams!!!//todo,
+                constraint k_team_id primary key (team_id),
+                constraint k_eng_id foreign key (eng_fid)
+                            references eng_man(eng_id)
+            )"
+            "create table drivers
+            (
+                drv_id int not null,
+                team_fid int not null,
+                Name varchar(40),
+                Age int,
+                AchvInd int,
+                SeasonNum int,
+                Talent int,
+                Aggression double,
+                Composure double,
+                Speed double,
+                StartSkill double,
+                MinRacingSkill double,
+                constraint k_drv_id primary key (drv_id),
+                constraint k_team_id foreign key (team_fid)
+                        references team(team_id)
+            )"
+            "create table eng_man
+            (
+                eng_id int not null,
+                Name varchar(20),
+                PhyInd int,
+                ClientsNum int,
+                GeneralPowerMult double,
+                constraint k_eng_id primary key (eng_id)
+            )"
+    типы: int, varchar, double(n,k), BOOLEAN(char(1))
 данные считанные из файла в строковом виде
-сделать типы столбцов в таблице нужного типа
-при записи в бд сделать авто перевод в нужный тип
+при записи в бд сделать авто перевод в нужный тип через QVariant
 для записи в файл из бд сделать темплейт функцию принимающую люой параметр
     для которого есть оператор кьютекстстрима
+
+продумать до конца класс дб
 
 Championship(карьера)
 	функции
