@@ -206,7 +206,7 @@ template<typename T>
   {
     qDebug() << "write mod file: success!";
     QFile bFile(backUpRes.fileFullPath);// delete backup
-    // if (bFile.exists()) bFile.remove();
+    if (bFile.exists()) bFile.remove();
     return true;
   } else
   {
