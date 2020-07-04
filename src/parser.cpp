@@ -6,9 +6,8 @@
 //#endif
 using namespace parserConsts;
 
-Parser::Parser(const QString &FileName) : fileName(FileName)
+Parser::Parser(QFile &file) : fileName(file.fileName())
 {
-  QFile file(FileName);
   if (openFile(file, QIODevice::ReadWrite))
   {
     auto buffer = file.readAll();
@@ -86,12 +85,11 @@ FileType Parser::readModFileType()
   return FileType::Error;
 }
 
-QString
-  Parser::findXMLElement(QXmlStreamReader &xml,
-                         const QString &elemName,
-                         const QString &stopEndElem,
-                         bool okIfDidntFind,
-                         bool stopStartElem)////todo: look for infinite loops
+QString Parser::findXMLElement(QXmlStreamReader &xml,
+                               const QString &elemName,
+                               const QString &stopEndElem,
+                               bool okIfDidntFind,
+                               bool stopStartElem)
 {
   QString result;
   bool reachedStop = false;
@@ -154,9 +152,9 @@ QMap<QString, QString> Parser::readHDV()
   while (!dataStream.atEnd())
   {
     auto line = dataStream.readLine();
-    double value = 0;
     if (!line.isNull() && line.contains(*currElem))
     {
+      double value = 0;
       QTextStream lineScan(&line);
       while (!lineScan.atEnd())
       {
@@ -164,7 +162,7 @@ QMap<QString, QString> Parser::readHDV()
         lineScan >> value;
         if (value != 0) break;
       }
-      if (value == 0) break;
+      if (value == 0) break;// havent found the value
       QString stringVal;// transform value to string
       QTextStream valStream(&stringVal);
       valStream << value;
@@ -177,10 +175,10 @@ QMap<QString, QString> Parser::readHDV()
   return QMap<QString, QString>{};
 }
 
-QMap<QString, QString> Parser::readVEH()/// TODO: refactor
+QMap<QString, QString> Parser::readVEH()
 {
-  /// look for element seq line by line, if found scan the line
-  /// read after "=" and remove " if any
+  // look for element seq line by line, if found scan the line
+  // read after "=" and remove " if any
   QMap<QString, QString> data;
   QTextStream dataStream(&fileData);
   const auto seqData = parserConsts::seqElems::VEHElements;
@@ -205,9 +203,8 @@ QMap<QString, QString> Parser::readVEH()/// TODO: refactor
 
 QVector<QMap<QString, QString>> Parser::readRCD()
 {
-  /// todo: read first line get mod name
-  /// then cycle read next line and all seq elems within {}
-  /// do for all the drivers
+  // then cycle read next line and all seq elems within {}
+  // do for all the drivers
   auto modString = "Mod";
   auto driverString = "Driver";
   QVector<QMap<QString, QString>> data;
@@ -266,7 +263,7 @@ QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
          && !(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
               && xml.name() == XMLEndName))
   {
-    for (const auto &elem : seqData)/// check if got all elems
+    for (const auto &elem : seqData)/// todo check if got all elems
     {
       if (hasError) break;
       findXMLElement(xml, elem, XMLEndName);
@@ -277,7 +274,7 @@ QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
       if (currentElem.isEmpty())
       {
         raiseError("readLog: elem values is empty");
-        return QMap<QString, QString>{};/////maybe dont return empty
+        return QMap<QString, QString>{};/////todo maybe dont return empty
       }
       result.insert(elem, currentElem);
     }
@@ -334,6 +331,8 @@ BackupData Parser::backupFile(const QString &filePath,
     qDebug() << "backUp: File " << file.fileName()
              << " backed up succesfully. New file is" << bFile.fileName()
              << "\n";
+    if (file.isOpen()) file.close();
+    if (bFile.isOpen()) bFile.close();
     return BackupData(true, newFileName);
   }
   if (file.isOpen()) file.close();
@@ -371,8 +370,6 @@ bool Parser::restoreFile(const QString &filePath,
 
 bool Parser::readFileContent()/////////TODO: finish, return all data
 {
-
-
   switch (fileType)
   {
   case FileType::Error: {
@@ -396,7 +393,7 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     ///////// debug
 
     qDebug() << "==========RCD data========\n";
-    for (const auto i : data)
+    for (const auto &i : data)
     {
       auto it = i.cbegin();
       while (it != i.cend())

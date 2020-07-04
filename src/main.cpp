@@ -3,22 +3,31 @@
 int main(int argc, char *argv[])
 {
   QCoreApplication a(argc, argv);
-
+  /// main test
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  QVector<QString> tests{ /*"P.xml", "Q.xml", "R.xml",*/ "t.rcd",
-                          "t.veh",
-                          "t.HDV" };
+  QString currentPath = testPath;
+  QVector<QString> tests{ "t.rcd", "t.veh", "t.HDV" };
   for (const auto &test : tests)
   {
-    Parser testParser = Parser(testPath + test);
+    auto file = QFile(currentPath + test);
+    Parser testParser = Parser(file);
     testParser.readFileContent();
   }
+  /// backup restore test
+  // Parser::backupFile(currentPath + "P.xml", currentPath);
+  // Parser::restoreFile(currentPath + "testF.rcd", currentPath + "testB.rcd");
 
-  // Parser::backupFile(unixPath + "P.xml", testPath);
-  // Parser::restoreFile(unixPath + "testF.rcd", unixPath + "testB.rcd");
-  // Parser p(unixPath + "writeTest.rcd");
-  // p.writeModFile<int>("elem", 2, 3);
-
+  /// write file test
+  /*
+  QFile writefile(currentPath + "writeTest.rcd");
+  writefile.open(QIODevice::WriteOnly);
+  writefile.write("elem 2");
+  writefile.close();
+  Parser p(writefile);
+  auto b = p.writeModFile<int>("elem", 2, 3);
+  b = !b;
+  writefile.remove();
+    */
   return QCoreApplication::exec();
 }
