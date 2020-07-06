@@ -1,18 +1,22 @@
 #include <parser.h>
-
+#include <exception>
 #include <QDateTime>
 #include <QXmlStreamReader>
 //#ifdef QT_DEBUG QT_NO_DEBUG_OUTPUT
 //#endif
+
 using namespace parserConsts;
 
-Parser::Parser(QFile &file) : fileName(file.fileName())
+Parser::Parser(QFile &file) :
+    fileName(file.fileName())
 {
   if (openFile(file, QIODevice::ReadWrite))
   {
     auto buffer = file.readAll();
+    if(buffer.isEmpty())
+        throw std::runtime_error("Parser init: input file is empty");
     fileData = QString(buffer).toUtf8();
-    if (!hasError) fileType = readFileType();
+    fileType = readFileType();
   }
 }
 
@@ -32,15 +36,18 @@ FileType Parser::readFileType()
     qDebug() << "file not xml\n";
     return readModFileType();
   }
-  findXMLElement(xml, tokenName);
+  try{
+    findXMLElement(xml, tokenName);
+  }
+  catch(std::exception& e)
+  {
+    throw std::runtime_error(QString("ReadFileType findElem error: ").toStdString() + e.what());
+  }
   for (int i = 0; i < 4; ++i)// x4 to get to type token
   {
     xml.readNext();
     if (xml.hasError())
-    {
-      raiseError(xml.errorString());
-      return FileType::Error;
-    }
+        throw std::runtime_error("fileType read error: " + xml.errorString().toStdString());
   }
   if (xml.name() == typeName::Racetype)
   {
@@ -57,14 +64,14 @@ FileType Parser::readFileType()
     qDebug() << "Practice\n";
     return FileType::PracticeLog;
   }
-  raiseError("No valid log type was found");
+  throw std::runtime_error("fileType read error: No valid log type was found");
   return FileType::Error;
 }
 
 FileType Parser::readModFileType()
 {
   QFile file(fileName);
-  auto fileinfo = file.fileName().split(".", QString::KeepEmptyParts);
+  auto fileinfo = file.fileName().split(".", Qt::KeepEmptyParts);
   const QString &fileExt = fileinfo.at(fileinfo.size() - 1);
   if (fileExt == typeName::rcdFile)
   {
@@ -81,7 +88,7 @@ FileType Parser::readModFileType()
     qDebug() << "veh\n";
     return FileType::VEH;
   }
-  raiseError("No valid file type was found");
+  throw std::runtime_error("fileModType read error: No valid log type was found");
   return FileType::Error;
 }
 
@@ -106,17 +113,16 @@ QString Parser::findXMLElement(QXmlStreamReader &xml,
     if (xml.tokenType() == QXmlStreamReader::TokenType::StartElement
         && xml.name() == elemName)
     {
-      if (!xml.attributes().isEmpty())//////todo: consider variable number of
-        /// attributes in elements
+      if (!xml.attributes().isEmpty())
         xml.readNext();
       result = xml.text().toString();
       break;
     }
     xml.readNext();
   }
-  if (xml.hasError()) raiseError(xml.errorString());
+  if (xml.hasError()) throw std::runtime_error(xml.errorString().toStdString());
   if (!okIfDidntFind && (xml.atEnd() || reachedStop))
-    raiseError("xml reader couldn't find the element: " + elemName);
+    throw std::runtime_error("xml reader couldn't find the element: " + elemName.toStdString());
   return result;
 }
 
@@ -129,12 +135,13 @@ RaceLogInfo Parser::readXMLLog(bool isRace)
     driverElems = parserConsts::seqElems::DriversRaceElements;
   else
     driverElems = parserConsts::seqElems::DriversPQElements;
-  if (!hasError)
-  {
-    result.SeqElems = processMainLog(xml);
-    result.incidents = processIncidents(xml);
-    result.drivers = processDrivers(xml, driverElems);
-    qDebug() << result;
+  try {
+      result.SeqElems = processMainLog(xml);
+      result.incidents = processIncidents(xml);
+      result.drivers = processDrivers(xml, driverElems);
+      qDebug() << result;
+  } catch (std::exception& e) {
+      throw std::runtime_error(QString("XMLRead error: ").toStdString() + e.what());
   }
   return result;
 }
@@ -149,7 +156,7 @@ QMap<QString, QString> Parser::readHDV()
   QTextStream dataStream(&fileData);
   const auto seqData = parserConsts::seqElems::HDVElements;
   auto currElem = seqData.begin();
-  while (!dataStream.atEnd())
+  while (!dataStream.atEnd() && !(currElem == seqData.end()))
   {
     auto line = dataStream.readLine();
     if (!line.isNull() && line.contains(*currElem))
@@ -169,10 +176,10 @@ QMap<QString, QString> Parser::readHDV()
       data.insert(*currElem, stringVal);
       ++currElem;
     }
-    if (currElem == seqData.end()) return data;
   }
-  raiseError("readHDV: haven't found elemen or its value " + *currElem);
-  return QMap<QString, QString>{};
+  if (currElem != seqData.end())
+    throw std::runtime_error("readHDV: haven't found elemen or its value " + currElem->toStdString());
+  return data;
 }
 
 QMap<QString, QString> Parser::readVEH()
@@ -183,7 +190,7 @@ QMap<QString, QString> Parser::readVEH()
   QTextStream dataStream(&fileData);
   const auto seqData = parserConsts::seqElems::VEHElements;
   auto currElem = seqData.begin();
-  while (!dataStream.atEnd())
+  while (!dataStream.atEnd() && !(currElem == seqData.end()))
   {
     auto line = dataStream.readLine();
     if (!line.isNull() && line.contains(*currElem) && !line.contains("//"))
@@ -195,10 +202,10 @@ QMap<QString, QString> Parser::readVEH()
       data.insert(*currElem, value);
       ++currElem;
     }
-    if (currElem == seqData.end()) return data;
   }
-  raiseError("readVEH: haven't found element or its value " + *currElem);
-  return QMap<QString, QString>{};
+  if (currElem != seqData.end())
+    throw std::runtime_error("readVEH: haven't found element or its value " + currElem->toStdString());
+  return data;
 }
 
 QVector<QMap<QString, QString>> Parser::readRCD()
@@ -221,11 +228,9 @@ QVector<QMap<QString, QString>> Parser::readRCD()
     line = currDriver = dataStream.readLine();// find driver name line
     if (line == '}') break;
     if (line.isNull())
-    {
-      raiseError("readVEH: haven't found elemen or its value " + currDriver
-                 + ":" + *currElem);
-      return QVector<QMap<QString, QString>>{};
-    }// init driver data map and look for its seq elements
+      throw std::runtime_error("readVEH: haven't found elemen or its value " + currDriver.toStdString()
+                 + ":" + currElem->toStdString());
+    // init driver data map and look for its seq elements
     QMap<QString, QString> DriverData{ { driverString,
                                          currDriver.simplified() } };
     while (!line.contains("}"))
@@ -241,11 +246,9 @@ QVector<QMap<QString, QString>> Parser::readRCD()
       if (dataStream.atEnd()) break;
     }
     if (currElem != seqData.end())
-    {
-      raiseError("readVEH: haven't found elemen or its value " + currDriver
-                 + ":" + *currElem);
-      return QVector<QMap<QString, QString>>{};
-    } else
+      throw std::runtime_error("readVEH: haven't found elemen or its value " + currDriver.toStdString()
+                 + ":" + currElem->toStdString());
+    else
     {
       data.push_back(DriverData);
       currElem = seqData.begin();
@@ -259,26 +262,17 @@ QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
   QMap<QString, QString> result;
   const auto seqData = parserConsts::seqElems::MainLogElements;
   const QString XMLEndName = "RaceLaps";
-  while (!hasError
-         && !(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
-              && xml.name() == XMLEndName))
-  {
     for (const auto &elem : seqData)/// todo check if got all elems
     {
-      if (hasError) break;
       findXMLElement(xml, elem, XMLEndName);
-      qDebug() << xml.name();
-      if (xml.name() == XMLEndName) break;
+
       xml.readNext();
       const auto currentElem = xml.text().toString();
       if (currentElem.isEmpty())
-      {
-        raiseError("readLog: elem values is empty");
-        return QMap<QString, QString>{};/////todo maybe dont return empty
-      }
+        throw std::runtime_error("readLog: elem value is empty");
       result.insert(elem, currentElem);
+            if (xml.name() == XMLEndName) break;
     }
-  }
   return result;
 }
 
@@ -289,12 +283,12 @@ bool Parser::openFile(QFile &file, const QIODevice::OpenMode &mode)
     if (!file.isOpen())
     {
       if (file.open(mode | QIODevice::Text)) return true;
-      raiseError("Can't open file");
+      throw std::runtime_error("Can't open file");
     }
-    qDebug() << "Is already open!\n";
+    qDebug() << "File Is already open!\n";
     return true;
   }
-  raiseError("File doesn't exist");
+  throw std::runtime_error("File doesn't exist");
   return false;
 }
 
@@ -315,11 +309,11 @@ BackupData Parser::backupFile(const QString &filePath,
   auto datePos = dateFilter.indexIn(backupName);
   backupName = '_' + backupName.remove(0, datePos);
   // get file name format
-  auto fileinfo = file.fileName().split(".", QString::KeepEmptyParts);
+  auto fileinfo = file.fileName().split(".", Qt::KeepEmptyParts);
   const QString fileExt = fileinfo.at(fileinfo.size() - 1);
-  fileinfo = file.fileName().split("/", QString::KeepEmptyParts);
+  fileinfo = file.fileName().split("/", Qt::KeepEmptyParts);
   fileinfo =
-    fileinfo.at(fileinfo.size() - 1).split(".", QString::KeepEmptyParts);
+    fileinfo.at(fileinfo.size() - 1).split(".", Qt::KeepEmptyParts);
   const QString fileName = fileinfo.at(0);
   // set new name
   auto newFileName = backupPath + fileName + backupName + "." + fileExt;
@@ -370,11 +364,9 @@ bool Parser::restoreFile(const QString &filePath,
 
 bool Parser::readFileContent()/////////TODO: finish, return all data
 {
+  try{
   switch (fileType)
   {
-  case FileType::Error: {
-    return false;
-  }
   case FileType::HDV: {
     auto data = readHDV();
     ///////// debug
@@ -426,35 +418,18 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     auto data = readXMLLog(false);
     break;
   }
+  default:
+      return false;
   }
-  if (hasError)
+}
+  catch(std::exception& e)
   {
-    qDebug() << "readFile: " << errorMessage << '\n';
+    qDebug() << "\nreadFile error: " << e.what() << '\n';
     return false;
-  } else
-  {
+  }
     /// todo: figure out how to return
     /// after reading call static methods for writing to db
     return true;
-  }
-}
-
-void Parser::raiseError(const QString &msg)
-{
-  if (!hasError)
-  {
-    hasError = true;
-    if (msg.isEmpty())
-    {
-      qDebug() << "raiseError: error msg is empty\n";
-    } else
-    {
-      errorMessage = msg;
-      qDebug() << "raiseError: " << errorMessage << '\n';/// for debug
-    }
-  } else
-    qDebug() << "there is already an error: " << errorMessage
-             << '\n';/// for debug
 }
 
 QVector<DriverPair> Parser::processIncidents(QXmlStreamReader &xml)
@@ -464,8 +439,7 @@ QVector<DriverPair> Parser::processIncidents(QXmlStreamReader &xml)
   QVector<QString> incidents;
   // parse and save incident strings
   QString prevDriverName;
-  while (!hasError
-         && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement
+  while (!(xml.tokenType() == QXmlStreamReader::TokenType::EndElement
               && xml.name() == XMLEndName))
   {
     const auto currentElem = findXMLElement(xml, XMLName, XMLEndName, true);
@@ -473,7 +447,7 @@ QVector<DriverPair> Parser::processIncidents(QXmlStreamReader &xml)
       continue;
     // process two names involved in incident
     auto currentDriverName =
-      currentElem.split("(", QString::SkipEmptyParts).first();
+      currentElem.split("(", Qt::SkipEmptyParts).first();
     if (prevDriverName != currentDriverName)
     {
       incidents.push_back(currentElem);
@@ -499,11 +473,11 @@ QVector<DriverPair>
   for (const auto &i : incindents)////maybe check drivers names validity
   {
     currentString = i;
-    auto stringList = currentString.split("(", QString::SkipEmptyParts);
+    auto stringList = currentString.split("(", Qt::SkipEmptyParts);
     if (stringList.size() < minValidLineLength) continue;
     const auto firstDriver = stringList.first();
     const auto secondDriver = stringList.at(stringList.size() - 2)
-                                .split(incLineSplitter, QString::SkipEmptyParts)
+                                .split(incLineSplitter, Qt::SkipEmptyParts)
                                 .last();
     if (!incidentData.contains(qMakePair(secondDriver, firstDriver)))
       incidentData.push_back(DriverPair(firstDriver, secondDriver));
@@ -517,8 +491,7 @@ QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader &xml,
   QVector<DriverInfo> drivers;
   const QString XMLName = "Driver";
   const QString XMLEndName = "RaceResults";
-  while (!hasError
-         && !(xml.tokenType() == QXmlStreamReader::TokenType::EndElement
+  while (!(xml.tokenType() == QXmlStreamReader::TokenType::EndElement
               && xml.name() == XMLEndName))
   {
     findXMLElement(xml, XMLName, XMLEndName, true);
@@ -526,17 +499,13 @@ QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader &xml,
     DriverInfo currentDriver;
     for (const auto &elem : seqData)
     {
-      if (hasError) break;
       findXMLElement(xml, elem, XMLName);
       if (elem == "Lap")
         currentDriver.lapTimes = processDriverLaps(xml);
       else
         xml.readNext();
       if (xml.text().isEmpty() && elem != "Lap")
-      {
-        raiseError("processDrivers: elem values is empty");
-        return QVector<DriverInfo>{};
-      }
+        throw std::runtime_error("processDrivers: elem value is empty");
       currentDriver.SeqElems.insert(elem, xml.text().toString());
     }
     drivers.push_back(currentDriver);
@@ -551,8 +520,7 @@ QVector<QPair<int, double>> Parser::processDriverLaps(QXmlStreamReader &xml)
   const QString XMLEndName = "BestLapTime";
   QVector<QPair<int, double>> LapTimes;
   int LapNumber = 1;
-  while (!hasError
-         && !(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
+  while (!(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
               && xml.name() == XMLEndName))
   {
     auto laptime = findXMLElement(xml, XMLName, XMLEndName, true, true);
