@@ -67,17 +67,16 @@ inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
 
 struct WriteData
 {
-    QTextStream data;
-    QString line;
-    int index;
+  QTextStream data;
+  QString line;
+  int index;
 };
 
-template <typename T>
-struct WriteDataInput
+template<typename T> struct WriteDataInput
 {
-    QString elemName;
-    T oldVal;
-    T newVal;
+  QString elemName;
+  T oldVal;
+  T newVal;
 };
 
 class Parser
@@ -90,16 +89,15 @@ public:
   // returns bool result and full backup file path
   // deletes backup and empy file path if not successful
   static BackupData backupFile(const QString &filePath,
-                               const QString &backupPath) noexcept; //todo check
+                               const QString &backupPath) noexcept;
   static bool restoreFile(const QString &filePath,
                           const QString &backupPath) noexcept;
 
   // read file for all info, depending on filetype
   bool readFileContent();
-  // write values into specific element names given names/values list
+  // looks for values into specific element names given names/values list
   template<typename T>
-  [[nodiscard]] bool writeModFile(QVector<WriteDataInput<T>> input);
-  /// todo: add multiple values write support
+  bool updateModFileData(const QVector<WriteDataInput<T>> &input);
 
   //=============================getters===========================/
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
@@ -109,7 +107,6 @@ public:
   void setFileData(const QString &inData) { fileData = inData; }
 
 private:
-
   // just opens file with error catching
   [[nodiscard]] bool openFile(QFile &file, const QIODevice::OpenMode &mode);
 
@@ -130,9 +127,12 @@ private:
                          bool okIfDidntFind = false,
                          bool stopStartElem = false);
 
+  // writes resulting changes to a file
+  bool doWriteModFile(const QString &data);
   // looks for element with a given name and value, returns true if successful
   template<typename T>
-  [[nodiscard]] bool findWriteElem(WriteData& wData, const QString& elemName, T &oVal);
+  [[nodiscard]] bool
+    findWriteElem(WriteData &wData, const QString &elemName, T &oVal);
 
   //==================================file===============================
   // parsers
@@ -169,87 +169,61 @@ private:
 
 //===============================write mod file definition============
 template<typename T>
-[[nodiscard]] bool
-  Parser::writeModFile(QVector<WriteDataInput<T>> input)
-{/// todo fix deletetion of end of the line char
+bool Parser::updateModFileData(const QVector<WriteDataInput<T>> &input)
+{
   if (!isModFile())
   {
     qDebug() << "write mod file: not a mod file type!";
     return false;
   }
   auto backupData = fileData;
-  for(auto i : input)
+  for (auto i : input)
   {
-      QString oVal, nVal;// transform input values to string
-      QTextStream valS(&oVal);
-      valS << i.oldVal;
-      valS.setString(&nVal);
-      valS << i.newVal;
-      // look for element
-      WriteData dataStruct{QTextStream(&fileData), QString(), -1};
-      if(!findWriteElem(dataStruct, i.elemName, oVal))
-          return false;
-      //backup fileData member
-      // insert the new element into fileData
-      const auto originalLineLength = dataStruct.line.size();
-      dataStruct.line.remove(dataStruct.index, oVal.size());
-      dataStruct.line.insert(dataStruct.index, nVal);
-      const auto lineStartIndex = static_cast<int>(dataStruct.data.pos()) - dataStruct.line.size();
-      backupData.remove(lineStartIndex, originalLineLength);
-      backupData.insert(lineStartIndex, dataStruct.line);
+    QString oVal, nVal;// transform input values to string
+    QTextStream valS(&oVal);
+    valS << i.oldVal;
+    valS.setString(&nVal);
+    valS << i.newVal;
+    // look for element
+    int initIndex = -1;
+    WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex };
+    if (!findWriteElem(dataStruct, i.elemName, oVal)) return false;
+    // backup fileData member
+    // insert the new element into fileData
+    const auto originalLineLength = dataStruct.line.size();
+    dataStruct.line.remove(dataStruct.index, oVal.size());
+    dataStruct.line.insert(dataStruct.index, nVal);
+    const auto lineStartIndex =
+      static_cast<int>(dataStruct.data.pos()) - dataStruct.line.size() - 1;
+    backupData.remove(lineStartIndex, originalLineLength);
+    backupData.insert(lineStartIndex, dataStruct.line);
   }
-  // backup before write, then open and try to write, if failed try to restore
-  /// temp backup path
-  auto pathWOname = fileName;
-  pathWOname = pathWOname.remove(fileName.split('/').last());
-  const BackupData backUpRes{ backupFile(fileName, pathWOname) };
-  if (!backUpRes.result)
-  {
-    qDebug() << "write mod file: couldnt back up the file";
-    return false;
-  }
-  QFile file(fileName);
-  if (file.open(QIODevice::WriteOnly)
-      && file.write(backupData.toStdString().c_str()) != -1)
-  {
-    qSwap(backupData, fileData);
-    qDebug() << "write mod file: success!";
-    QFile bFile(backUpRes.fileFullPath);// delete backup
-    if (bFile.exists()) bFile.remove();
-    return true;
-  } else
-  {
-    // try to restore from backup
-    restoreFile(fileName, backUpRes.fileFullPath);
-    qDebug() << "write mod file restore: couldnt open or write to the file";
-    ///todo ensure to restore file itself
-    return false;
-  }
+  return doWriteModFile(backupData);
 }
 
-template <typename T>
-bool Parser::findWriteElem(WriteData& wData, const QString& elemName, T &oVal)
+template<typename T>
+bool Parser::findWriteElem(WriteData &wData, const QString &elemName, T &oVal)
 {
-    while (!wData.data.atEnd())
+  while (!wData.data.atEnd())
+  {
+    wData.line = wData.data.readLine();
+    if (!wData.line.isNull() && wData.line.contains(elemName))
     {
-      wData.line = wData.data.readLine();
-      if (!wData.line.isNull() && wData.line.contains(elemName))
+      wData.index = wData.line.indexOf(oVal);
+      if (wData.index == -1)
       {
-        wData.index = wData.line.indexOf(oVal);
-        if (wData.index == -1)
-        {
-          qDebug() << "write mod file: couldnt find the value!";
-          return false;
-        }
-        break;
+        qDebug() << "write mod file: couldnt find the value!";
+        return false;
       }
+      break;
     }
-    if (wData.data.atEnd() && wData.index == -1)
-    {
-      qDebug() << "write mod file: couldnt find the element!";
-      return false;
-    }
-    return true;
+  }
+  if (wData.data.atEnd() && wData.index == -1)
+  {
+    qDebug() << "write mod file: couldnt find the element!";
+    return false;
+  }
+  return true;
 }
 
 #endif// Parser_H
