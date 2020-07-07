@@ -9,24 +9,29 @@ int main(int argc, char *argv[])
 
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  QString currentPath = unixPath; /*
-   QVector<QString> tests{ "t.rcd", "t.veh", "t.HDV", "P.xml", "Q.xml",
-   "R.xml"}; for (const auto &test : tests)
-   {
-       Parser* testParser = nullptr;
-       try {
-           auto file = QFile(currentPath + test);
-           testParser = new Parser(file);
-       } catch (std::exception& e) {
-        throw std::runtime_error(QString("\nCaught somethong ").toStdString() +
-   e.what() + '\n'); delete testParser; continue;
-       }
-       testParser->readFileContent();
-   }
-   /// backup restore test
-   // Parser::backupFile(currentPath + "P.xml", currentPath);
-   // Parser::restoreFile(currentPath + "testF.rcd", currentPath + "testB.rcd");
- */
+  QString currentPath = testPath;
+  QVector<QString> tests{
+    "t.rcd", "t.veh", "t.HDV", "P.xml", "Q.xml", "R.xml"
+  };
+  for (const auto &test : tests)
+  {
+    Parser *testParser = nullptr;
+    try
+    {
+      auto file = QFile(currentPath + test);
+      testParser = new Parser(file);
+    } catch (std::exception &e)
+    {
+      delete testParser;
+      throw std::runtime_error(QString("\nCaught somethong ").toStdString()
+                               + e.what() + '\n');
+    }
+    testParser->readFileContent();
+  }
+  /// backup restore test
+  // Parser::backupFile(currentPath + "P.xml", currentPath);
+  // Parser::restoreFile(currentPath + "testF.rcd", currentPath + "testB.rcd");
+
   /// write file test
 
   QFile writefile(currentPath + "writeTest.rcd");

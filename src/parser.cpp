@@ -27,7 +27,6 @@ Parser::~Parser()
 
 FileType Parser::readFileType()
 {
-  const auto tokenName = "FixedUpgrades";// elem prior to one needed
   // find log type token
   QXmlStreamReader xml(fileData);
   if (!xml.readNextStartElement())// is file xml file
@@ -37,6 +36,7 @@ FileType Parser::readFileType()
   }
   try
   {
+    const auto tokenName = "FixedUpgrades";// elem prior to one needed
     findXMLElement(xml, tokenName);
   } catch (std::exception &e)
   {
@@ -140,7 +140,6 @@ RaceLogInfo Parser::readXMLLog(bool isRace)
     result.SeqElems = processMainLog(xml);
     result.incidents = processIncidents(xml);
     result.drivers = processDrivers(xml, driverElems);
-    qDebug() << result;
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("XMLRead error: ").toStdString()
@@ -417,11 +416,13 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     }
     case FileType::RaceLog: {
       auto data = readXMLLog(true);
+      qDebug() << data;/// debug
       break;
     }
     case FileType::QualiLog:
     case FileType::PracticeLog: {
       auto data = readXMLLog(false);
+      qDebug() << data;/// debug
       break;
     }
     default:
@@ -433,7 +434,8 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     return false;
   }
   /// todo: figure out how to return
-  /// after reading call static methods for writing to db
+  /// return pointer to abstract type
+  /// then call db update methods from another module
   return true;
 }
 

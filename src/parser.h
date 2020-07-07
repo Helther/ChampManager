@@ -132,7 +132,7 @@ private:
   // looks for element with a given name and value, returns true if successful
   template<typename T>
   [[nodiscard]] bool
-    findWriteElem(WriteData &wData, const QString &elemName, T &oVal);
+    findWriteElem(WriteData &wData, const QString &elemName, const T &oVal);
 
   //==================================file===============================
   // parsers
@@ -202,7 +202,9 @@ bool Parser::updateModFileData(const QVector<WriteDataInput<T>> &input)
 }
 
 template<typename T>
-bool Parser::findWriteElem(WriteData &wData, const QString &elemName, T &oVal)
+bool Parser::findWriteElem(WriteData &wData,
+                           const QString &elemName,
+                           const T &oVal)
 {
   while (!wData.data.atEnd())
   {

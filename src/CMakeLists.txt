@@ -1,5 +1,5 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(Qt5 5.15 COMPONENTS Core REQUIRED)
+find_package(Qt5 5.14 COMPONENTS Core REQUIRED)
 add_executable(ChampManager
   main.cpp
   parser.cpp
