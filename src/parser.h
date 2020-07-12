@@ -7,9 +7,6 @@ using DriverStats = QVector<QVector<QPair<QString, QString>>>;
 
 struct BackupData
 {
-  BackupData(bool inRes, const QString &inFilePath)
-    : result(inRes), fileFullPath(inFilePath)
-  {}
   bool result = false;
   QString fileFullPath;
 };
@@ -76,7 +73,7 @@ class Parser
 {
 public:
   explicit Parser(QFile &file);
-  ~Parser();
+  virtual ~Parser();
 
   // straightforward name, gives backup a name with a current date
   // returns bool result and full backup file path
@@ -87,10 +84,7 @@ public:
                           const QString &backupPath) noexcept;
 
   // read file for all info, depending on filetype
-  bool readFileContent();
-  // looks for values into specific element names given names/values list
-  template<typename T>
-  bool updateModFileData(const QVector<WriteDataInput<T>> &input);
+  virtual bool readFileContent() = 0;
 
   //=============================getters===========================/
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
@@ -99,19 +93,23 @@ public:
 
   void setFileData(const QString &inData) { fileData = inData; }
 
+protected:
+  //[[nodiscard]] virtual FileType readFileType() = 0;
+  //[[nodiscard]] virtual bool checkFileType() = 0;
+  //===================================class data======================
+  QString fileName;
+  QString fileData;
+  FileType fileType;
+
 private:
   // just opens file with error catching
   [[nodiscard]] bool openFile(QFile &file, const QIODevice::OpenMode &mode);
+};
 
-  // finds type of file
-  [[nodiscard]] FileType readFileType();
-  [[nodiscard]] FileType readModFileType();
-  [[nodiscard]] constexpr bool isModFile()
-  {
-    return ((fileType == FileType::HDV) || (fileType == FileType::RCD)
-            || (fileType == FileType::VEH));
-  }
-
+class XmlParser : public Parser
+{
+public:
+  explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
   // reads through file using xml reader reference in search of given element
   // name, returns element value, if never found returns empty qstring
   QString findXMLElement(QXmlStreamReader &xml,
@@ -120,22 +118,14 @@ private:
                          bool okIfDidntFind = false,
                          bool stopStartElem = false);
 
-  // writes resulting changes to a file
-  bool doWriteModFile(const QString &data);
-  // looks for element with a given name and value, returns true if successful
-  template<typename T>
-  [[nodiscard]] bool
-    findWriteElem(WriteData &wData, const QString &elemName, const T &oVal);
-
-  //==================================file===============================
-  // parsers
-  [[nodiscard]] RaceLogInfo readXMLLog(bool isRace);
-  [[nodiscard]] QVector<StringPair> readHDV();
-  [[nodiscard]] QVector<StringPair> readVEH();
-  [[nodiscard]] DriverStats readRCD();
+protected:
+  [[nodiscard]] FileType readFileType();
 
   //=========================specific log parsing sub methods ==========
   // xml
+  [[nodiscard]] RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems);
+
+private:
   [[nodiscard]] QVector<QPair<QString, QString>>
     processMainLog(QXmlStreamReader &xml);
 
@@ -153,23 +143,104 @@ private:
   // parse driver lap times
   [[nodiscard]] QVector<QPair<int, double>>
     processDriverLaps(QXmlStreamReader &xml);
-
-  //===================================class data======================
-  QString fileName;
-  QString fileData;
-  FileType fileType;
 };
 
+class PQXmlParser : public XmlParser
+{
+public:
+  explicit PQXmlParser(QFile &file) : XmlParser(file)
+  {
+    if (!checkFileType())
+      throw std::runtime_error("fileType check error wrong file type");
+  }
+  bool readFileContent() override;
+
+private:
+  bool checkFileType();
+};
+
+class RXmlParser : public XmlParser
+{
+public:
+  explicit RXmlParser(QFile &file) : XmlParser(file)
+  {
+    if (!checkFileType())
+      throw std::runtime_error("fileType check error wrong file type");
+  }
+  bool readFileContent() override;
+
+private:
+  bool checkFileType();
+};
+
+class ModParser : public Parser
+{
+public:
+  explicit ModParser(QFile &file) : Parser(file) { fileType = readFileType(); }
+
+  [[nodiscard]] FileType readFileType();
+  // looks for values into specific element names given names/values list
+  template<typename T>
+  bool updateModFileData(const QVector<WriteDataInput<T>> &input);
+
+private:
+  // writes resulting changes to a file
+  bool doWriteModFile(const QString &data);
+  // looks for element with a given name and value, returns true if successful
+  template<typename T>
+  [[nodiscard]] bool
+    findWriteElem(WriteData &wData, const QString &elemName, const T &oVal);
+};
+
+class RCDParser : public ModParser
+{
+public:
+  explicit RCDParser(QFile &file) : ModParser(file)
+  {
+    if (!checkFileType())
+      throw std::runtime_error("fileType check error wrong file type");
+  }
+  bool readFileContent() override;
+
+private:
+  bool checkFileType();
+  DriverStats readRCD();
+};
+
+class VEHParser : public ModParser
+{
+public:
+  explicit VEHParser(QFile &file) : ModParser(file)
+  {
+    if (!checkFileType())
+      throw std::runtime_error("fileType check error wrong file type");
+  }
+  bool readFileContent() override;
+
+private:
+  bool checkFileType();
+  QVector<StringPair> readVEH();
+};
+
+class HDVParser : public ModParser
+{
+public:
+  explicit HDVParser(QFile &file) : ModParser(file)
+  {
+    if (!checkFileType())
+      throw std::runtime_error("fileType check error wrong file type");
+  }
+  bool readFileContent() override;
+
+private:
+  bool checkFileType();
+  QVector<StringPair> readHDV();
+};
 
 //===============================write mod file definition============
 template<typename T>
-bool Parser::updateModFileData(const QVector<WriteDataInput<T>> &input)
+bool ModParser::updateModFileData(const QVector<WriteDataInput<T>> &input)
 {
-  if (!isModFile())
-  {
-    qDebug() << "write mod file: not a mod file type!";
-    return false;
-  }
   auto backupData = fileData;
   for (auto i : input)
   {
@@ -196,9 +267,9 @@ bool Parser::updateModFileData(const QVector<WriteDataInput<T>> &input)
 }
 
 template<typename T>
-bool Parser::findWriteElem(WriteData &wData,
-                           const QString &elemName,
-                           const T &oVal)
+bool ModParser::findWriteElem(WriteData &wData,
+                              const QString &elemName,
+                              const T &oVal)
 {
   while (!wData.data.atEnd())
   {
