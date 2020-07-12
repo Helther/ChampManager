@@ -1,15 +1,15 @@
-#include <QCoreApplication>
+#include <QApplication>
 #include <parser.h>
 
 int main(int argc, char *argv[])
 {
-  QCoreApplication a(argc, argv);
+  QApplication app(argc, argv);
 #ifdef QT_DEBUG
   /// main test
 
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  QString currentPath = testPath;
+  QString currentPath = unixPath;
   QVector<QString> tests{
     "t.rcd", "t.veh", "t.HDV", "P.xml", "Q.xml", "R.xml"
   };
@@ -44,5 +44,5 @@ int main(int argc, char *argv[])
   writefile.remove();
 
 #endif
-  return QCoreApplication::exec();
+  return app.exec();
 }

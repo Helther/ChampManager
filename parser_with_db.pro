@@ -1,8 +1,7 @@
-QT -= gui
-QT += core
+QT += core widgets sql gui
 
-CONFIG += c++17 console
-CONFIG -= app_bundle
+CONFIG += c++17 #console
+#CONFIG -= app_bundle
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -19,6 +18,8 @@ INCLUDEPATH += src/
 SOURCES += \
         src/main.cpp \
     src/parser.cpp \
+    src/dbhelper.cpp \
+    src/resultswindow.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -28,4 +29,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     src/parser.h \
     src/parserConsts.h \
+    src/dbhelper.h \
+    src/resultswindow.h \
 
+FORMS += \
+    src/resultswindow.ui

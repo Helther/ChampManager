@@ -2,7 +2,8 @@
 #define parser_H
 #include <parserConsts.h>
 
-using DriverPair = QPair<QString, QString>;
+using StringPair = QPair<QString, QString>;
+using DriverStats = QVector<QVector<QPair<QString, QString>>>;
 
 struct BackupData
 {
@@ -15,21 +16,16 @@ struct BackupData
 
 struct DriverInfo
 {
-  QMap<QString, QString> SeqElems;
+  QVector<StringPair> SeqElems;
   QVector<QPair<int, double>> lapTimes;
 };
 
 #ifdef QT_DEBUG
 inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
 {
-  auto it = dr.SeqElems.cbegin();
   QDebugStateSaver saver(debug);
   debug.nospace() << "==========Driver data========\n";
-  while (it != dr.SeqElems.cend())
-  {
-    debug << it.key() << " " << it.value() << '\n';
-    ++it;
-  }
+  for (const auto &i : dr.SeqElems) debug << i.first << " " << i.second << '\n';
   debug.nospace() << "===========Laps==============\n";
   for (const auto &i : dr.lapTimes)
     debug.nospace() << "# " << i.first << " " << i.second << '\n';
@@ -39,15 +35,14 @@ inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
 
 struct RaceLogInfo
 {
-  QMap<QString, QString> SeqElems;
+  QVector<StringPair> SeqElems;
   QVector<DriverInfo> drivers;
-  QVector<DriverPair> incidents;
+  QVector<StringPair> incidents;
 };
 
 #ifdef QT_DEBUG
 inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
 {
-  auto it = log.SeqElems.cbegin();
   QDebugStateSaver saver(debug);
   debug.nospace() << "==========xml log data========\n";
   debug.nospace() << "==========Incidents============\n";
@@ -55,11 +50,8 @@ inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
     debug.nospace() << "Incident between " << i.first << " and " << i.second
                     << '\n';
   debug.nospace() << "==========Incidents END============\n";
-  while (it != log.SeqElems.cend())
-  {
-    debug.nospace() << it.key() << " " << it.value() << '\n';
-    ++it;
-  }
+  for (const auto &i : log.SeqElems)
+    debug.nospace() << i.first << " " << i.second << '\n';
   for (const auto &i : log.drivers) debug << i;
   return debug;
 }
@@ -70,6 +62,7 @@ struct WriteData
   QTextStream data;
   QString line;
   int index;
+  int pad;
 };
 
 template<typename T> struct WriteDataInput
@@ -137,19 +130,20 @@ private:
   //==================================file===============================
   // parsers
   [[nodiscard]] RaceLogInfo readXMLLog(bool isRace);
-  [[nodiscard]] QMap<QString, QString> readHDV();
-  [[nodiscard]] QMap<QString, QString> readVEH();
-  [[nodiscard]] QVector<QMap<QString, QString>> readRCD();
+  [[nodiscard]] QVector<StringPair> readHDV();
+  [[nodiscard]] QVector<StringPair> readVEH();
+  [[nodiscard]] DriverStats readRCD();
 
   //=========================specific log parsing sub methods ==========
   // xml
-  [[nodiscard]] QMap<QString, QString> processMainLog(QXmlStreamReader &xml);
+  [[nodiscard]] QVector<QPair<QString, QString>>
+    processMainLog(QXmlStreamReader &xml);
 
   // parse incident elements
-  [[nodiscard]] QVector<DriverPair> processIncidents(QXmlStreamReader &xml);
+  [[nodiscard]] QVector<StringPair> processIncidents(QXmlStreamReader &xml);
 
   // constructs vector of incidents without equal pairings
-  [[nodiscard]] QVector<DriverPair>
+  [[nodiscard]] QVector<StringPair>
     processEqualCombinations(const QVector<QString> &incindents) const;
 
   // parse drivers info
@@ -186,7 +180,7 @@ bool Parser::updateModFileData(const QVector<WriteDataInput<T>> &input)
     valS << i.newVal;
     // look for element
     int initIndex = -1;
-    WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex };
+    WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex, 0 };
     if (!findWriteElem(dataStruct, i.elemName, oVal)) return false;
     // backup fileData member
     // insert the new element into fileData

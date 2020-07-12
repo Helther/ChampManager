@@ -14,7 +14,7 @@ Parser::Parser(QFile &file) : fileName(file.fileName())
     auto buffer = file.readAll();
     if (buffer.isEmpty())
       throw std::runtime_error("Parser init: input file is empty");
-    fileData = QString(buffer).toUtf8();
+    setFileData(QString(buffer).toUtf8());
     fileType = readFileType();
   }
 }
@@ -148,13 +148,13 @@ RaceLogInfo Parser::readXMLLog(bool isRace)
   return result;
 }
 
-QMap<QString, QString> Parser::readHDV()
+QVector<StringPair> Parser::readHDV()
 {
   /// look for element seq line by line, if found scan the line
   /// with textstream>> for digits and read the first one
   /// if stream cant get digits it returns 0
   /// if not found elem or val raise error
-  QMap<QString, QString> data;
+  QVector<StringPair> data;
   QTextStream dataStream(&fileData);
   const auto seqData = parserConsts::seqElems::HDVElements;
   auto currElem = seqData.begin();
@@ -175,7 +175,7 @@ QMap<QString, QString> Parser::readHDV()
       QString stringVal;// transform value to string
       QTextStream valStream(&stringVal);
       valStream << value;
-      data.insert(*currElem, stringVal);
+      data.push_back({ *currElem, stringVal });
       ++currElem;
     }
   }
@@ -185,11 +185,11 @@ QMap<QString, QString> Parser::readHDV()
   return data;
 }
 
-QMap<QString, QString> Parser::readVEH()
+QVector<StringPair> Parser::readVEH()
 {
   // look for element seq line by line, if found scan the line
   // read after "=" and remove " if any
-  QMap<QString, QString> data;
+  QVector<StringPair> data;
   QTextStream dataStream(&fileData);
   const auto seqData = parserConsts::seqElems::VEHElements;
   auto currElem = seqData.begin();
@@ -202,7 +202,7 @@ QMap<QString, QString> Parser::readVEH()
       value.remove('=');// remove useless chars
       value.remove(*currElem);
       value.remove('\"');
-      data.insert(*currElem, value);
+      data.push_back({ *currElem, value });
       ++currElem;
     }
   }
@@ -212,18 +212,18 @@ QMap<QString, QString> Parser::readVEH()
   return data;
 }
 
-QVector<QMap<QString, QString>> Parser::readRCD()
+DriverStats Parser::readRCD()
 {
   // then cycle read next line and all seq elems within {}
   // do for all the drivers
   auto modString = "Mod";
   auto driverString = "Driver";
-  QVector<QMap<QString, QString>> data;
+  DriverStats data;
   QTextStream dataStream(&fileData);
   auto line = dataStream.readLine();// read first line which is mod name
-  QMap<QString, QString> mod{ { modString, line } };
-  data.push_back(mod);
-  dataStream.readLine();// set stream into posistion
+  StringPair mod{ modString, line };
+  data.push_back(QVector{ mod });
+  dataStream.readLine();// set stream into position
   const auto seqData = parserConsts::seqElems::RCDElements;
   auto currElem = seqData.begin();
   QString currDriver;
@@ -236,15 +236,14 @@ QVector<QMap<QString, QString>> Parser::readRCD()
                                + currDriver.toStdString() + ":"
                                + currElem->toStdString());
     // init driver data map and look for its seq elements
-    QMap<QString, QString> DriverData{ { driverString,
-                                         currDriver.simplified() } };
+    QVector<StringPair> DriverData{ { driverString, currDriver.simplified() } };
     while (!line.contains("}"))
     {
       if (!line.isNull() && line.contains(*currElem))
       {
         // remove all but value
         auto value = line.simplified().remove(0, currElem->size() + 3);
-        DriverData.insert(*currElem, value);
+        DriverData.push_back({ *currElem, value });
         ++currElem;
       }
       line = dataStream.readLine();
@@ -263,9 +262,9 @@ QVector<QMap<QString, QString>> Parser::readRCD()
   return data;
 }
 
-QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
+QVector<QPair<QString, QString>> Parser::processMainLog(QXmlStreamReader &xml)
 {
-  QMap<QString, QString> result;
+  QVector<QPair<QString, QString>> result;
   const auto seqData = parserConsts::seqElems::MainLogElements;
   const QString XMLEndName = "RaceLaps";
   for (const auto &elem : seqData)
@@ -276,7 +275,7 @@ QMap<QString, QString> Parser::processMainLog(QXmlStreamReader &xml)
     const auto currentElem = xml.text().toString();
     if (currentElem.isEmpty())
       throw std::runtime_error("readLog: elem value is empty");
-    result.insert(elem, currentElem);
+    result.push_back({ elem, currentElem });
     if (xml.name() == XMLEndName) break;
   }
   return result;
@@ -375,13 +374,8 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     case FileType::HDV: {
       auto data = readHDV();
       ///////// debug
-      auto it = data.cbegin();
       qDebug() << "==========HDV data========\n";
-      while (it != data.cend())
-      {
-        qDebug() << it.key() << " " << it.value() << '\n';
-        ++it;
-      }
+      for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
       //////// end debug
       break;
     }
@@ -392,12 +386,7 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
       qDebug() << "==========RCD data========\n";
       for (const auto &i : data)
       {
-        auto it = i.cbegin();
-        while (it != i.cend())
-        {
-          qDebug() << it.key() << " " << it.value() << '\n';
-          ++it;
-        }
+        for (const auto &j : i) qDebug() << j.first << " " << j.second << '\n';
       }
       //////// end debug
       break;
@@ -405,13 +394,8 @@ bool Parser::readFileContent()/////////TODO: finish, return all data
     case FileType::VEH: {
       auto data = readVEH();
       ///////// debug
-      auto it = data.cbegin();
       qDebug() << "==========VEH data========\n";
-      while (it != data.cend())
-      {
-        qDebug() << it.key() << " " << it.value() << '\n';
-        ++it;
-      }
+      for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
       break;
     }
     case FileType::RaceLog: {
@@ -455,7 +439,7 @@ bool Parser::doWriteModFile(const QString &data)
   if (file.open(QIODevice::WriteOnly)
       && file.write(data.toStdString().c_str()) != -1)
   {
-    fileData = data;
+    setFileData(data);
     qDebug() << "write mod file: success!";
     QFile bFile(backUpRes.fileFullPath);// delete backup
     if (bFile.exists()) bFile.remove();
@@ -469,7 +453,7 @@ bool Parser::doWriteModFile(const QString &data)
   }
 }
 
-QVector<DriverPair> Parser::processIncidents(QXmlStreamReader &xml)
+QVector<StringPair> Parser::processIncidents(QXmlStreamReader &xml)
 {
   const QString XMLName = "Incident";
   const QString XMLEndName = "Stream";
@@ -493,15 +477,15 @@ QVector<DriverPair> Parser::processIncidents(QXmlStreamReader &xml)
   if (incidents.isEmpty())// check if found something, return empty if not
   {
     qDebug() << "Incidents: no incs were found";
-    return QVector<DriverPair>{};
+    return QVector<StringPair>{};
   }
   return processEqualCombinations(incidents);
 }
 
-QVector<DriverPair>
+QVector<StringPair>
   Parser::processEqualCombinations(const QVector<QString> &incindents) const
 {
-  QVector<DriverPair> incidentData;
+  QVector<StringPair> incidentData;
   const QString incLineSplitter = "vehicle ";
   // ignore equal driver combinations
   QString currentString;
@@ -516,7 +500,7 @@ QVector<DriverPair>
                                 .split(incLineSplitter, Qt::SkipEmptyParts)
                                 .last();
     if (!incidentData.contains(qMakePair(secondDriver, firstDriver)))
-      incidentData.push_back(DriverPair(firstDriver, secondDriver));
+      incidentData.push_back(StringPair(firstDriver, secondDriver));
   }
   return incidentData;
 }
@@ -542,7 +526,7 @@ QVector<DriverInfo> Parser::processDrivers(QXmlStreamReader &xml,
         xml.readNext();
       if (xml.text().isEmpty() && elem != "Lap")
         throw std::runtime_error("processDrivers: elem value is empty");
-      currentDriver.SeqElems.insert(elem, xml.text().toString());
+      currentDriver.SeqElems.push_back({ elem, xml.text().toString() });
     }
     drivers.push_back(currentDriver);
   }
