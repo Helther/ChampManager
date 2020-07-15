@@ -1,8 +1,7 @@
 #ifndef DBHELPER_H
 #define DBHELPER_H
-#include <QtCore>
 #include <QtSql>
-// class QSqlDatabase;
+#include <parserConsts.h>
 
 class DBHelper
 {
@@ -12,12 +11,15 @@ public:
 
   /* no copying*/
   DBHelper(const DBHelper &);
-  DBHelper &operator=(const DBHelper &);
+  DBHelper operator=(const DBHelper &);
 
-  QSqlDatabase getConnection() { return dbConn; }
+  QSqlError initDB();
+
+  QSqlError insertNewResults(const RaceLogInfo &inResults);
 
 private:
   bool initConnection();
+  QSqlError initResultsTables();
 
   QSqlDatabase dbConn;
   const QString dbDriverName = "QSQLITE";

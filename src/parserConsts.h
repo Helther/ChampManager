@@ -1,7 +1,9 @@
 #ifndef PARSERCONSTS_H
 #define PARSERCONSTS_H
-
 #include <QtCore>
+
+using StringPair = QPair<QString, QString>;
+using DriverStats = QVector<QVector<StringPair>>;
 
 enum class FileType {
   RaceLog = 0,
@@ -12,6 +14,58 @@ enum class FileType {
   VEH,
   Error
 };
+
+// backup function return type
+struct BackupData
+{
+  bool result = false;
+  QString fileFullPath;
+};
+
+// part of xmlLog parse results
+struct DriverInfo
+{
+  QVector<StringPair> SeqElems;
+  QVector<QPair<int, double>> lapTimes;
+};
+
+#ifdef QT_DEBUG
+inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
+{
+  QDebugStateSaver saver(debug);
+  debug.nospace() << "==========Driver data========\n";
+  for (const auto &i : dr.SeqElems) debug << i.first << " " << i.second << '\n';
+  debug.nospace() << "===========Laps==============\n";
+  for (const auto &i : dr.lapTimes)
+    debug.nospace() << "# " << i.first << " " << i.second << '\n';
+  return debug;
+}
+#endif
+
+// xmlLog results
+struct RaceLogInfo
+{
+  QVector<StringPair> SeqElems;
+  QVector<DriverInfo> drivers;
+  QVector<StringPair> incidents;
+};
+
+#ifdef QT_DEBUG
+inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
+{
+  QDebugStateSaver saver(debug);
+  debug.nospace() << "==========xml log data========\n";
+  debug.nospace() << "==========Incidents============\n";
+  for (const auto &i : log.incidents)
+    debug.nospace() << "Incident between " << i.first << " and " << i.second
+                    << '\n';
+  debug.nospace() << "==========Incidents END============\n";
+  for (const auto &i : log.SeqElems)
+    debug.nospace() << i.first << " " << i.second << '\n';
+  for (const auto &i : log.drivers) debug << i;
+  return debug;
+}
+#endif
 
 namespace parserConsts {
 namespace seqElems {

@@ -320,24 +320,35 @@ DBHelper
             "create table seasons
             (
                 season_id int not null,
-                race_fid int[] not null,
+                //race_fid int[] not null,
+                name varchar(40),
                 constraint k_season_id primary key (season_id),
-                constraint k_race_id foreign key (race_fid)
+                //constraint k_race_id foreign key (race_fid)
                             references races(race_id)
             )"
             "create table races
             (
                 race_id int not null,
+                pract_res_fid int not null,
+                quali_res_fid int not null,
                 race_res_fid int not null,
+                seasons_fid int not null,
                 TrackVenue varchar(40),
                 RaceLaps int,
                 constraint k_race_id primary key (race_id),
-                constraint k_res_id foreign key (race_res_fid)
+                constraint pract_res_id foreign key (pract_res_fid)
                             references race_results(res_id)
+                constraint quali_res_id foreign key (quali_res_fid)
+                            references race_results(res_id)
+                constraint race_res_id foreign key (race_res_fid)
+                            references race_results(res_id)
+                constraint seasons_id foreign key (seasons_fid)
+                            references seasons(season_id)
             )"
             "create table race_results
             (
                 res_id int not null,
+                type varchar(20),
                 ///todo DriversRaceElements
                 constraint k_res_id primary key (res_id)
             )"

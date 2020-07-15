@@ -2,58 +2,7 @@
 #define parser_H
 #include <parserConsts.h>
 
-using StringPair = QPair<QString, QString>;
-using DriverStats = QVector<QVector<QPair<QString, QString>>>;
-
-struct BackupData
-{
-  bool result = false;
-  QString fileFullPath;
-};
-
-struct DriverInfo
-{
-  QVector<StringPair> SeqElems;
-  QVector<QPair<int, double>> lapTimes;
-};
-
-#ifdef QT_DEBUG
-inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
-{
-  QDebugStateSaver saver(debug);
-  debug.nospace() << "==========Driver data========\n";
-  for (const auto &i : dr.SeqElems) debug << i.first << " " << i.second << '\n';
-  debug.nospace() << "===========Laps==============\n";
-  for (const auto &i : dr.lapTimes)
-    debug.nospace() << "# " << i.first << " " << i.second << '\n';
-  return debug;
-}
-#endif
-
-struct RaceLogInfo
-{
-  QVector<StringPair> SeqElems;
-  QVector<DriverInfo> drivers;
-  QVector<StringPair> incidents;
-};
-
-#ifdef QT_DEBUG
-inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
-{
-  QDebugStateSaver saver(debug);
-  debug.nospace() << "==========xml log data========\n";
-  debug.nospace() << "==========Incidents============\n";
-  for (const auto &i : log.incidents)
-    debug.nospace() << "Incident between " << i.first << " and " << i.second
-                    << '\n';
-  debug.nospace() << "==========Incidents END============\n";
-  for (const auto &i : log.SeqElems)
-    debug.nospace() << i.first << " " << i.second << '\n';
-  for (const auto &i : log.drivers) debug << i;
-  return debug;
-}
-#endif
-
+// input data for write elem finder
 struct WriteData
 {
   QTextStream data;
@@ -110,13 +59,7 @@ class XmlParser : public Parser
 {
 public:
   explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
-  // reads through file using xml reader reference in search of given element
-  // name, returns element value, if never found returns empty qstring
-  QString findXMLElement(QXmlStreamReader &xml,
-                         const QString &elemName,
-                         const QString &stopEndElem = "atEnd",
-                         bool okIfDidntFind = false,
-                         bool stopStartElem = false);
+
 
 protected:
   [[nodiscard]] FileType readFileType();
@@ -126,6 +69,13 @@ protected:
   [[nodiscard]] RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems);
 
 private:
+  // reads through file using xml reader reference in search of given element
+  // name, returns element value, if never found returns empty qstring
+  QString findXMLElement(QXmlStreamReader &xml,
+                         const QString &elemName,
+                         const QString &stopEndElem = "atEnd",
+                         bool okIfDidntFind = false,
+                         bool stopStartElem = false);
   [[nodiscard]] QVector<QPair<QString, QString>>
     processMainLog(QXmlStreamReader &xml);
 
@@ -178,12 +128,13 @@ class ModParser : public Parser
 public:
   explicit ModParser(QFile &file) : Parser(file) { fileType = readFileType(); }
 
-  [[nodiscard]] FileType readFileType();
+
   // looks for values into specific element names given names/values list
   template<typename T>
   bool updateModFileData(const QVector<WriteDataInput<T>> &input);
 
 private:
+  [[nodiscard]] FileType readFileType();
   // writes resulting changes to a file
   bool doWriteModFile(const QString &data);
   // looks for element with a given name and value, returns true if successful
