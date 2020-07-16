@@ -9,7 +9,7 @@ todo:
 продумать дб и гуй для просмотра отчетов по результатам гонок
     запись логов в дб
     отображение результатов в гуи в табличном виде через модел-представление
-    возможность посмотреть подродную инфу по каждому кругу гонки
+    возможность посмотреть побродную инфу по каждому кругу гонки
     комбинация гоночного уикенда из макс. трех логов, путем вызова диалога добаления гран-при
     проверки на соответствие логов
     функции добавления, удаления логов выбрванных и полностью
@@ -23,7 +23,8 @@ todo:
     посмотреть инфу по кругам
     фильтры или сортировка отображения результатов через класс QSqlTableModel
 
-
+добаление гран при: создание классов парсера PQR, вызов ридКонтент для каждого
+    для получния Ид (внутри insertNewResults возвращает айди), вызов addNewRace со всеми ИД
 
 
 суть:
@@ -309,9 +310,9 @@ DBHelper
             столбцы: ключ имя, философия, кол-во клиентов, параметры движка
             "create table career
             (
-                season_fid int[] not null,
-                PlayerFile varchar(30),
-                Mod varchar(40),
+                season_fid INTEGER[] not null,
+                PlayerFile TEXT,
+                Mod TEXT,
                 Rules,//todo
                 Settings,//todo
                 constraint k_season_id_id foreign key (season_fid)
@@ -319,22 +320,22 @@ DBHelper
             )"
             "create table seasons
             (
-                season_id int not null,
-                //race_fid int[] not null,
-                name varchar(40),
+                season_id INTEGER not null,
+                //race_fid INTEGER[] not null,
+                name TEXT,
                 constraint k_season_id primary key (season_id),
                 //constraint k_race_id foreign key (race_fid)
                             references races(race_id)
             )"
             "create table races
             (
-                race_id int not null,
-                pract_res_fid int not null,
-                quali_res_fid int not null,
-                race_res_fid int not null,
-                seasons_fid int not null,
-                TrackVenue varchar(40),
-                RaceLaps int,
+                race_id INTEGER not null,
+                pract_res_fid INTEGER not null,
+                quali_res_fid INTEGER not null,
+                race_res_fid INTEGER not null,
+                seasons_fid INTEGER not null,
+                TrackVenue TEXT,
+                RaceLaps INTEGER,
                 constraint k_race_id primary key (race_id),
                 constraint pract_res_id foreign key (pract_res_fid)
                             references race_results(res_id)
@@ -347,20 +348,20 @@ DBHelper
             )"
             "create table race_results
             (
-                res_id int not null,
-                type varchar(20),
+                res_id INTEGER not null,
+                type TEXT(20),
                 ///todo DriversRaceElements
                 constraint k_res_id primary key (res_id)
             )"
             "create table teams
             (
-                team_id int not null,
-                eng_fid int not null,
-                Name varchar(40),
-                Classes varchar(30),
-                DefaultLivery varchar(40),
-                Budget int,
-                PhyInd int,
+                team_id INTEGER not null,
+                eng_fid INTEGER not null,
+                Name TEXT,
+                Classes TEXT,
+                DefaultLivery TEXT,
+                Budget INTEGER,
+                PhyInd INTEGER,
                 CarHDVParams!!!//todo,
                 constraint k_team_id primary key (team_id),
                 constraint k_eng_id foreign key (eng_fid)
@@ -368,13 +369,13 @@ DBHelper
             )"
             "create table drivers
             (
-                drv_id int not null,
-                team_fid int not null,
-                Name varchar(40),
-                Age int,
-                AchvInd int,
-                SeasonNum int,
-                Talent int,
+                drv_id INTEGER not null,
+                team_fid INTEGER not null,
+                Name TEXT,
+                Age INTEGER,
+                AchvInd INTEGER,
+                SeasonNum INTEGER,
+                Talent INTEGER,
                 Aggression double,
                 Composure double,
                 Speed double,
@@ -386,14 +387,14 @@ DBHelper
             )"
             "create table eng_man
             (
-                eng_id int not null,
-                Name varchar(20),
-                PhyInd int,
-                ClientsNum int,
+                eng_id INTEGER not null,
+                Name TEXT,
+                PhyInd INTEGER,
+                ClientsNum INTEGER,
                 GeneralPowerMult double,
                 constraint k_eng_id primary key (eng_id)
             )"
-    типы: int, varchar, double(n,k), BOOLEAN(char(1))
+    типы: INTEGER, TEXT, BLOB, REAL, NUMERIC, double(n,k), BOOLEAN(char(1))
 данные считанные из файла в строковом виде
 при записи в бд сделать авто перевод в нужный тип через QVariant
 для записи в файл из бд сделать темплейт функцию принимающую люой параметр

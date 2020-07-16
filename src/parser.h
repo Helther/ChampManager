@@ -32,8 +32,8 @@ public:
   static bool restoreFile(const QString &filePath,
                           const QString &backupPath) noexcept;
 
-  // read file for all info, depending on filetype
-  virtual bool readFileContent() = 0;
+  // read file for all info, depending on filetype and return its id
+  virtual int readFileContent() = 0;
 
   //=============================getters===========================/
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
@@ -103,7 +103,7 @@ public:
     if (!checkFileType())
       throw std::runtime_error("fileType check error wrong file type");
   }
-  bool readFileContent() override;
+  int readFileContent() override;
 
 private:
   bool checkFileType();
@@ -117,7 +117,7 @@ public:
     if (!checkFileType())
       throw std::runtime_error("fileType check error wrong file type");
   }
-  bool readFileContent() override;
+  int readFileContent() override;
 
 private:
   bool checkFileType();
@@ -151,7 +151,7 @@ public:
     if (!checkFileType())
       throw std::runtime_error("fileType check error wrong file type");
   }
-  bool readFileContent() override;
+  int readFileContent() override;
 
 private:
   bool checkFileType();
@@ -166,7 +166,7 @@ public:
     if (!checkFileType())
       throw std::runtime_error("fileType check error wrong file type");
   }
-  bool readFileContent() override;
+  int readFileContent() override;
 
 private:
   bool checkFileType();
@@ -181,7 +181,7 @@ public:
     if (!checkFileType())
       throw std::runtime_error("fileType check error wrong file type");
   }
-  bool readFileContent() override;
+  int readFileContent() override;
 
 private:
   bool checkFileType();

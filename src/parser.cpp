@@ -320,7 +320,7 @@ QVector<QPair<int, double>> XmlParser::processDriverLaps(QXmlStreamReader &xml)
   return LapTimes;
 }
 
-bool PQXmlParser::readFileContent()
+int PQXmlParser::readFileContent()
 {
   try
   {
@@ -329,9 +329,9 @@ bool PQXmlParser::readFileContent()
   } catch (std::exception &e)
   {
     qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return false;
+    return 0;///todo return results id
   }
-  return true;
+  return 0;
   // todo add sql write
 }
 
@@ -340,7 +340,7 @@ bool PQXmlParser::checkFileType()
   return fileType == FileType::QualiLog || fileType == FileType::PracticeLog;
 }
 
-bool RXmlParser::readFileContent()
+int RXmlParser::readFileContent()
 {
   try
   {
@@ -381,7 +381,7 @@ FileType ModParser::readFileType()
     "fileModType read error: No valid log type was found");
 }
 
-bool RCDParser::readFileContent()
+int RCDParser::readFileContent()
 {
   try
   {
@@ -454,7 +454,7 @@ DriverStats RCDParser::readRCD()
   return data;
 }
 
-bool VEHParser::readFileContent()
+int VEHParser::readFileContent()
 {
   try
   {
@@ -501,7 +501,7 @@ QVector<StringPair> VEHParser::readVEH()
   return data;
 }
 
-bool HDVParser::readFileContent()
+int HDVParser::readFileContent()
 {
   try
   {

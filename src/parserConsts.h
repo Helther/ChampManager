@@ -90,7 +90,7 @@ namespace seqElems {
     "Position",// int
     "ClassGridPos",// int
     "ClassPosition",// int
-    "Lap",// vector of lap times
+    "Lap",// vector of lap times(in sql store as a string)
     "BestLapTime",// double
     "Pitstops",// int
     "FinishStatus",// values None, Finished Normally, DNF

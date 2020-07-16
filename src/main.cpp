@@ -64,9 +64,10 @@ int main(int argc, char *argv[])
   writefile.remove();
 */
   DBHelper *testDB = new DBHelper();
-  auto errocode = testDB->initDB();
-  qDebug() << errocode.text();
+  testDB->initDB();
   delete testDB;
+  QFile db("./CMM.db3");
+  if (db.exists()) db.remove();
 #endif
   return app.exec();
 }
