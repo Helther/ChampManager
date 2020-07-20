@@ -5,15 +5,6 @@
 using StringPair = QPair<QString, QString>;
 using DriverStats = QVector<QVector<StringPair>>;
 
-enum class FileType {
-  RaceLog = 0,
-  QualiLog,
-  PracticeLog,
-  RCD,
-  HDV,
-  VEH,
-  Error
-};
 
 // backup function return type
 struct BackupData
@@ -146,13 +137,24 @@ namespace seqElems {
     "Category"// str
   };
 }// namespace seqElems
-namespace typeName {
-  inline const QString Racetype = "Race";
-  inline const QString Qualtype = "Qualify";
-  inline const QString Practtype = "Practice";
-  inline const QString rcdFile = "rcd";
-  inline const QString hdvFile = "HDV";
-  inline const QString vehFile = "veh";
-}// namespace typeName
+namespace FileTypes {
+  enum class FileType {
+    RaceLog = 0,
+    QualiLog,
+    PracticeLog,
+    RCD,
+    HDV,
+    VEH,
+    Error
+  };
+
+  inline QVector<QString> typeNames{ "Race", "Qualify", "Practice",
+                                     "rcd",  "HDV",     "veh" };
+
+  inline QString getFileTypeById(FileType type)
+  {
+    return typeNames.at(static_cast<int>(type));
+  }
+}
 }// namespace parserConsts
 #endif// PARSERCONSTS_H

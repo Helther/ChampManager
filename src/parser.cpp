@@ -5,8 +5,6 @@
 //#ifdef QT_DEBUG QT_NO_DEBUG_OUTPUT
 //#endif
 
-using namespace parserConsts;
-
 Parser::Parser(QFile &file) : fileName(file.fileName())
 {
   if (openFile(file, QIODevice::ReadWrite))
@@ -128,17 +126,17 @@ FileType XmlParser::readFileType()
       throw std::runtime_error("fileType read error: "
                                + xml.errorString().toStdString());
   }
-  if (xml.name() == typeName::Racetype)
+  if (xml.name() == getFileTypeById(FileType::RaceLog))
   {
     qDebug() << "Race\n";
     return FileType::RaceLog;
   }
-  if (xml.name() == typeName::Qualtype)
+  if (xml.name() == getFileTypeById(FileType::QualiLog))
   {
     qDebug() << "Quali\n";
     return FileType::QualiLog;
   }
-  if (xml.name().contains(typeName::Practtype))
+  if (xml.name().contains(getFileTypeById(FileType::PracticeLog)))
   {
     qDebug() << "Practice\n";
     return FileType::PracticeLog;
@@ -285,10 +283,14 @@ QVector<DriverInfo> XmlParser::processDrivers(QXmlStreamReader &xml,
     {
       findXMLElement(xml, elem, XMLName);
       if (elem == "Lap")
+      {
         currentDriver.lapTimes = processDriverLaps(xml);
-      else
+        const auto lapData = generateLapData(currentDriver.lapTimes);
+        currentDriver.SeqElems.push_back({ elem, lapData });
+        continue;
+      } else
         xml.readNext();
-      if (xml.text().isEmpty() && elem != "Lap")
+      if (xml.text().isEmpty())
         throw std::runtime_error("processDrivers: elem value is empty");
       currentDriver.SeqElems.push_back({ elem, xml.text().toString() });
     }
@@ -320,19 +322,32 @@ QVector<QPair<int, double>> XmlParser::processDriverLaps(QXmlStreamReader &xml)
   return LapTimes;
 }
 
+QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
+{
+  QString lapString;
+  QTextStream dataS(&lapString);
+  if (data.size() == 0)
+    throw std::runtime_error("GenLapData error: lap data is empty");
+  for (const auto &i : data) dataS << i.first << ' ' << i.second << ',';
+  lapString.remove(lapString.size() - 1, 1);
+  return lapString;
+}
+
 int PQXmlParser::readFileContent()
 {
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
-    qDebug() << data;/// debug
+    ///qDebug() << data;/// debug
+    DBHelper dbInst;
+    int sessionId = dbInst.addNewSession(getFileTypeById(fileType));
+    dbInst.addNewResults(data, sessionId);
+    return sessionId;
   } catch (std::exception &e)
   {
     qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return 0;///todo return results id
+    return -1;///todo add handle except
   }
-  return 0;
-  // todo add sql write
 }
 
 bool PQXmlParser::checkFileType()
@@ -345,14 +360,16 @@ int RXmlParser::readFileContent()
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversRaceElements);
-    qDebug() << data;/// debug
+    ///qDebug() << data;/// debug
+    DBHelper dbInst;
+    int sessionId = dbInst.addNewSession(getFileTypeById(fileType));
+    dbInst.addNewResults(data, sessionId);
+    return sessionId;
   } catch (std::exception &e)
   {
     qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return false;
+    return -1;///todo add handle except
   }
-  return true;
-  // todo add sql write
 }
 
 bool RXmlParser::checkFileType() { return fileType == FileType::RaceLog; }
@@ -362,17 +379,17 @@ FileType ModParser::readFileType()
   QFile file(fileName);
   auto fileinfo = file.fileName().split(".", Qt::KeepEmptyParts);
   const QString &fileExt = fileinfo.at(fileinfo.size() - 1);
-  if (fileExt == typeName::rcdFile)
+  if (fileExt == getFileTypeById(FileType::RCD))
   {
     qDebug() << "rcd\n";
     return FileType::RCD;
   }
-  if (fileExt == typeName::hdvFile)
+  if (fileExt == getFileTypeById(FileType::HDV))
   {
     qDebug() << "hdv\n";
     return FileType::HDV;
   }
-  if (fileExt == typeName::vehFile)
+  if (fileExt == getFileTypeById(FileType::VEH))
   {
     qDebug() << "veh\n";
     return FileType::VEH;

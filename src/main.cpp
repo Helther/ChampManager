@@ -1,11 +1,11 @@
 #include <QApplication>
 #include <parser.h>
-#include <dbhelper.h>
 
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-#ifdef QT_DEBUG /*
+
+#ifdef QT_DEBUG
   /// main test
 
   QString testPath = "D:/Dev/PARSER_tests/";
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   QString currentPath = unixPath;
   QVector<QString> tests{
     "t.rcd", "t.veh", "t.HDV", "P.xml", "Q.xml", "R.xml"
-  };
+  }; /*
   Parser *testParser = nullptr;
   try
   {
@@ -63,11 +63,35 @@ int main(int argc, char *argv[])
   p.updateModFileData<int>(data);
   writefile.remove();
 */
-  DBHelper *testDB = new DBHelper();
-  testDB->initDB();
-  delete testDB;
+  try
+  {
+    auto p = QFile(currentPath + tests[3]);
+    auto pParser = PQXmlParser(p);
+    int pid = pParser.readFileContent();
+    auto q = QFile(currentPath + tests[4]);
+    auto qParser = PQXmlParser(q);
+    int qid = qParser.readFileContent();
+    auto r = QFile(currentPath + tests[5]);
+    auto rParser = RXmlParser(r);
+    int rid = rParser.readFileContent();
+    DBHelper *testDB = new DBHelper();
+    testDB->initDB();
+    int seasonId = testDB->addNewSeason("default season");
+    testDB->addNewRace({ pid, qid, rid, seasonId, "Monza", 10 });
+    testDB->viewTable(::DBTableNames::Races);
+    testDB->viewTable(::DBTableNames::Sessions);
+    testDB->viewTable(::DBTableNames::RaceRes);
+    delete testDB;
+  } catch (std::exception &e)
+  {
+    qDebug() << e.what();
+    QFile db("./CMM.db3");
+    if (db.exists()) db.remove();
+    return -1;
+  }
   QFile db("./CMM.db3");
   if (db.exists()) db.remove();
 #endif
+
   return app.exec();
 }

@@ -1,6 +1,8 @@
 #ifndef parser_H
 #define parser_H
-#include <parserConsts.h>
+#include <dbhelper.h>
+using namespace parserConsts;
+using namespace FileTypes;
 
 // input data for write elem finder
 struct WriteData
@@ -8,7 +10,7 @@ struct WriteData
   QTextStream data;
   QString line;
   int index;
-  int pad;
+  int pad;///todo temp
 };
 
 template<typename T> struct WriteDataInput
@@ -43,8 +45,6 @@ public:
   void setFileData(const QString &inData) { fileData = inData; }
 
 protected:
-  //[[nodiscard]] virtual FileType readFileType() = 0;
-  //[[nodiscard]] virtual bool checkFileType() = 0;
   //===================================class data======================
   QString fileName;
   QString fileData;
@@ -93,6 +93,8 @@ private:
   // parse driver lap times
   [[nodiscard]] QVector<QPair<int, double>>
     processDriverLaps(QXmlStreamReader &xml);
+  // creates csv string of lap times for db
+  QString generateLapData(QVector<QPair<int, double>> data);
 };
 
 class PQXmlParser : public XmlParser
