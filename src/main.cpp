@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  QString currentPath = unixPath;
+  QString currentPath = testPath;
   QVector<QString> tests{
     "t.rcd", "t.veh", "t.HDV", "P.xml", "Q.xml", "R.xml"
   }; /*
@@ -65,6 +65,9 @@ int main(int argc, char *argv[])
 */
   try
   {
+    DBHelper *testDB = new DBHelper();
+    testDB->initDB();
+    delete testDB;
     auto p = QFile(currentPath + tests[3]);
     auto pParser = PQXmlParser(p);
     int pid = pParser.readFileContent();
@@ -74,22 +77,21 @@ int main(int argc, char *argv[])
     auto r = QFile(currentPath + tests[5]);
     auto rParser = RXmlParser(r);
     int rid = rParser.readFileContent();
-    DBHelper *testDB = new DBHelper();
-    testDB->initDB();
+    testDB = new DBHelper();
     int seasonId = testDB->addNewSeason("default season");
     testDB->addNewRace({ pid, qid, rid, seasonId, "Monza", 10 });
     testDB->viewTable(::DBTableNames::Races);
     testDB->viewTable(::DBTableNames::Sessions);
-    testDB->viewTable(::DBTableNames::RaceRes);
+    //testDB->viewTable(::DBTableNames::RaceRes);
     delete testDB;
   } catch (std::exception &e)
   {
     qDebug() << e.what();
-    QFile db("./CMM.db3");
+    QFile db("CMM.db3");
     if (db.exists()) db.remove();
     return -1;
   }
-  QFile db("./CMM.db3");
+  QFile db("CMM.db3");
   if (db.exists()) db.remove();
 #endif
 

@@ -42,7 +42,7 @@ public:
   // inserts new entry into sessions table
   int addNewSession(const QString &type);
 
-  ///bebug
+  ///debug
   void viewTable(QString tableName);
 
 private:

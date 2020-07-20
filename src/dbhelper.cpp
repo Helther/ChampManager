@@ -31,14 +31,14 @@ inline constexpr auto CREATE_RESULTS = R"(create table race_results
                                        CarClass TEXT,
                                        CarNumber TEXT,
                                        TeamName TEXT,
-                                       GridPos INTEGER,
+                                       GridPos INTEGER default null,
                                        Position INTEGER,
-                                       ClassGridPos INTEGER,
+                                       ClassGridPos INTEGER default null,
                                        ClassPosition INTEGER,
                                        Lap TEXT,
                                        BestLapTime REAL,
-                                       Pitstops INTEGER,
-                                       FinishStatus TEXT,
+                                       Pitstops INTEGER default null,
+                                       FinishStatus TEXT default null,
                                        constraint k_res_id primary key (res_id),
                                        constraint k_session_fid foreign key (session_fid)
                                                 references sessions (ses_id)))";
@@ -76,7 +76,7 @@ void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId)
 {
   const QString queryColumns{ "insert into " + DBTableNames::RaceRes
                               + " ( session_fid" };
-  const QString queryValues{ "values (" + QString::number(sessionId) };
+  const QString queryValues{ "values (?" };
   QSqlQuery q(dbConn);
   for (const auto &driver : inResults.drivers)
   {
@@ -84,13 +84,15 @@ void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId)
     QString qV = queryValues;
     for (const auto &i : driver.SeqElems)
     {
-      qC.append("," + i.first);
-      qV.append("," + i.second);
+      qC.append(", " + i.first);
+      qV.append(", ?");
     }
     qC.append(")");
     qV.append(")");
-    if (!q.exec(qC + qV))
-      checkSqlError("Insert New Race Res error", q.lastError());
+    q.prepare(qC + qV);
+    q.addBindValue(QString::number(sessionId));
+    for (const auto &i : driver.SeqElems) q.addBindValue(i.second);
+    if (!q.exec()) checkSqlError("Insert New Race Res error", q.lastError());
   }
 }
 
@@ -117,7 +119,10 @@ int DBHelper::addNewRace(const RaceInputData &data)
 int DBHelper::addNewSeason(const QString &name)
 {
   QSqlQuery q(dbConn);
-  q.prepare("insert into " + DBTableNames::Seasons + " (name) values (:name)");
+  QString query{ "insert into " };
+  query.append(DBTableNames::Seasons);
+  query.append(" (name) values (:name)");
+  q.prepare(query);
   q.bindValue(":name", name);
   if (!q.exec()) checkSqlError("add new season error", q.lastError());
   return q.lastInsertId().toInt();
@@ -148,8 +153,11 @@ QSqlError DBHelper::initResultsTables()
 int DBHelper::addNewSession(const QString &type)
 {
   QSqlQuery q(dbConn);
-  q.prepare("insert into " + DBTableNames::Sessions + " (type) values (:type)");
-  q.bindValue(":type", type);
+  QString query{ "insert into " };
+  query.append(DBTableNames::Sessions);
+  query.append(" (type) values (?)");
+  q.prepare(query);
+  q.addBindValue(type);
   if (!q.exec()) checkSqlError("add new session error", q.lastError());
   return q.lastInsertId().toInt();
 }
