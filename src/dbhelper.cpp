@@ -48,19 +48,17 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        constraint k_ses_id primary key (ses_id)))";
 
 DBHelper::DBHelper()
-{///todo resolve dublicate conn issue
-  dbConn = QSqlDatabase::addDatabase(dbDriverName, dbPath + connName);
+{
+  dbConn = QSqlDatabase::database(connName);
+  if (dbConn.isValid()) return;
+  dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
   dbConn.setDatabaseName(dbName);
-  if (!dbConn.isValid() || !dbConn.open())
+  if (!dbConn.open())
     throw std::runtime_error(QString("DataBase init error: ").toStdString()
                              + dbConn.lastError().text().toStdString());
 }
 
-DBHelper::~DBHelper()
-{
-  dbConn.close();
-  // QSqlDatabase::removeDatabase(connName);
-}
+DBHelper::~DBHelper() { dbConn.close(); }
 
 void DBHelper::initDB()
 {

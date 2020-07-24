@@ -10,7 +10,6 @@ struct WriteData
   QTextStream data;
   QString line;
   int index;
-  int pad;///todo temp
 };
 
 template<typename T> struct WriteDataInput
@@ -19,6 +18,9 @@ template<typename T> struct WriteDataInput
   T oldVal;
   T newVal;
 };
+
+// read file wrapper
+template<class T> int parseFile(T parser) { return parser.readFileContent(); }
 
 class Parser
 {
@@ -204,7 +206,7 @@ bool ModParser::updateModFileData(const QVector<WriteDataInput<T>> &input)
     valS << i.newVal;
     // look for element
     int initIndex = -1;
-    WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex, 0 };
+    WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex };
     if (!findWriteElem(dataStruct, i.elemName, oVal)) return false;
     // backup fileData member
     // insert the new element into fileData

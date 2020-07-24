@@ -600,7 +600,6 @@ bool ModParser::doWriteModFile(const QString &data)
   {
     // try to restore from backup
     restoreFile(fileName, backUpRes.fileFullPath);
-    /// todo ensure to restore file itself by attempting again later
     return false;
   }
 }

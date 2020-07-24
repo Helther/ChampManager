@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <parser.h>
+#include <mainwindow.h>
 
 int main(int argc, char *argv[])
 {
@@ -69,14 +70,11 @@ int main(int argc, char *argv[])
     testDB->initDB();
     delete testDB;
     auto p = QFile(currentPath + tests[3]);
-    auto pParser = PQXmlParser(p);
-    int pid = pParser.readFileContent();
     auto q = QFile(currentPath + tests[4]);
-    auto qParser = PQXmlParser(q);
-    int qid = qParser.readFileContent();
     auto r = QFile(currentPath + tests[5]);
-    auto rParser = RXmlParser(r);
-    int rid = rParser.readFileContent();
+    auto pid = parseFile(PQXmlParser(p));
+    auto qid = parseFile(PQXmlParser(q));
+    auto rid = parseFile(RXmlParser(r));
     testDB = new DBHelper();
     int seasonId = testDB->addNewSeason("default season");
     testDB->addNewRace({ pid, qid, rid, seasonId, "Monza", 10 });
@@ -94,6 +92,7 @@ int main(int argc, char *argv[])
   QFile db("CMM.db3");
   if (db.exists()) db.remove();
 #endif
-
+  MainWindow mainW;
+  mainW.show();
   return app.exec();
 }

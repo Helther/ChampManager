@@ -20,6 +20,7 @@ SOURCES += \
     src/parser.cpp \
     src/dbhelper.cpp \
     src/resultswindow.cpp \
+    src/mainwindow.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -31,6 +32,8 @@ HEADERS += \
     src/parserConsts.h \
     src/dbhelper.h \
     src/resultswindow.h \
+    src/mainwindow.h \
 
 FORMS += \
-    src/resultswindow.ui
+    src/resultswindow.ui \
+    src/mainwindow.ui \

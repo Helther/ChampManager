@@ -1,22 +1,22 @@
 #ifndef RESULTSWINDOW_H
 #define RESULTSWINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
 
 namespace Ui {
-class ResultsWindow;
+class resultswindow;
 }
 
-class ResultsWindow : public QMainWindow
+class resultswindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ResultsWindow(QWidget *parent = nullptr);
-    ~ResultsWindow();
+    explicit resultswindow(QWidget *parent = nullptr);
+    ~resultswindow();
 
 private:
-    Ui::ResultsWindow *ui;
+    Ui::resultswindow *ui;
 };
 
 #endif // RESULTSWINDOW_H
