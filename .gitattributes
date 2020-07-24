@@ -2,4 +2,6 @@
 =================================================
 
 # Force the following filetypes to have unix eols, so Windows does not break them
-*.* text eol=lf
+*.cpp* text eol=lf
+*.h* text eol=lf
+*.ui* text eol=lf
