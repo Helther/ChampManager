@@ -16,8 +16,6 @@ struct RaceInputData
   int Qid;
   int Rid;
   int Seasonid;
-  QString Track;
-  int LapsNum;
 };
 
 /// todo add incidents save into db
@@ -31,8 +29,10 @@ public:
   DBHelper(const DBHelper &) = delete;
   DBHelper operator=(const DBHelper &) = delete;
 
-  // called when first time launch the app
-  void initDB();
+  // called when first time launch the app returns false if can't find the db
+  bool initDB();
+  // deletes all tables in db, called if init has failed
+  void destroyDB();
   // called when file was read
   void addNewResults(const RaceLogInfo &inResults, int sessionId);
   // called after all results were collected with ids as args
@@ -42,8 +42,12 @@ public:
   // inserts new entry into sessions table
   int addNewSession(const QString &type);
 
+  void delEntryFromTable(const QString &table, const QString &idCol, int id);
+
+  QVector<QVector<QVariant>> getData(const QString &tableName);
+
   ///debug
-  void viewTable(QString tableName);
+  void viewTable(const QString &tableName);
 
 private:
   QSqlError initResultsTables();

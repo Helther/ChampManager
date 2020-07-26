@@ -47,6 +47,7 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        type TEXT,
                                        constraint k_ses_id primary key (ses_id)))";
 
+
 DBHelper::DBHelper()
 {
   dbConn = QSqlDatabase::database(connName);
@@ -60,14 +61,36 @@ DBHelper::DBHelper()
 
 DBHelper::~DBHelper() { dbConn.close(); }
 
-void DBHelper::initDB()
+bool DBHelper::initDB()
 {
-  if (dbConn.tables().size() > 0)
-    checkSqlError(
-      "initDB error",
-      QSqlError(QString(), "db is not empty", QSqlError::UnknownError));
-  auto resultsError = initResultsTables();
-  checkSqlError("initDB error", resultsError);
+  QFile db(dbName);
+  if (!db.exists() || dbConn.tables().size() == 0)
+  {
+    auto resultsError = initResultsTables();
+    checkSqlError("initDB error", resultsError);
+    return false;///todo add table existence check
+  }
+  return true;
+}
+
+void DBHelper::destroyDB()
+{
+  const QString query = "drop table ";
+  QSqlQuery q(dbConn);
+  QSqlError destroyError;
+  if (dbConn.tables().contains(DBTableNames::Seasons)
+      && !q.exec(query + DBTableNames::Seasons))
+    destroyError = q.lastError();
+  if (dbConn.tables().contains(DBTableNames::Races)
+      && !q.exec(query + DBTableNames::Races))
+    destroyError = q.lastError();
+  if (dbConn.tables().contains(DBTableNames::RaceRes)
+      && !q.exec(query + DBTableNames::RaceRes))
+    destroyError = q.lastError();
+  if (dbConn.tables().contains(DBTableNames::Sessions)
+      && !q.exec(query + DBTableNames::Sessions))
+    destroyError = q.lastError();
+  checkSqlError("destr db error", destroyError);
 }
 /// todo if error delete all entries with given session id
 void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId)
@@ -108,8 +131,8 @@ int DBHelper::addNewRace(const RaceInputData &data)
   q.addBindValue(data.Qid);
   q.addBindValue(data.Rid);
   q.addBindValue(data.Seasonid);
-  q.addBindValue(data.Track);
-  q.addBindValue(data.LapsNum);
+  ///q.addBindValue(); todo
+  ///q.addBindValue(); todo
   if (!q.exec()) checkSqlError("add new race error", q.lastError());
   return q.lastInsertId().toInt();
 }
@@ -119,23 +142,39 @@ int DBHelper::addNewSeason(const QString &name)
   QSqlQuery q(dbConn);
   QString query{ "insert into " };
   query.append(DBTableNames::Seasons);
-  query.append(" (name) values (:name)");
-  q.prepare(query);
-  q.bindValue(":name", name);
-  if (!q.exec()) checkSqlError("add new season error", q.lastError());
+  query.append(" (name) values (\"");
+  query.append(name);
+  query.append("\")");
+  if (!q.exec(query)) checkSqlError("add new season error", q.lastError());
   return q.lastInsertId().toInt();
 }
 
-void DBHelper::viewTable(QString tableName)
+void DBHelper::viewTable(const QString &tableName)
 {
   QSqlQuery q(dbConn);
-  q.exec("select * from " + tableName);
+  if (!q.exec("select * from " + tableName))
+    checkSqlError("view table error", q.lastError());
   while (q.next())
   {
     for (int i = 0; i < q.record().count(); ++i)
     { qDebug() << q.record().fieldName(i) << q.value(i).toString() << " "; }
     qDebug() << '\n';
   }
+}
+
+QVector<QVector<QVariant>> DBHelper::getData(const QString &tableName)
+{
+  QSqlQuery q(dbConn);
+  QVector<QVector<QVariant>> result;
+  if (!q.exec("select * from " + tableName))
+    checkSqlError("get table data error", q.lastError());
+  while (q.next())
+  {
+    QVector<QVariant> row;
+    for (int i = 0; i < q.record().count(); ++i) row.push_back(q.value(i));
+    result.push_back(row);
+  }
+  return result;
 }
 
 QSqlError DBHelper::initResultsTables()
@@ -158,6 +197,17 @@ int DBHelper::addNewSession(const QString &type)
   q.addBindValue(type);
   if (!q.exec()) checkSqlError("add new session error", q.lastError());
   return q.lastInsertId().toInt();
+}
+
+void DBHelper::delEntryFromTable(const QString &table,
+                                 const QString &idCol,
+                                 int id)
+{
+  QSqlQuery q(dbConn);
+  QString query{ "delete from " };
+  query.append(table);
+  query.append(" where " + idCol + " = " + QString::number(id));
+  if (!q.exec(query)) checkSqlError("delete table entry error", q.lastError());
 }
 
 void DBHelper::checkSqlError(const QString &msg, const QSqlError &error)

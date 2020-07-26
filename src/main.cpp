@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
   p.updateModFileData<int>(data);
   writefile.remove();
 */
+  /*
   try
   {
     DBHelper *testDB = new DBHelper();
@@ -89,10 +90,10 @@ int main(int argc, char *argv[])
     if (db.exists()) db.remove();
     return -1;
   }
-  QFile db("CMM.db3");
-  if (db.exists()) db.remove();
-#endif
+*/
   MainWindow mainW;
   mainW.show();
+#endif
+
   return app.exec();
 }

@@ -4,19 +4,19 @@
 #include <QWidget>
 
 namespace Ui {
-class resultswindow;
+class Resultswindow;
 }
 
-class resultswindow : public QWidget
+class Resultswindow : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit resultswindow(QWidget *parent = nullptr);
-    ~resultswindow();
+  explicit Resultswindow(QWidget *parent = nullptr);
+  ~Resultswindow();
 
 private:
-    Ui::resultswindow *ui;
+  Ui::Resultswindow *ui;
 };
 
-#endif // RESULTSWINDOW_H
+#endif// RESULTSWINDOW_H

@@ -1,10 +1,10 @@
 #include "resultswindow.h"
 #include "ui_resultswindow.h"
 
-resultswindow::resultswindow(QWidget *parent)
-  : QWidget(parent), ui(new Ui::resultswindow)
+Resultswindow::Resultswindow(QWidget *parent)
+  : QWidget(parent), ui(new Ui::Resultswindow)
 {
   ui->setupUi(this);
 }
 
-resultswindow::~resultswindow() { delete ui; }
+Resultswindow::~Resultswindow() { delete ui; }

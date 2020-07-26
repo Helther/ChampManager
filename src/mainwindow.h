@@ -24,7 +24,7 @@ public:
 private:
   Ui::MainWindow *ui;
   QTabWidget *tabW;
-  resultswindow *resultsW;
+  Resultswindow *resultsW;
   UserData *userData;
   //===================Menus & Actions=====================//
 private slots:
@@ -32,6 +32,7 @@ private slots:
   void on_rmSeasonRes();
 
 private:
+  void initData();
   void createActions();
   void createMenus();
 
@@ -65,8 +66,11 @@ class ChooseSeason : public QWidget
 public:
   ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent = nullptr);
   SeasonData getSeasonData();
+  auto getSeasons() { return seasonsCopy; }
+  void setSeasons(const QVector<SeasonData> &sData);
 
 private:
+  QVector<SeasonData> seasonsCopy;
   QLabel *seasonsLabel;
   QComboBox *seasonsCombo;
 };
@@ -79,7 +83,8 @@ class RmSeasonResDialog : public QDialog
 public:
   RmSeasonResDialog(const QVector<SeasonData> &seasons,
                     QWidget *parent = nullptr);
-  void accept() override;
+public slots:
+  void acceptedSg();
 
 private:
   ChooseSeason *seasonW;
@@ -94,9 +99,14 @@ class NewRaceDialog : public QDialog
 public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
+private slots:
+  void on_addSeason();
+  void updateSeasonsCombo();
 
 private:
+  void accept() override;
   ChooseSeason *seasonW;
+  QPushButton *addSeasonButton;
   //practise, quali and race setters
   QLabel *pLabel;
   QLineEdit *pFilePath;
@@ -111,19 +121,35 @@ private:
   QDialogButtonBox *buttonBox;
 };
 
+class AddSeason : public QDialog
+{
+  Q_OBJECT
+public:
+  explicit AddSeason(QWidget *parent = nullptr);
+
+signals:
+  void added();
+
+private:
+  void accept() override;
+  QLineEdit *lineEdit;
+  QDialogButtonBox *buttonBox;
+};
+
 //===========================User data============================//
 
 // holds all meta data (currently only seasons info)
 class UserData
 {
 public:
-  UserData() {}
-  void init() { seasons.push_back({ 1, QString("testSeason") }); }///todo temp
+  UserData();
+
+  void init();
   void addSeason(const QString &name);
-  void removeSeason(SeasonData season);
+  void updateSeasons();
   SeasonData getCurrentSeason() { return currentSeason; }
   QVector<SeasonData> getSeasons() { return seasons; }
-  void setCurrentSeason(SeasonData season);
+  void setCurrentSeason(SeasonData season) { currentSeason = season; }
 
 private:
   SeasonData currentSeason;
