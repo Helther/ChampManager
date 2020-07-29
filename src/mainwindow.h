@@ -19,7 +19,11 @@ public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-  UserData *getUserData();
+  UserData *getUserData()
+  {
+    assert(userData != nullptr);///debug
+    return userData;
+  }
 
 private:
   Ui::MainWindow *ui;
@@ -44,6 +48,7 @@ private:
   QAction *licenseAct;
   QAction *aboutAct;
 };
+
 
 //forward decl for dialog
 class QDialogButtonBox;
@@ -121,9 +126,11 @@ private:
   QDialogButtonBox *buttonBox;
 };
 
+
 class AddSeason : public QDialog
 {
   Q_OBJECT
+
 public:
   explicit AddSeason(QWidget *parent = nullptr);
 

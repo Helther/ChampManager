@@ -340,19 +340,14 @@ int PQXmlParser::readFileContent()
     auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
     ///qDebug() << data;/// debug
     DBHelper dbInst;
-    int sessionId = dbInst.addNewSession(getFileTypeById(fileType));
+    int sessionId = dbInst.addNewSession(getFileTypeById(fileType), data);
     dbInst.addNewResults(data, sessionId);
     return sessionId;
   } catch (std::exception &e)
   {
-    qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return -1;///todo add handle except
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
   }
-}
-
-bool PQXmlParser::checkFileType()
-{
-  return fileType == FileType::QualiLog || fileType == FileType::PracticeLog;
 }
 
 int RXmlParser::readFileContent()
@@ -362,17 +357,15 @@ int RXmlParser::readFileContent()
     auto data = readXMLLog(parserConsts::seqElems::DriversRaceElements);
     ///qDebug() << data;/// debug
     DBHelper dbInst;
-    int sessionId = dbInst.addNewSession(getFileTypeById(fileType));
+    int sessionId = dbInst.addNewSession(getFileTypeById(fileType), data);
     dbInst.addNewResults(data, sessionId);
     return sessionId;
   } catch (std::exception &e)
   {
-    qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return -1;///todo add handle except
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
   }
 }
-
-bool RXmlParser::checkFileType() { return fileType == FileType::RaceLog; }
 
 FileType ModParser::readFileType()
 {
@@ -416,10 +409,8 @@ int RCDParser::readFileContent()
     return false;
   }
   return true;
-  // todo add sql write
+  /// todo finish
 }
-
-bool RCDParser::checkFileType() { return fileType == FileType::RCD; }
 
 DriverStats RCDParser::readRCD()
 {
@@ -486,10 +477,8 @@ int VEHParser::readFileContent()
     return false;
   }
   return true;
-  // todo add sql write
+  /// todo finish
 }
-
-bool VEHParser::checkFileType() { return fileType == FileType::VEH; }
 
 QVector<StringPair> VEHParser::readVEH()
 {
@@ -533,10 +522,8 @@ int HDVParser::readFileContent()
     return false;
   }
   return true;
-  // todo add sql write
+  /// todo finish
 }
-
-bool HDVParser::checkFileType() { return fileType == FileType::HDV; }
 
 QVector<StringPair> HDVParser::readHDV()
 {

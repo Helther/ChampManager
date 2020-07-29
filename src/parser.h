@@ -104,13 +104,10 @@ class PQXmlParser : public XmlParser
 public:
   explicit PQXmlParser(QFile &file) : XmlParser(file)
   {
-    if (!checkFileType())
+    if (!(fileType == FileType::QualiLog || fileType == FileType::PracticeLog))
       throw std::runtime_error("fileType check error wrong file type");
   }
   int readFileContent() override;
-
-private:
-  bool checkFileType();
 };
 
 class RXmlParser : public XmlParser
@@ -118,13 +115,10 @@ class RXmlParser : public XmlParser
 public:
   explicit RXmlParser(QFile &file) : XmlParser(file)
   {
-    if (!checkFileType())
+    if (fileType != FileType::RaceLog)
       throw std::runtime_error("fileType check error wrong file type");
   }
   int readFileContent() override;
-
-private:
-  bool checkFileType();
 };
 
 class ModParser : public Parser
@@ -152,13 +146,12 @@ class RCDParser : public ModParser
 public:
   explicit RCDParser(QFile &file) : ModParser(file)
   {
-    if (!checkFileType())
+    if (fileType != FileType::RCD)
       throw std::runtime_error("fileType check error wrong file type");
   }
   int readFileContent() override;
 
 private:
-  bool checkFileType();
   DriverStats readRCD();
 };
 
@@ -167,13 +160,12 @@ class VEHParser : public ModParser
 public:
   explicit VEHParser(QFile &file) : ModParser(file)
   {
-    if (!checkFileType())
+    if (fileType != FileType::VEH)
       throw std::runtime_error("fileType check error wrong file type");
   }
   int readFileContent() override;
 
 private:
-  bool checkFileType();
   QVector<StringPair> readVEH();
 };
 
@@ -182,13 +174,12 @@ class HDVParser : public ModParser
 public:
   explicit HDVParser(QFile &file) : ModParser(file)
   {
-    if (!checkFileType())
+    if (fileType != FileType::HDV)
       throw std::runtime_error("fileType check error wrong file type");
   }
   int readFileContent() override;
 
 private:
-  bool checkFileType();
   QVector<StringPair> readHDV();
 };
 

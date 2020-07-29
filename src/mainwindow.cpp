@@ -8,6 +8,7 @@
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QErrorMessage>
+#include <QFileDialog>
 #include <parser.h>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -43,11 +44,6 @@ MainWindow::~MainWindow()
   delete userData;
 }
 
-UserData *MainWindow::getUserData()
-{
-  assert(userData != nullptr);///debug
-  return userData;///todo make inline
-}
 
 void MainWindow::on_addNewRace()
 {
@@ -70,7 +66,7 @@ void MainWindow::initData()
   try
   {
     DBHelper DB;
-    bool isThereDB = DB.initDB();
+    const bool isThereDB = DB.initDB();
     userData = new UserData();
     if (!isThereDB) userData->addSeason("Season 1");///first time init
   } catch (std::exception &e)
@@ -131,12 +127,39 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   pFilePath = new QLineEdit();
   qFilePath = new QLineEdit();
   rFilePath = new QLineEdit();
-  pBrowseButton = new QPushButton("Browse");///todo
+
+  ///todo debug
+  pFilePath->setText("/mnt/Media/Dev/PARSER_tests/P.xml");
+  qFilePath->setText("/mnt/Media/Dev/PARSER_tests/Q.xml");
+  rFilePath->setText("/mnt/Media/Dev/PARSER_tests/R.xml");
+
+  pBrowseButton = new QPushButton("Browse");
   qBrowseButton = new QPushButton("Browse");
   rBrowseButton = new QPushButton("Browse");
-  //connect(pBrowseButton, &QPushButton::clicked, this, NewRaceDialog::on_browseClicked(pFile));
-  //fileName = QFileDialog::getOpenFileName(this,
-  //    tr("Open Image"), "/home/jana", tr("Image Files (*.png *.jpg *.bmp)"));
+  auto getPFilePath = [this]() {
+    const auto fileName = QFileDialog::getOpenFileName(this,
+                                                       tr("Open File"),
+                                                       tr("./"),
+                                                       tr("XML Files (*.xml)"));
+    this->pFilePath->setText(fileName);
+  };
+  auto getQFilePath = [this]() {
+    const auto fileName = QFileDialog::getOpenFileName(this,
+                                                       tr("Open File"),
+                                                       tr("./"),
+                                                       tr("XML Files (*.xml)"));
+    this->qFilePath->setText(fileName);
+  };
+  auto getRFilePath = [this]() {
+    const auto fileName = QFileDialog::getOpenFileName(this,
+                                                       tr("Open File"),
+                                                       tr("./"),
+                                                       tr("XML Files (*.xml)"));
+    this->rFilePath->setText(fileName);
+  };
+  connect(pBrowseButton, &QPushButton::clicked, getPFilePath);
+  connect(qBrowseButton, &QPushButton::clicked, getQFilePath);
+  connect(rBrowseButton, &QPushButton::clicked, getRFilePath);
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
@@ -177,17 +200,26 @@ void NewRaceDialog::updateSeasonsCombo()
 
 void NewRaceDialog::accept()
 {
-  auto p = QFile(pFilePath->text());
-  auto q = QFile(qFilePath->text());
-  auto r = QFile(rFilePath->text());
-  auto pid = parseFile(PQXmlParser(p));
-  auto qid = parseFile(PQXmlParser(q));
-  auto rid = parseFile(RXmlParser(r));
-  int seasonId = seasonW->getSeasonData().id;
-  DBHelper DB;///todo add check for venue name and race laps equality
-  DB.addNewRace(/*RaceInputData*/ { pid, qid, rid, seasonId });
+  try
+  {
+    auto p = QFile(pFilePath->text());
+    auto q = QFile(qFilePath->text());
+    auto r = QFile(rFilePath->text());
+    auto pid = parseFile(PQXmlParser(p));///todo fix p and q equality
+    auto qid = parseFile(PQXmlParser(q));
+    auto rid = parseFile(RXmlParser(r));
+    int seasonId = seasonW->getSeasonData().id;
+    DBHelper DB;
+    DB.addNewRace(/*RaceInputData*/ { pid, qid, rid, seasonId });
 
-  QDialog::accept();
+    QDialog::accept();
+  } catch (std::exception &e)
+  {
+    QErrorMessage *msg = new QErrorMessage(this);
+    msg->showMessage(QString("can't add the race results:") + e.what());
+    msg->show();
+    ///todo add revert db changes if failed
+  }
 }
 //==========================RmSeason=================================//
 RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
@@ -221,7 +253,7 @@ void RmSeasonResDialog::acceptedSg()
   }
   int currSeason = seasonW->getSeasonData().id;
   DBHelper db;
-  db.delEntryFromTable(DBTableNames::Seasons, "season_id", currSeason);
+  db.delSeasonData(currSeason);
   QDialog::accept();
   ///todo add emmit signal with info argument to connect with slot in main to update all gui
 }
