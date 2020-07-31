@@ -3,7 +3,7 @@
 #include <QMainWindow>
 #include <resultswindow.h>
 #include <QDialog>
-#include <QtDebug>///debug
+#include <QtDebug>/// todo debug
 //forward decl
 class UserData;
 //
@@ -90,6 +90,8 @@ public:
                     QWidget *parent = nullptr);
 public slots:
   void acceptedSg();
+signals:
+  void removed();/// todo add connect for res widget update slot
 
 private:
   ChooseSeason *seasonW;
@@ -104,6 +106,8 @@ class NewRaceDialog : public QDialog
 public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
+signals:
+  void addedRace();///todo connect to results widget update
 private slots:
   void on_addSeason();
   void updateSeasonsCombo();
@@ -112,7 +116,7 @@ private:
   void accept() override;
   ChooseSeason *seasonW;
   QPushButton *addSeasonButton;
-  //practise, quali and race setters
+  //practice, quali and race setters
   QLabel *pLabel;
   QLineEdit *pFilePath;
   QPushButton *pBrowseButton;
@@ -135,7 +139,7 @@ public:
   explicit AddSeason(QWidget *parent = nullptr);
 
 signals:
-  void added();
+  void addedSeason();///todo connect to results widget update
 
 private:
   void accept() override;

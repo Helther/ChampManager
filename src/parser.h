@@ -1,6 +1,6 @@
 #ifndef parser_H
 #define parser_H
-#include <dbhelper.h>
+#include <parserConsts.h>
 using namespace parserConsts;
 using namespace FileTypes;
 
@@ -19,9 +19,6 @@ template<typename T> struct WriteDataInput
   T newVal;
 };
 
-// read file wrapper
-template<class T> int parseFile(T parser) { return parser.readFileContent(); }
-
 class Parser
 {
 public:
@@ -36,8 +33,6 @@ public:
   static bool restoreFile(const QString &filePath,
                           const QString &backupPath) noexcept;
 
-  // read file for all info, depending on filetype and return its id
-  virtual int readFileContent() = 0;
 
   //=============================getters===========================/
   [[nodiscard]] constexpr FileType getFileType() const { return fileType; }
@@ -47,6 +42,9 @@ public:
   void setFileData(const QString &inData) { fileData = inData; }
 
 protected:
+  // read file for all info, depending on filetype and return its id
+  virtual QVariant readFileContent() = 0;
+
   //===================================class data======================
   QString fileName;
   QString fileData;
@@ -62,6 +60,7 @@ class XmlParser : public Parser
 public:
   explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
 
+  RaceLogInfo getParseData() { return readFileContent().value<RaceLogInfo>(); }
 
 protected:
   [[nodiscard]] FileType readFileType();
@@ -107,7 +106,9 @@ public:
     if (!(fileType == FileType::QualiLog || fileType == FileType::PracticeLog))
       throw std::runtime_error("fileType check error wrong file type");
   }
-  int readFileContent() override;
+
+protected:
+  QVariant readFileContent() override;
 };
 
 class RXmlParser : public XmlParser
@@ -118,7 +119,9 @@ public:
     if (fileType != FileType::RaceLog)
       throw std::runtime_error("fileType check error wrong file type");
   }
-  int readFileContent() override;
+
+protected:
+  QVariant readFileContent() override;
 };
 
 class ModParser : public Parser
@@ -149,7 +152,7 @@ public:
     if (fileType != FileType::RCD)
       throw std::runtime_error("fileType check error wrong file type");
   }
-  int readFileContent() override;
+  QVariant readFileContent() override;
 
 private:
   DriverStats readRCD();
@@ -163,7 +166,7 @@ public:
     if (fileType != FileType::VEH)
       throw std::runtime_error("fileType check error wrong file type");
   }
-  int readFileContent() override;
+  QVariant readFileContent() override;
 
 private:
   QVector<StringPair> readVEH();
@@ -177,7 +180,7 @@ public:
     if (fileType != FileType::HDV)
       throw std::runtime_error("fileType check error wrong file type");
   }
-  int readFileContent() override;
+  QVariant readFileContent() override;
 
 private:
   QVector<StringPair> readHDV();

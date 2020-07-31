@@ -6,21 +6,11 @@ inline constexpr auto CREATE_SEASON = R"(create table seasons
                                       constraint k_season_id primary key (season_id)))";
 inline constexpr auto CREATE_RACES = R"(create table races
                                      (race_id INTEGER not null,
-                                     pract_fid INTEGER not null,
-                                     quali_fid INTEGER not null,
-                                     race_fid INTEGER not null,
                                      seasons_fid INTEGER not null,
-                                     TrackVenue TEXT,
-                                     RaceLaps INTEGER,
                                      constraint k_race_id primary key (race_id),
-                                     constraint pract_id foreign key (pract_fid)
-                                                 references sessions(ses_id),
-                                     constraint quali_id foreign key (quali_fid)
-                                                 references sessions(ses_id),
-                                     constraint race_id foreign key (race_fid)
-                                                 references sessions(ses_id),
-                                     constraint seasons_id foreign key (seasons_fid)
-                                                 references seasons(season_id)))";
+                                     constraint k_seasons_fid foreign key (seasons_fid)
+                                         references seasons(season_id)
+                                            ON DELETE CASCADE))";
 inline constexpr auto CREATE_RESULTS = R"(create table race_results
                                        (res_id INTEGER not null,
                                        session_fid INTEGER not null,
@@ -41,14 +31,18 @@ inline constexpr auto CREATE_RESULTS = R"(create table race_results
                                        FinishStatus TEXT default null,
                                        constraint k_res_id primary key (res_id),
                                        constraint k_session_fid foreign key (session_fid)
-                                                references sessions (ses_id)))";
+                                            references sessions (ses_id)
+                                                ON DELETE CASCADE))";
 inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        (ses_id INTEGER not null,
+                                       race_fid INTEGER not null,
                                        type TEXT,
                                        TrackVenue TEXT,
                                        RaceLaps INTEGER,
-                                       constraint k_ses_id primary key (ses_id)))";
-
+                                       constraint k_ses_id primary key (ses_id),
+                                       constraint k_race_fid foreign key (race_fid)
+                                            references races (race_id)
+                                                ON DELETE CASCADE))";
 
 DBHelper::DBHelper()
 {
@@ -106,7 +100,7 @@ void DBHelper::destroyDB() const
     destroyError = q.lastError();
   checkSqlError("destr db error", destroyError);
 }
-/// todo if error delete all entries with given session id
+
 void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
 {
   const QString queryColumns{ "insert into " + DBTableNames::RaceRes
@@ -131,23 +125,13 @@ void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
   }
 }
 
-int DBHelper::addNewRace(const RaceInputData &data) const
+int DBHelper::addNewRace(int seasonId) const
 {
-  auto logData = checkSessionsValidity({ data.Pid, data.Qid, data.Rid });
   QSqlQuery q(dbConn);
-  q.prepare("insert into " + DBTableNames::Races + R"((pract_fid,
-    quali_fid,
-    race_fid,
-    seasons_fid,
-    TrackVenue,
-    RaceLaps
-    ) values (?, ?, ?, ?, ?, ?))");
-  q.addBindValue(data.Pid);
-  q.addBindValue(data.Qid);
-  q.addBindValue(data.Rid);
-  q.addBindValue(data.Seasonid);
-  q.addBindValue(logData.venue);
-  q.addBindValue(logData.laps);
+  q.prepare("insert into " + DBTableNames::Races + R"((
+    seasons_fid
+    ) values (?))");
+  q.addBindValue(seasonId);
   if (!q.exec()) checkSqlError("add new race error", q.lastError());
   return q.lastInsertId().toInt();
 }
@@ -202,7 +186,41 @@ QSqlError DBHelper::initResultsTables() const
   return QSqlError();
 }
 
-SessionData DBHelper::checkSessionsValidity(const QVector<int> &ids) const
+
+int DBHelper::addNewSession(const QString &type,
+                            int raceId,
+                            const RaceLogInfo &sesData) const
+{
+  const auto trackName =
+    std::find_if(sesData.SeqElems.begin(),
+                 sesData.SeqElems.end(),
+                 [](const auto &i) { return i.first == "TrackVenue"; });
+  const auto lapsNum =
+    std::find_if(sesData.SeqElems.begin(),
+                 sesData.SeqElems.end(),
+                 [](const auto &i) { return i.first == "RaceLaps"; });
+  if (trackName == sesData.SeqElems.end() || lapsNum == sesData.SeqElems.end())
+    throw std::runtime_error("add new session error: data incomplete");
+
+  QSqlQuery q(dbConn);
+  QString query{ "insert into " };
+  query.append(DBTableNames::Sessions);
+  query.append(" (type, TrackVenue, Racelaps, race_fid) values (?, ?, ?, ?)");
+  q.prepare(query);
+  q.addBindValue(type);
+  q.addBindValue(trackName->second);
+  q.addBindValue(lapsNum->second);
+  q.addBindValue(raceId);
+  if (!q.exec()) checkSqlError("add new session error", q.lastError());
+  return q.lastInsertId().toInt();
+}
+
+void DBHelper::delSeasonData(int ses_id) const
+{
+  delEntryFromTable(DBTableNames::Seasons, "season_id", ses_id);
+}
+
+void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
 {
   SessionData SData;
   bool first = true;
@@ -225,38 +243,6 @@ SessionData DBHelper::checkSessionsValidity(const QVector<int> &ids) const
       SData = curSData;
     }
   }
-  return SData;
-}
-
-int DBHelper::addNewSession(const QString &type,
-                            const RaceLogInfo &sesData) const
-{
-  const auto trackName =
-    std::find_if(sesData.SeqElems.begin(),
-                 sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "TrackVenue"; });
-  const auto lapsNum =
-    std::find_if(sesData.SeqElems.begin(),
-                 sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "RaceLaps"; });
-  if (trackName == sesData.SeqElems.end() || lapsNum == sesData.SeqElems.end())
-    throw std::runtime_error("add new session error: data incomplete");
-
-  QSqlQuery q(dbConn);
-  QString query{ "insert into " };
-  query.append(DBTableNames::Sessions);
-  query.append(" (type, TrackVenue, Racelaps) values (?, ?, ?)");
-  q.prepare(query);
-  q.addBindValue(type);
-  q.addBindValue(trackName->second);
-  q.addBindValue(lapsNum->second);
-  if (!q.exec()) checkSqlError("add new session error", q.lastError());
-  return q.lastInsertId().toInt();
-}
-
-void DBHelper::delSeasonData(int ses_id) const
-{
-  delEntryFromTable(DBTableNames::Seasons, "season_id", ses_id);
 }
 
 void DBHelper::delEntryFromTable(const QString &table,
@@ -264,6 +250,9 @@ void DBHelper::delEntryFromTable(const QString &table,
                                  int id) const
 {
   QSqlQuery q(dbConn);
+  // exec this to activate Fkeys On actions
+  if (!q.exec("PRAGMA foreign_keys=ON"))
+    checkSqlError("delete table entry error", q.lastError());
   QString query{ "delete from " };
   query.append(table);
   query.append(" where " + idCol + " = " + QString::number(id));

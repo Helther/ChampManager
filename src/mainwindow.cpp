@@ -10,6 +10,7 @@
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <parser.h>
+#include <dbhelper.h>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -26,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
   createActions();
   createMenus();
 
-  ///temp while no init
+  /// todo temp while no init
   auto on_destroyed = []() {
     QFile db("CMM.db3");
     if (db.exists()) db.remove();
@@ -115,7 +116,7 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
 {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle("Add New Race");
-  seasonW = new ChooseSeason(seasons);
+  seasonW = new ChooseSeason(seasons);/// todo set to current season
   addSeasonButton = new QPushButton("Add season");
   connect(addSeasonButton,
           &QPushButton::clicked,
@@ -129,33 +130,35 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   rFilePath = new QLineEdit();
 
   ///todo debug
-  pFilePath->setText("/mnt/Media/Dev/PARSER_tests/P.xml");
-  qFilePath->setText("/mnt/Media/Dev/PARSER_tests/Q.xml");
-  rFilePath->setText("/mnt/Media/Dev/PARSER_tests/R.xml");
+  QString testPath = "D:/Dev/PARSER_tests/";
+  QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
+  pFilePath->setText(testPath + "P.xml");
+  qFilePath->setText(testPath + "Q.xml");
+  rFilePath->setText(testPath + "R.xml");
 
   pBrowseButton = new QPushButton("Browse");
   qBrowseButton = new QPushButton("Browse");
   rBrowseButton = new QPushButton("Browse");
-  auto getPFilePath = [this]() {
+  auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    this->pFilePath->setText(fileName);
+    if (!fileName.isEmpty()) this->pFilePath->setText(fileName);
   };
   auto getQFilePath = [this]() {
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    this->qFilePath->setText(fileName);
+    if (!fileName.isEmpty()) this->qFilePath->setText(fileName);
   };
   auto getRFilePath = [this]() {
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    this->rFilePath->setText(fileName);
+    if (!fileName.isEmpty()) this->rFilePath->setText(fileName);
   };
   connect(pBrowseButton, &QPushButton::clicked, getPFilePath);
   connect(qBrowseButton, &QPushButton::clicked, getQFilePath);
@@ -186,7 +189,7 @@ void NewRaceDialog::on_addSeason()
 {
   AddSeason *newSeason = new AddSeason(this);
   connect(newSeason,
-          &AddSeason::added,
+          &AddSeason::addedSeason,
           this,
           &NewRaceDialog::updateSeasonsCombo);
   newSeason->open();
@@ -195,30 +198,55 @@ void NewRaceDialog::on_addSeason()
 void NewRaceDialog::updateSeasonsCombo()
 {
   seasonW->setSeasons(
-    dynamic_cast<MainWindow *>(parent())->getUserData()->getSeasons());
+    static_cast<MainWindow *>(parent())->getUserData()->getSeasons());
 }
 
 void NewRaceDialog::accept()
 {
   try
-  {
+  {/// todo make a helper func and rework
+    Perf perf("mainW constr");///todo temp
+    int seasonId = seasonW->getSeasonData().id;
+    DBHelper dbStart;
+    // transact lifetime is try block
+    dbStart.transactionStart();
+    int raceId = dbStart.addNewRace(seasonId);
     auto p = QFile(pFilePath->text());
     auto q = QFile(qFilePath->text());
     auto r = QFile(rFilePath->text());
-    auto pid = parseFile(PQXmlParser(p));///todo fix p and q equality
-    auto qid = parseFile(PQXmlParser(q));
-    auto rid = parseFile(RXmlParser(r));
-    int seasonId = seasonW->getSeasonData().id;
-    DBHelper DB;
-    DB.addNewRace(/*RaceInputData*/ { pid, qid, rid, seasonId });
+    auto pParser = PQXmlParser(p);
+    if (pParser.getFileType() != FileType::PracticeLog)
+      throw std::runtime_error("wrong file type");
+    auto pData = pParser.getParseData();
+    auto qParser = PQXmlParser(q);
+    if (qParser.getFileType() != FileType::QualiLog)
+      throw std::runtime_error("wrong file type");
+    auto qData = qParser.getParseData();
+    auto rParser = RXmlParser(r);
+    auto rData = rParser.getParseData();
+    DBHelper dbEnd;///todo reinit of db handler due to work being done inbetween
+    int pSessionId = dbEnd.addNewSession(getFileTypeById(pParser.getFileType()),
+                                         raceId,
+                                         pData);
+    dbEnd.addNewResults(pData, pSessionId);
+    int qSessionId = dbEnd.addNewSession(getFileTypeById(qParser.getFileType()),
+                                         raceId,
+                                         qData);
+    dbEnd.addNewResults(qData, qSessionId);
+    int rSessionId = dbEnd.addNewSession(getFileTypeById(rParser.getFileType()),
+                                         raceId,
+                                         rData);
+    dbEnd.addNewResults(rData, rSessionId);
 
+    dbEnd.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
+    dbEnd.transactionCommit();
     QDialog::accept();
+    emit addedRace();
   } catch (std::exception &e)
   {
     QErrorMessage *msg = new QErrorMessage(this);
     msg->showMessage(QString("can't add the race results:") + e.what());
     msg->show();
-    ///todo add revert db changes if failed
   }
 }
 //==========================RmSeason=================================//
@@ -244,18 +272,21 @@ RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
 
 void RmSeasonResDialog::acceptedSg()
 {
-  if (seasonW->getSeasons().size() <= 1)
+  try
   {
-    QErrorMessage *msg = new QErrorMessage(this);///wrap the error call
-    msg->showMessage("can't delete the last season");
+    if (seasonW->getSeasons().size() <= 1)
+      throw std::runtime_error("can't delete the only season");
+    int currSeason = seasonW->getSeasonData().id;
+    DBHelper db;
+    db.delSeasonData(currSeason);
+    QDialog::accept();
+    emit removed();
+  } catch (std::exception &e)
+  {
+    QErrorMessage *msg = new QErrorMessage(this);
+    msg->showMessage(QString("seasons deletetion error: ") + e.what());
     msg->show();
-    return;
   }
-  int currSeason = seasonW->getSeasonData().id;
-  DBHelper db;
-  db.delSeasonData(currSeason);
-  QDialog::accept();
-  ///todo add emmit signal with info argument to connect with slot in main to update all gui
 }
 //==========================ChooseSeason=================================//
 ChooseSeason::ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent)
@@ -328,7 +359,7 @@ void AddSeason::accept()
   const auto name = lineEdit->text();
   auto p = dynamic_cast<NewRaceDialog *>(parent());
   const auto seasons =
-    dynamic_cast<MainWindow *>(p->parent())->getUserData()->getSeasons();
+    static_cast<MainWindow *>(p->parent())->getUserData()->getSeasons();
   if (std::find_if(seasons.begin(),
                    seasons.end(),
                    [name](SeasonData s) { return s.name == name; })
@@ -337,7 +368,7 @@ void AddSeason::accept()
   {
     dynamic_cast<MainWindow *>(p->parent())->getUserData()->addSeason(name);
     QDialog::accept();
-    emit added();
+    emit addedSeason();
     return;
   }
   QErrorMessage *msg = new QErrorMessage(this);

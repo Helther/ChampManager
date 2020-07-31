@@ -40,7 +40,7 @@ struct RaceLogInfo
   QVector<DriverInfo> drivers;
   QVector<StringPair> incidents;
 };
-
+Q_DECLARE_METATYPE(RaceLogInfo)
 #ifdef QT_DEBUG
 inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
 {
@@ -157,4 +157,26 @@ namespace FileTypes {
   }
 }
 }// namespace parserConsts
+
+/// todo debug
+#include <chrono>
+class Perf
+{
+public:
+  Perf(const QString &inMsg)
+    : msg(inMsg), startTime(std::chrono::high_resolution_clock::now())
+  {}
+  ~Perf()
+  {
+    const auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+      endTime - startTime);
+    qDebug() << msg << " duration in mS: " << duration.count();
+  }
+
+private:
+  QString msg;
+  std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+};
+
 #endif// PARSERCONSTS_H

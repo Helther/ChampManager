@@ -333,16 +333,13 @@ QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
   return lapString;
 }
 
-int PQXmlParser::readFileContent()
+QVariant PQXmlParser::readFileContent()
 {
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
     ///qDebug() << data;/// debug
-    DBHelper dbInst;
-    int sessionId = dbInst.addNewSession(getFileTypeById(fileType), data);
-    dbInst.addNewResults(data, sessionId);
-    return sessionId;
+    return QVariant::fromValue(data);///todo just return
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()
@@ -350,16 +347,13 @@ int PQXmlParser::readFileContent()
   }
 }
 
-int RXmlParser::readFileContent()
+QVariant RXmlParser::readFileContent()
 {
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversRaceElements);
     ///qDebug() << data;/// debug
-    DBHelper dbInst;
-    int sessionId = dbInst.addNewSession(getFileTypeById(fileType), data);
-    dbInst.addNewResults(data, sessionId);
-    return sessionId;
+    return QVariant::fromValue(data);///todo just return
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()
@@ -391,7 +385,7 @@ FileType ModParser::readFileType()
     "fileModType read error: No valid log type was found");
 }
 
-int RCDParser::readFileContent()
+QVariant RCDParser::readFileContent()
 {
   try
   {
@@ -462,7 +456,7 @@ DriverStats RCDParser::readRCD()
   return data;
 }
 
-int VEHParser::readFileContent()
+QVariant VEHParser::readFileContent()
 {
   try
   {
@@ -507,7 +501,7 @@ QVector<StringPair> VEHParser::readVEH()
   return data;
 }
 
-int HDVParser::readFileContent()
+QVariant HDVParser::readFileContent()
 {
   try
   {
