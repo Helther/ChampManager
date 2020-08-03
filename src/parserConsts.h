@@ -65,6 +65,7 @@ namespace seqElems {
   // all values would be strings, except when specified
   inline const QVector<QString> MainLogElements{
     "PlayerFile",// str
+    "TimeString",// str
     "Mod",// str
     "TrackVenue",
     "RaceLaps"// int
@@ -169,9 +170,9 @@ public:
   ~Perf()
   {
     const auto endTime = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       endTime - startTime);
-    qDebug() << msg << " duration in mS: " << duration.count();
+    qDebug() << msg << " duration in mcS: " << duration.count();
   }
 
 private:

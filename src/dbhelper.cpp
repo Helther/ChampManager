@@ -37,6 +37,7 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        (ses_id INTEGER not null,
                                        race_fid INTEGER not null,
                                        type TEXT,
+                                       TimeString TEXT,
                                        TrackVenue TEXT,
                                        RaceLaps INTEGER,
                                        constraint k_ses_id primary key (ses_id),
@@ -139,11 +140,9 @@ int DBHelper::addNewRace(int seasonId) const
 int DBHelper::addNewSeason(const QString &name) const
 {
   QSqlQuery q(dbConn);
-  QString query{ "insert into " };
-  query.append(DBTableNames::Seasons);
-  query.append(" (name) values (\"");
-  query.append(name);
-  query.append("\")");
+  auto query = QString("insert into %1 (name) values ( \"%2\" )")
+                 .arg(DBTableNames::Seasons)
+                 .arg(name);
   if (!q.exec(query)) checkSqlError("add new season error", q.lastError());
   return q.lastInsertId().toInt();
 }
@@ -176,6 +175,39 @@ QVector<QVector<QVariant>> DBHelper::getData(const QString &tableName) const
   return result;
 }
 
+QVector<RaceData> DBHelper::getRaceData(int seasonId)
+{
+  QSqlQuery q(dbConn);
+  if (!q.exec(QString("select race_id from %1 where seasons_fid = %2")
+                .arg(DBTableNames::Races)
+                .arg(seasonId)))
+    checkSqlError("get race data, race list error", q.lastError());
+  QVector<RaceData> retData;
+  while (q.next())
+  {
+    retData.push_back(RaceData());
+    retData.last().raceId = q.value(0).value<int>();
+  }
+  for (auto &race : retData)
+  {
+    if (!q.exec(QString("select ses_id, type, TimeString, TrackVenue, RaceLaps "
+                        "from %1 where race_fid = %2")
+                  .arg(DBTableNames::Sessions)
+                  .arg(race.raceId)))
+      checkSqlError("get race data, session list error", q.lastError());
+    while (q.next())
+    {
+      race.sessions.push_back(
+        { q.value(0).value<int>(), q.value(1).value<QString>() });
+    }
+    q.seek(0);
+    race.date = q.value(2).value<QString>();
+    race.track = q.value(3).value<QString>();
+    race.laps = q.value(4).value<int>();
+  }
+  return retData;
+}
+
 QSqlError DBHelper::initResultsTables() const
 {
   QSqlQuery init(dbConn);
@@ -191,6 +223,10 @@ int DBHelper::addNewSession(const QString &type,
                             int raceId,
                             const RaceLogInfo &sesData) const
 {
+  const auto time =
+    std::find_if(sesData.SeqElems.begin(),
+                 sesData.SeqElems.end(),
+                 [](const auto &i) { return i.first == "TimeString"; });
   const auto trackName =
     std::find_if(sesData.SeqElems.begin(),
                  sesData.SeqElems.end(),
@@ -199,15 +235,17 @@ int DBHelper::addNewSession(const QString &type,
     std::find_if(sesData.SeqElems.begin(),
                  sesData.SeqElems.end(),
                  [](const auto &i) { return i.first == "RaceLaps"; });
-  if (trackName == sesData.SeqElems.end() || lapsNum == sesData.SeqElems.end())
+  if (trackName == sesData.SeqElems.end() || lapsNum == sesData.SeqElems.end()
+      || time == sesData.SeqElems.end())
     throw std::runtime_error("add new session error: data incomplete");
 
   QSqlQuery q(dbConn);
-  QString query{ "insert into " };
-  query.append(DBTableNames::Sessions);
-  query.append(" (type, TrackVenue, Racelaps, race_fid) values (?, ?, ?, ?)");
+  QString query{ QString("insert into %1 (type, TimeString, TrackVenue, "
+                         "Racelaps, race_fid) values (?, ?, ?, ?, ?)")
+                   .arg(DBTableNames::Sessions) };
   q.prepare(query);
   q.addBindValue(type);
+  q.addBindValue(time->second);
   q.addBindValue(trackName->second);
   q.addBindValue(lapsNum->second);
   q.addBindValue(raceId);
@@ -227,9 +265,11 @@ void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
   for (auto id : ids)
   {
     QSqlQuery q(dbConn);
-    if (!q.exec("select TrackVenue, RaceLaps from " + DBTableNames::Sessions
-                + " where ses_id = " + QString::number(id)))
-      checkSqlError("session validity error", q.lastError());
+    auto query =
+      QString("select TrackVenue, RaceLaps from %1 where ses_id = %2")
+        .arg(DBTableNames::Sessions)
+        .arg(QString::number(id));
+    if (!q.exec(query)) checkSqlError("session validity error", q.lastError());
     q.next();
     if (first)
     {
@@ -253,9 +293,10 @@ void DBHelper::delEntryFromTable(const QString &table,
   // exec this to activate Fkeys On actions
   if (!q.exec("PRAGMA foreign_keys=ON"))
     checkSqlError("delete table entry error", q.lastError());
-  QString query{ "delete from " };
-  query.append(table);
-  query.append(" where " + idCol + " = " + QString::number(id));
+  QString query{ QString("delete from %1 where %2 = %3")
+                   .arg(table)
+                   .arg(idCol)
+                   .arg(QString::number(id)) };
   if (!q.exec(query)) checkSqlError("delete table entry error", q.lastError());
 }
 

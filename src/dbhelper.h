@@ -9,7 +9,7 @@ inline const QString RaceRes = "race_results";
 inline const QString Seasons = "seasons";
 inline const QString Sessions = "sessions";
 }
-
+// data necessary for sessions compatabilty check
 struct SessionData
 {
   QString venue;
@@ -20,6 +20,21 @@ struct SessionData
   }
   bool operator!=(const SessionData &rhs) const { return !(*this == rhs); }
 };
+
+// data of all sessions in a race needed for results display
+struct RaceData
+{
+  int raceId;
+  QString track;
+  int laps;
+  QString date;
+  QVector<QPair<int, QString>> sessions;// first - session id, second - type
+};
+
+//======================== DataBase interface =====================//
+// class that holds db connection object and perfoms all procedures
+// that involve db write or read
+//===========
 /// todo add incidents save into db
 class DBHelper
 {
@@ -27,9 +42,11 @@ public:
   DBHelper();
   ~DBHelper();
 
-  /* no copying*/
+  /* no copying or moving*/
   DBHelper(const DBHelper &) = delete;
   DBHelper operator=(const DBHelper &) = delete;
+  DBHelper(DBHelper &&) = delete;
+  DBHelper operator=(DBHelper &&) = delete;
 
   // called when first time launch the app returns false if can't find the db
   bool initDB() const;
@@ -47,13 +64,15 @@ public:
                     const RaceLogInfo &sesData) const;
   // deletes tables entries in races and rec_res and sessions tables cirresponding to a given season
   void delSeasonData(int ses_id) const;
-
+  // checks whether sessions a part of the same race
   void checkSessionsValidity(const QVector<int> &ids) const;
-
+  // deletes row with a given id in a table, where primary column name is idCol
   void
     delEntryFromTable(const QString &table, const QString &idCol, int id) const;
-
+  // select from all table columns
   QVector<QVector<QVariant>> getData(const QString &tableName) const;
+  // return data for building results item model
+  QVector<RaceData> getRaceData(int seasonId);
 
   void transactionStart()
   {
@@ -75,8 +94,8 @@ public:
   void viewTable(const QString &tableName) const;
 
 private:
+  // creates tables in dataBase
   QSqlError initResultsTables() const;
-  // checks if given sessions are from the same race and returns data needed for addRace
 
 
   //==========================misc============================//

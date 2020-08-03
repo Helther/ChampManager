@@ -11,16 +11,17 @@
 #include <QFileDialog>
 #include <parser.h>
 #include <dbhelper.h>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
-  : QMainWindow(parent), ui(new Ui::MainWindow)
+  : QMainWindow(parent), ui(new Ui::MainWindow), tabW(new QTabWidget),
+    resultsW(new Resultswindow)
 {
+  //data init
+  initData();
   ui->setupUi(this);
-
-  resultsW = new Resultswindow;
-  tabW = new QTabWidget;
   tabW->addTab(resultsW, "Results");
-  tabW->addTab(new QWidget(), "Reserved");
+  tabW->addTab(new QWidget(), "Reserved");///todo temp
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addWidget(tabW);
   ui->centralwidget->setLayout(layout);
@@ -33,16 +34,21 @@ MainWindow::MainWindow(QWidget *parent)
     if (db.exists()) db.remove();
   };
   connect(this, &QWidget::destroyed, on_destroyed);
-
-
-  //data init
-  initData();
+  connect(this,
+          &MainWindow::on_resultsChanged,
+          resultsW,
+          &Resultswindow::on_resultsChanged);
 }
 
 MainWindow::~MainWindow()
 {
   delete ui;
   delete userData;
+}
+
+void MainWindow::on_seasonsChanged(const SeasonData)
+{
+  resultsW->updateSeasons(getUserData()->getSeasons(), false);
 }
 
 
@@ -80,6 +86,7 @@ void MainWindow::initData()
     msg->show();
   }
   ///todo add init results
+  resultsW->init(getUserData()->getSeasons());
 }
 
 void MainWindow::createActions()
@@ -95,7 +102,9 @@ void MainWindow::createActions()
   exitAct = new QAction("Exit");
   connect(exitAct, &QAction::triggered, this, &MainWindow::close);
   licenseAct = new QAction("License info");
+  connect(licenseAct, &QAction::triggered, this, &MainWindow::license);
   aboutAct = new QAction("About");
+  connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 }
 
 void MainWindow::createMenus()
@@ -112,33 +121,29 @@ void MainWindow::createMenus()
 //==========================NewRace=================================//
 NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
                              QWidget *parent)
-  : QDialog(parent)
+  : QDialog(parent), seasonW(new ChooseSeason(seasons)),
+    addSeasonButton(new QPushButton("Add season")),
+    pLabel(new QLabel("Select Practice log:")),
+    qLabel(new QLabel("Select Qualifying log:")),
+    rLabel(new QLabel("Select Race log:")), pFilePath(new QLineEdit),
+    qFilePath(new QLineEdit), rFilePath(new QLineEdit),
+    pBrowseButton(new QPushButton("Browse")),
+    qBrowseButton(new QPushButton("Browse")),
+    rBrowseButton(new QPushButton("Browse"))
 {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle("Add New Race");
-  seasonW = new ChooseSeason(seasons);/// todo set to current season
-  addSeasonButton = new QPushButton("Add season");
   connect(addSeasonButton,
           &QPushButton::clicked,
           this,
           &NewRaceDialog::on_addSeason);
-  pLabel = new QLabel("Select Practice log:");
-  qLabel = new QLabel("Select Qualifying log:");
-  rLabel = new QLabel("Select Race log:");
-  pFilePath = new QLineEdit();
-  qFilePath = new QLineEdit();
-  rFilePath = new QLineEdit();
-
   ///todo debug
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  pFilePath->setText(testPath + "P.xml");
-  qFilePath->setText(testPath + "Q.xml");
-  rFilePath->setText(testPath + "R.xml");
-
-  pBrowseButton = new QPushButton("Browse");
-  qBrowseButton = new QPushButton("Browse");
-  rBrowseButton = new QPushButton("Browse");
+  pFilePath->setText(unixPath + "P.xml");
+  qFilePath->setText(unixPath + "Q.xml");
+  rFilePath->setText(unixPath + "R.xml");
+  ///
   auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
@@ -165,24 +170,15 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   connect(rBrowseButton, &QPushButton::clicked, getRFilePath);
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-  QGridLayout *mainLayout = new QGridLayout;
-  mainLayout->addWidget(seasonW, 0, 0);
-  mainLayout->addWidget(addSeasonButton, 0, 1);
-  mainLayout->addWidget(pLabel, 1, 0);
-  mainLayout->addWidget(pFilePath, 1, 1);
-  mainLayout->addWidget(pBrowseButton, 1, 2);
-  mainLayout->addWidget(qLabel, 2, 0);
-  mainLayout->addWidget(qFilePath, 2, 1);
-  mainLayout->addWidget(qBrowseButton, 2, 2);
-  mainLayout->addWidget(rLabel, 3, 0);
-  mainLayout->addWidget(rFilePath, 3, 1);
-  mainLayout->addWidget(rBrowseButton, 3, 2);
-  mainLayout->addWidget(buttonBox, 4, 0);
-  setLayout(mainLayout);
+  connect(this,
+          &NewRaceDialog::addedRace,
+          static_cast<MainWindow *>(parent),
+          &MainWindow::on_resultsChanged);
+
+  layoutSetup();
 }
 
 void NewRaceDialog::on_addSeason()
@@ -195,21 +191,22 @@ void NewRaceDialog::on_addSeason()
   newSeason->open();
 }
 
-void NewRaceDialog::updateSeasonsCombo()
+void NewRaceDialog::updateSeasonsCombo(const SeasonData &season)
 {
-  seasonW->setSeasons(
-    static_cast<MainWindow *>(parent())->getUserData()->getSeasons());
+  auto currentSeasons = seasonW->getSeasons();
+  currentSeasons.push_back(season);
+  seasonW->setSeasons(currentSeasons);
 }
 
 void NewRaceDialog::accept()
 {
   try
   {/// todo make a helper func and rework
-    Perf perf("mainW constr");///todo temp
+    Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
     DBHelper dbStart;
     // transact lifetime is try block
-    dbStart.transactionStart();
+    dbStart.transactionStart();// transact start
     int raceId = dbStart.addNewRace(seasonId);
     auto p = QFile(pFilePath->text());
     auto q = QFile(qFilePath->text());
@@ -239,15 +236,32 @@ void NewRaceDialog::accept()
     dbEnd.addNewResults(rData, rSessionId);
 
     dbEnd.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
-    dbEnd.transactionCommit();
+
+    dbEnd.transactionCommit();// transact commit
     QDialog::accept();
-    emit addedRace();
+    emit addedRace(seasonW->getSeasonData());
   } catch (std::exception &e)
   {
-    QErrorMessage *msg = new QErrorMessage(this);
-    msg->showMessage(QString("can't add the race results:") + e.what());
-    msg->show();
+    QMessageBox::critical(this, "Add Results Error", e.what());
   }
+}
+
+void NewRaceDialog::layoutSetup()
+{
+  QGridLayout *mainLayout = new QGridLayout;
+  mainLayout->addWidget(seasonW, 0, 0);
+  mainLayout->addWidget(addSeasonButton, 0, 1);
+  mainLayout->addWidget(pLabel, 1, 0);
+  mainLayout->addWidget(pFilePath, 1, 1);
+  mainLayout->addWidget(pBrowseButton, 1, 2);
+  mainLayout->addWidget(qLabel, 2, 0);
+  mainLayout->addWidget(qFilePath, 2, 1);
+  mainLayout->addWidget(qBrowseButton, 2, 2);
+  mainLayout->addWidget(rLabel, 3, 0);
+  mainLayout->addWidget(rFilePath, 3, 1);
+  mainLayout->addWidget(rBrowseButton, 3, 2);
+  mainLayout->addWidget(buttonBox, 4, 0);
+  setLayout(mainLayout);
 }
 //==========================RmSeason=================================//
 RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
@@ -264,6 +278,11 @@ RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
           this,
           &RmSeasonResDialog::acceptedSg);
   connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+  connect(this,
+          &RmSeasonResDialog::removed,
+          static_cast<MainWindow *>(parent),
+          &MainWindow::on_seasonsChanged);
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addWidget(seasonW);
   layout->addWidget(buttonBox);
@@ -276,24 +295,21 @@ void RmSeasonResDialog::acceptedSg()
   {
     if (seasonW->getSeasons().size() <= 1)
       throw std::runtime_error("can't delete the only season");
-    int currSeason = seasonW->getSeasonData().id;
+    auto currSeason = seasonW->getSeasonData();
     DBHelper db;
-    db.delSeasonData(currSeason);
+    db.delSeasonData(currSeason.id);
     QDialog::accept();
-    emit removed();
+    emit removed(currSeason);
   } catch (std::exception &e)
   {
-    QErrorMessage *msg = new QErrorMessage(this);
-    msg->showMessage(QString("seasons deletetion error: ") + e.what());
-    msg->show();
+    QMessageBox::critical(this, "Error", e.what());
   }
 }
 //==========================ChooseSeason=================================//
 ChooseSeason::ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent)
-  : QWidget(parent), seasonsCopy(seasons)
+  : QWidget(parent), seasonsCopy(seasons),
+    seasonsLabel(new QLabel("Choose a season:")), seasonsCombo(new QComboBox)
 {
-  seasonsLabel = new QLabel("Choose a season:");
-  seasonsCombo = new QComboBox();
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(seasonsLabel);
   layout->addWidget(seasonsCombo);
@@ -315,30 +331,7 @@ void ChooseSeason::setSeasons(const QVector<SeasonData> &sData)
     seasonsCombo->addItem(i.name, QVariant::fromValue(i));
 }
 //==========================UserData=================================//
-UserData::UserData() { init(); }
 
-void UserData::init() { updateSeasons(); }
-
-void UserData::addSeason(const QString &name)
-{
-  DBHelper db;
-  int id = db.addNewSeason(name);
-  seasons.push_back(/*SeasonData*/ { id, name });
-}
-
-void UserData::updateSeasons()
-{
-  DBHelper db;
-  if (!seasons.isEmpty()) seasons.clear();
-  auto seasonsTable = db.getData(DBTableNames::Seasons);
-  for (const auto &i : seasonsTable)
-  {
-    SeasonData newSData;
-    newSData.id = i.at(0).toInt();
-    newSData.name = i.at(1).toString();
-    seasons.push_back(newSData);
-  }
-}
 //==========================AddSeason=================================//
 AddSeason::AddSeason(QWidget *parent) : QDialog(parent)
 {
@@ -348,6 +341,12 @@ AddSeason::AddSeason(QWidget *parent) : QDialog(parent)
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+  auto p = dynamic_cast<NewRaceDialog *>(parent);
+  connect(this,
+          &AddSeason::addedSeason,
+          static_cast<MainWindow *>(p->parent()),
+          &MainWindow::on_seasonsChanged);
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addWidget(lineEdit);
   layout->addWidget(buttonBox);
@@ -366,12 +365,11 @@ void AddSeason::accept()
         == seasons.end()
       && name.size() > 0)
   {
-    dynamic_cast<MainWindow *>(p->parent())->getUserData()->addSeason(name);
+    auto newSeason =
+      static_cast<MainWindow *>(p->parent())->getUserData()->addSeason(name);
     QDialog::accept();
-    emit addedSeason();
+    emit addedSeason(newSeason);
     return;
   }
-  QErrorMessage *msg = new QErrorMessage(this);
-  msg->showMessage("can't add the season");
-  msg->show();
+  QMessageBox::critical(this, "Error", "can't add the season");
 }

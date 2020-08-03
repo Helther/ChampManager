@@ -9,9 +9,9 @@ add_executable(ChampManager
   parser.cpp
   dbhelper.cpp
   resultswindow.cpp
-  resultswindow.ui
   mainwindow.cpp
   mainwindow.ui
+  appdata.cpp
   )
 
 target_compile_features(ChampManager PRIVATE cxx_std_17)

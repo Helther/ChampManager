@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <resultswindow.h>
 #include <QDialog>
+#include <appdata.h>
 #include <QtDebug>/// todo debug
 //forward decl
 class UserData;
@@ -24,22 +25,35 @@ public:
     assert(userData != nullptr);///debug
     return userData;
   }
+signals:
+  void on_resultsChanged(const SeasonData &season);
+public slots:
+  void on_seasonsChanged(const SeasonData);
 
-private:
-  Ui::MainWindow *ui;
-  QTabWidget *tabW;
-  Resultswindow *resultsW;
-  UserData *userData;
-  //===================Menus & Actions=====================//
+
+  //============Menus & Actions===========//
 private slots:
+  // called when new race added
   void on_addNewRace();
+  // called when season was removed
   void on_rmSeasonRes();
+  // about menu
+  void about() {}/// todo define
+  // license menu
+  void license() {}/// todo define
 
 private:
+  // initializes user data
   void initData();
+  // creates actions for menus
   void createActions();
   void createMenus();
 
+  UserData *userData;
+  //=========== Widgets ==============//
+  Ui::MainWindow *ui;
+  QTabWidget *tabW;
+  Resultswindow *resultsW;
   QMenu *fileMenu;
   QMenu *helpMenu;
   QAction *newRaceAct;
@@ -56,13 +70,6 @@ class QComboBox;
 class QLabel;
 class QLineEdit;
 //
-struct SeasonData
-{
-  int id;
-  QString name;
-  ///add other info like teams and drivers lists
-};
-Q_DECLARE_METATYPE(SeasonData)
 
 //====================== Choose Season ============================//
 class ChooseSeason : public QWidget
@@ -91,7 +98,7 @@ public:
 public slots:
   void acceptedSg();
 signals:
-  void removed();/// todo add connect for res widget update slot
+  void removed(const SeasonData &season);
 
 private:
   ChooseSeason *seasonW;
@@ -107,30 +114,33 @@ public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
 signals:
-  void addedRace();///todo connect to results widget update
+  void
+    addedRace(const SeasonData &season);///todo connect to results widget update
 private slots:
   void on_addSeason();
-  void updateSeasonsCombo();
+  void updateSeasonsCombo(const SeasonData &season);
 
 private:
   void accept() override;
+  void layoutSetup();
+  //================== Widgets ===================//
   ChooseSeason *seasonW;
   QPushButton *addSeasonButton;
   //practice, quali and race setters
   QLabel *pLabel;
-  QLineEdit *pFilePath;
-  QPushButton *pBrowseButton;
   QLabel *qLabel;
-  QLineEdit *qFilePath;
-  QPushButton *qBrowseButton;
   QLabel *rLabel;
+  QLineEdit *pFilePath;
+  QLineEdit *qFilePath;
   QLineEdit *rFilePath;
+  QPushButton *pBrowseButton;
+  QPushButton *qBrowseButton;
   QPushButton *rBrowseButton;
 
   QDialogButtonBox *buttonBox;
 };
 
-
+//======================Add New Season Dialog===========================//
 class AddSeason : public QDialog
 {
   Q_OBJECT
@@ -139,32 +149,12 @@ public:
   explicit AddSeason(QWidget *parent = nullptr);
 
 signals:
-  void addedSeason();///todo connect to results widget update
+  void addedSeason(const SeasonData &season);
 
 private:
   void accept() override;
   QLineEdit *lineEdit;
   QDialogButtonBox *buttonBox;
-};
-
-//===========================User data============================//
-
-// holds all meta data (currently only seasons info)
-class UserData
-{
-public:
-  UserData();
-
-  void init();
-  void addSeason(const QString &name);
-  void updateSeasons();
-  SeasonData getCurrentSeason() { return currentSeason; }
-  QVector<SeasonData> getSeasons() { return seasons; }
-  void setCurrentSeason(SeasonData season) { currentSeason = season; }
-
-private:
-  SeasonData currentSeason;
-  QVector<SeasonData> seasons;
 };
 
 #endif// MAINWINDOW_H

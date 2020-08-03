@@ -21,6 +21,7 @@ SOURCES += \
     src/dbhelper.cpp \
     src/resultswindow.cpp \
     src/mainwindow.cpp \
+    src/appdata.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -33,7 +34,7 @@ HEADERS += \
     src/dbhelper.h \
     src/resultswindow.h \
     src/mainwindow.h \
+    src/appdata.h \
 
 FORMS += \
-    src/resultswindow.ui \
     src/mainwindow.ui \

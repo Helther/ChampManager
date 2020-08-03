@@ -91,9 +91,8 @@ int main(int argc, char *argv[])
     return -1;
   }
 */
+#endif
   MainWindow mainW;
   mainW.show();
-#endif
-
   return app.exec();
 }

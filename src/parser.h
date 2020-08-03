@@ -18,7 +18,11 @@ template<typename T> struct WriteDataInput
   T oldVal;
   T newVal;
 };
-
+//========================= Parser hierarchy =====================//
+// classes that hold file of certain xml logs and settings config types
+// for the purposes of reading them and represention it's data in
+// in a convenient form for database, or for writing new values
+//=======
 class Parser
 {
 public:
@@ -42,10 +46,10 @@ public:
   void setFileData(const QString &inData) { fileData = inData; }
 
 protected:
-  // read file for all info, depending on filetype and return its id
+  // read file for all info, depending on filetype and its data
   virtual QVariant readFileContent() = 0;
 
-  //===================================class data======================
+  //==============class data==================//
   QString fileName;
   QString fileData;
   FileType fileType;
