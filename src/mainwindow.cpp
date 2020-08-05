@@ -139,11 +139,9 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
           this,
           &NewRaceDialog::on_addSeason);
   ///todo debug
-  QString testPath = "D:/Dev/PARSER_tests/";
-  QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  pFilePath->setText(testPath + "P.xml");
-  qFilePath->setText(testPath + "Q.xml");
-  rFilePath->setText(testPath + "R.xml");
+  pFilePath->setText(TESTDATA_PATH + QString("P.xml"));
+  qFilePath->setText(TESTDATA_PATH + QString("Q.xml"));
+  rFilePath->setText(TESTDATA_PATH + QString("R.xml"));
   ///
   auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
