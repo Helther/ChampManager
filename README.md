@@ -14,10 +14,13 @@ The list of included features so far:
 ## Usage
 The app consists of tabs, of which only results tab available for now.
 Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
-[select sessions]
-Adding new races or adding/deleting seasons are done by accessing main menu 
-[gif add race season switch beetween]
 
+[select sessions]
+* Navigating the results tab * 
+Adding new races or adding/deleting seasons are done by accessing main menu 
+
+[gif add race season switch beetween]
+* Adding new results and viewing the changes *
 ## Dependencies
 1. A C++ compiler that supports C++17.
 The following compilers should work:
