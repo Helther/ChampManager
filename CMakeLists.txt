@@ -47,3 +47,6 @@ if(ENABLE_TESTING)
   add_subdirectory(tests)
 endif()
 
+set(TESTDATA_PATHS "${CMAKE_CURRENT_SOURCE_DIR}")
+string(APPEND TESTDATA_PATHS "/tests/testsdata/")
+add_compile_definitions( TESTDATA_PATH="${TESTDATA_PATHS}" )
