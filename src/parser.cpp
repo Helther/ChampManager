@@ -283,7 +283,7 @@ QVector<DriverInfo> XmlParser::processDrivers(QXmlStreamReader &xml,
       currentDriver.SeqElems.push_back({ elem, xml.text().toString() });
     }
     drivers.push_back(currentDriver);
-  }
+  }/// todo there may not be BestLapTime and Lap at all
   return drivers;
 }
 
