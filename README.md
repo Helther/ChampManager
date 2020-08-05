@@ -4,8 +4,9 @@
 Championship Manager is a cross platform desktop application accessing log files, which has been created after participating in a race weekend by a rFactor 2 api.
 After adding logs to Championship Manager, they get proccessed and stored in SQLite database instance for later viewing via the results gui.
 
-[screen]
+<img align=center src="rsc/sreenshot1.png" width='1024' alt='Screen'>
 
+_Screenshot of results tab of main window_
 ## Features
 The list of included features so far:
  * adding race logs in a weekend format (grouping)
