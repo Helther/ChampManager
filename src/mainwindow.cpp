@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->centralwidget->setLayout(layout);
   createActions();
   createMenus();
+  setWindowIcon(QIcon("://better_icon.png"));
   /*
   /// todo temp while no init
   auto on_destroyed = []() {

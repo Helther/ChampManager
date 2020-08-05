@@ -62,13 +62,10 @@ private:
   SeasonData currentSeason;
   DBHelper *dbHandler;
   // list of db column id to hide in a table view for P,Q session
-  static constexpr std::array<int, 6> resultsColumnsToHideR{
-    0, 1, 3, 4, 10, 13
-  };
+  const std::array<int, 6> resultsColumnsToHideR{ 0, 1, 3, 4, 10, 13 };
   // for R sessions
-  static constexpr std::array<int, 10> resultsColumnsToHidePQ{ 0,  1,  3,  4,
-                                                               9,  10, 11, 13,
-                                                               15, 16 };
+  const std::array<int, 10> resultsColumnsToHidePQ{ 0,  1,  3,  4,  9,
+                                                    10, 11, 13, 15, 16 };
   //================== Widgets ===================//
   QTreeView *treeView;
   QStandardItemModel *itemModel;

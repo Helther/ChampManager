@@ -32,7 +32,8 @@ set(SOURCES src/main.cpp
     src/resultswindow.cpp
     src/mainwindow.cpp
     src/appdata.cpp
-    src/mainwindow.ui)
+    src/mainwindow.ui
+    rsc/cm.qrc)
 add_executable(${project_name} ${SOURCES} )
 target_link_libraries(${project_name} PRIVATE project_options project_warnings Qt5::Core Qt5::Widgets Qt5::Sql)
 

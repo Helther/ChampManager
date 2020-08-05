@@ -20,7 +20,7 @@ Resultswindow::Resultswindow(QWidget *parent)
 {
   layoutSetup();
   setItemHeaderData();
-  // todo wrap around in view setter
+  /// todo wrap around in view setter
   treeView->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
   treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
   treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -104,9 +104,7 @@ void Resultswindow::on_selectionChanged(const QItemSelection &curSelection)
                   == parserConsts::FileTypes::getFileTypeById(
                     parserConsts::FileTypes::FileType::RaceLog);
     updateTableModel(sessionData.first, isRace);
-    return;
   }
-  qDebug() << "bad selection changed";
 }
 
 void Resultswindow::on_treeViewContextMenu(const QPoint &point)
@@ -117,9 +115,7 @@ void Resultswindow::on_treeViewContextMenu(const QPoint &point)
     auto currentItem = itemModel->itemFromIndex(index);
     if (currentItem != nullptr && currentItem->parent() == nullptr)
       treeMenu->exec(treeView->viewport()->mapToGlobal(point));
-    return;
   }
-  qDebug() << "bad selection";
 }
 
 void Resultswindow::on_tableViewContextMenu(const QPoint &point)
@@ -141,10 +137,8 @@ void Resultswindow::on_delRaceAct()
       DBHelper db;
       db.delEntryFromTable(DBTableNames::Races, "race_id", raceId);
       on_resultsChanged(currentSeason);
-      return;
     }
   }
-  qDebug() << "bad del race act";
 }
 
 void Resultswindow::on_compareLapsAct()
@@ -169,14 +163,16 @@ void Resultswindow::on_compareLapsAct()
                              bLap.data().toString() });
       continue;
     }
-    qDebug() << "bad compare data gather";
-    return;///todo
+    throw std::runtime_error("Compare Laps Creation error");
   }
 
   QWidget *lapsW = new QWidget;
   lapsW->setAttribute(Qt::WA_DeleteOnClose);
   lapsW->setWindowTitle("Lap Times Compare");
-  QHBoxLayout *lapsLayout = new QHBoxLayout;
+  QGridLayout *lapsLayout = new QGridLayout;
+  int rowCounter = 0;
+  int currentRow = 0;
+  int maxRowElemCount = 5;
   for (const auto &i : lapsData)
   {
     LapsCompModel *lapsModel = new LapsCompModel(i);
@@ -185,12 +181,19 @@ void Resultswindow::on_compareLapsAct()
     lapsView->setAlternatingRowColors(true);
     lapsView->setModel(lapsModel);
     lapsView->resizeColumnsToContents();
+    lapsView->resizeRowsToContents();
     QGroupBox *lapsGroup = new QGroupBox;
     QGridLayout *lapsGrid = new QGridLayout;
     lapsGrid->addWidget(new QLabel("Driver: " + i.driver), 0, 0);
-    lapsGrid->addWidget(lapsView, 1, 0, 1, 2);
+    lapsGrid->addWidget(lapsView, 1, 0, 2, 2);
     lapsGroup->setLayout(lapsGrid);
-    lapsLayout->addWidget(lapsGroup);
+    lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
+    rowCounter++;
+    if (rowCounter > maxRowElemCount)
+    {
+      currentRow++;
+      rowCounter = 0;
+    }
   }
   lapsW->setLayout(lapsLayout);
   lapsW->show();/// todo add sizing and stretch
@@ -225,8 +228,6 @@ void Resultswindow::updateItemModel(const SeasonData &season)
   treeView->setModel(itemModel);
 
   setItemHeaderData();
-  for (int i = 0; i < itemModel->columnCount(); ++i)
-    treeView->resizeColumnToContents(i);
 }
 
 void Resultswindow::updateTableModel(int sessionId, bool isRace)
@@ -251,6 +252,8 @@ void Resultswindow::setItemHeaderData()
   itemModel->setHorizontalHeaderItem(0, new QStandardItem("Track/Session"));
   itemModel->setHorizontalHeaderItem(1, new QStandardItem("Num Of Laps"));
   itemModel->setHorizontalHeaderItem(2, new QStandardItem("Date-Time"));
+  for (int i = 0; i < itemModel->columnCount(); ++i)
+    treeView->resizeColumnToContents(i);
 }
 
 void Resultswindow::createContextMenus()
@@ -324,6 +327,8 @@ QVariant LapsCompModel::data(const QModelIndex &index, int role) const
       {//change font only for bestlap
         QFont boldFont;
         boldFont.setBold(true);
+        boldFont.setItalic(true);
+        boldFont.setUnderline(true);
         return boldFont;
       }
       break;
