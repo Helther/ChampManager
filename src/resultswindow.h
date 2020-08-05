@@ -3,6 +3,14 @@
 
 #include <QWidget>
 #include <appdata.h>
+#include <QAbstractTableModel>
+
+struct LapsComp
+{
+  QString driver;
+  QString laps;
+  QString bestLap;
+};
 
 //forward decl
 class QTreeView;
@@ -11,6 +19,8 @@ class QComboBox;
 class QLabel;
 class QTableView;
 class QSqlTableModel;
+class DBHelper;
+class QMenu;
 //
 class Resultswindow : public QWidget
 {
@@ -18,6 +28,7 @@ class Resultswindow : public QWidget
 
 public:
   explicit Resultswindow(QWidget *parent = nullptr);
+  ~Resultswindow();
   // called when the app is opened to prepare data views
   void init(const QVector<SeasonData> &seasons);
   // sets season combo up to date with main
@@ -32,17 +43,32 @@ public slots:
 private slots:
   void on_seasonChanged(int seasonComboIndex);
   void on_selectionChanged(const QItemSelection &curSelection);
+  void on_treeViewContextMenu(const QPoint &point);
+  void on_tableViewContextMenu(const QPoint &point);
+  void on_delRaceAct();
+  void on_compareLapsAct();
+  void on_clearTableSelect();
 
 private:
   void layoutSetup();
   // builds up tree item model with race list
   void updateItemModel(const SeasonData &season);
   // builds up model for race results
-  void updateTableModel(int sessionId);
+  void updateTableModel(int sessionId, bool isRace);
   // sets race view headers names after model rebuild
   void setItemHeaderData();
+  void createContextMenus();
 
   SeasonData currentSeason;
+  DBHelper *dbHandler;
+  // list of db column id to hide in a table view for P,Q session
+  static constexpr std::array<int, 6> resultsColumnsToHideR{
+    0, 1, 3, 4, 10, 13
+  };
+  // for R sessions
+  static constexpr std::array<int, 10> resultsColumnsToHidePQ{ 0,  1,  3,  4,
+                                                               9,  10, 11, 13,
+                                                               15, 16 };
   //================== Widgets ===================//
   QTreeView *treeView;
   QStandardItemModel *itemModel;
@@ -50,6 +76,34 @@ private:
   QSqlTableModel *tableModel;
   QLabel *seasonsLabel;
   QComboBox *seasonsCombo;
+  //================== Context Menus ===================//
+  QMenu *treeMenu;
+  QMenu *tableMenu;
+};
+
+class LapsCompModel : public QAbstractTableModel
+{
+  Q_OBJECT
+
+public:
+  LapsCompModel(const LapsComp &lapsData, QObject *parent = nullptr);
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  QVariant data(const QModelIndex &index,
+                int role = Qt::DisplayRole) const override;
+  QVariant headerData(int section,
+                      Qt::Orientation orientation,
+                      int role) const override;
+
+private:
+  QStringList parseLaps(const QString &lapsString);
+  int getBLapRow();
+
+  QStringList lapTimes;
+  QString bestLap;
+  int rows;
+  int columns;
+  int bLapRow;
 };
 
 #endif// RESULTSWINDOW_H

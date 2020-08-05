@@ -42,12 +42,6 @@ public:
   DBHelper();
   ~DBHelper();
 
-  /* no copying or moving*/
-  DBHelper(const DBHelper &) = delete;
-  DBHelper operator=(const DBHelper &) = delete;
-  DBHelper(DBHelper &&) = delete;
-  DBHelper operator=(DBHelper &&) = delete;
-
   // called when first time launch the app returns false if can't find the db
   bool initDB() const;
   // deletes all tables in db, called if init has failed
@@ -67,12 +61,15 @@ public:
   // checks whether sessions a part of the same race
   void checkSessionsValidity(const QVector<int> &ids) const;
   // deletes row with a given id in a table, where primary column name is idCol
-  void
-    delEntryFromTable(const QString &table, const QString &idCol, int id) const;
+  void delEntryFromTable(const QString &table,
+                         const QString &idColName,
+                         int id) const;
   // select from all table columns
   QVector<QVector<QVariant>> getData(const QString &tableName) const;
   // return data for building results item model
   QVector<RaceData> getRaceData(int seasonId);
+
+  QSqlDatabase getDBConnection() { return dbConn; }
 
   void transactionStart()
   {
@@ -89,10 +86,10 @@ public:
     if (!dbConn.rollback())
       throw std::runtime_error("db transaction rollback error");
   }
-
+#ifdef QT_DEBUG
   ///debug
   void viewTable(const QString &tableName) const;
-
+#endif
 private:
   // creates tables in dataBase
   QSqlError initResultsTables() const;
@@ -103,6 +100,7 @@ private:
   void checkSqlError(const QString &msg, const QSqlError &error) const;
   //===========================data==========================//
   QSqlDatabase dbConn;
+  bool wasAlreadyOpen = false;
   const QString dbDriverName = "QSQLITE";
   const QString connName = "dbConn";
   const QString dbName = "CMM.db3";

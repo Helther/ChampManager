@@ -27,13 +27,14 @@ MainWindow::MainWindow(QWidget *parent)
   ui->centralwidget->setLayout(layout);
   createActions();
   createMenus();
-
+  /*
   /// todo temp while no init
   auto on_destroyed = []() {
     QFile db("CMM.db3");
     if (db.exists()) db.remove();
   };
   connect(this, &QWidget::destroyed, on_destroyed);
+  */
   connect(this,
           &MainWindow::on_resultsChanged,
           resultsW,
@@ -85,7 +86,6 @@ void MainWindow::initData()
     msg->showMessage(e.what());
     msg->show();
   }
-  ///todo add init results
   resultsW->init(getUserData()->getSeasons());
 }
 
@@ -140,9 +140,9 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   ///todo debug
   QString testPath = "D:/Dev/PARSER_tests/";
   QString unixPath = "/mnt/Media/Dev/PARSER_tests/";
-  pFilePath->setText(unixPath + "P.xml");
-  qFilePath->setText(unixPath + "Q.xml");
-  rFilePath->setText(unixPath + "R.xml");
+  pFilePath->setText(testPath + "P.xml");
+  qFilePath->setText(testPath + "Q.xml");
+  rFilePath->setText(testPath + "R.xml");
   ///
   auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
@@ -204,10 +204,10 @@ void NewRaceDialog::accept()
   {/// todo make a helper func and rework
     Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
-    DBHelper dbStart;
+    DBHelper db;
     // transact lifetime is try block
-    dbStart.transactionStart();// transact start
-    int raceId = dbStart.addNewRace(seasonId);
+    db.transactionStart();// transact start
+    int raceId = db.addNewRace(seasonId);
     auto p = QFile(pFilePath->text());
     auto q = QFile(qFilePath->text());
     auto r = QFile(rFilePath->text());
@@ -221,27 +221,25 @@ void NewRaceDialog::accept()
     auto qData = qParser.getParseData();
     auto rParser = RXmlParser(r);
     auto rData = rParser.getParseData();
-    DBHelper dbEnd;///todo reinit of db handler due to work being done inbetween
-    int pSessionId = dbEnd.addNewSession(getFileTypeById(pParser.getFileType()),
-                                         raceId,
-                                         pData);
-    dbEnd.addNewResults(pData, pSessionId);
-    int qSessionId = dbEnd.addNewSession(getFileTypeById(qParser.getFileType()),
-                                         raceId,
-                                         qData);
-    dbEnd.addNewResults(qData, qSessionId);
-    int rSessionId = dbEnd.addNewSession(getFileTypeById(rParser.getFileType()),
-                                         raceId,
-                                         rData);
-    dbEnd.addNewResults(rData, rSessionId);
+    int pSessionId =
+      db.addNewSession(getFileTypeById(pParser.getFileType()), raceId, pData);
+    db.addNewResults(pData, pSessionId);
+    int qSessionId =
+      db.addNewSession(getFileTypeById(qParser.getFileType()), raceId, qData);
+    db.addNewResults(qData, qSessionId);
+    int rSessionId =
+      db.addNewSession(getFileTypeById(rParser.getFileType()), raceId, rData);
+    db.addNewResults(rData, rSessionId);
 
-    dbEnd.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
+    db.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
 
-    dbEnd.transactionCommit();// transact commit
+    db.transactionCommit();// transact commit
     QDialog::accept();
     emit addedRace(seasonW->getSeasonData());
   } catch (std::exception &e)
   {
+    DBHelper db;
+    db.transactionRollback();
     QMessageBox::critical(this, "Add Results Error", e.what());
   }
 }

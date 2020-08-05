@@ -1,23 +1,41 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(ChampManager LANGUAGES CXX)
+set(project_name ChampManager)
+project(${project_name} LANGUAGES CXX)
 include(cmake/StandardProjectSettings.cmake)
-# TODO: use this lib
+
+#set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Link this 'library' to set the c++ standard / compile-time options requested
 add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(project_warnings INTERFACE)
 
 # standard compiler warnings
 include(cmake/CompilerWarnings.cmake)
+set_project_warnings(project_warnings)
 
-# TODO: fix sanitizers
 # sanitizer options if supported by compiler
 include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
-option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
+find_package(Qt5 5.14 COMPONENTS Core Widgets Sql REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+include_directories(src)
+set(SOURCES src/main.cpp
+    src/parser.cpp
+    src/dbhelper.cpp
+    src/resultswindow.cpp
+    src/mainwindow.cpp
+    src/appdata.cpp
+    src/mainwindow.ui)
+add_executable(${project_name} ${SOURCES} )
+target_link_libraries(${project_name} PRIVATE project_options project_warnings Qt5::Core Qt5::Widgets Qt5::Sql)
+
 option(ENABLE_TESTING "Enable Test Builds" ON)
 
 if(ENABLE_TESTING)
@@ -27,4 +45,4 @@ if(ENABLE_TESTING)
   )
   add_subdirectory(tests)
 endif()
-add_subdirectory(src)
+

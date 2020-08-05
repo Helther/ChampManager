@@ -127,20 +127,11 @@ FileType XmlParser::readFileType()
                                + xml.errorString().toStdString());
   }
   if (xml.name() == getFileTypeById(FileType::RaceLog))
-  {
-    qDebug() << "Race\n";
     return FileType::RaceLog;
-  }
   if (xml.name() == getFileTypeById(FileType::QualiLog))
-  {
-    qDebug() << "Quali\n";
     return FileType::QualiLog;
-  }
   if (xml.name().contains(getFileTypeById(FileType::PracticeLog)))
-  {
-    qDebug() << "Practice\n";
     return FileType::PracticeLog;
-  }
   throw std::runtime_error("fileType read error: No valid log type was found");
 }
 
@@ -237,10 +228,7 @@ QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml)
     }
   }
   if (incidents.isEmpty())// check if found something, return empty if not
-  {
-    qDebug() << "Incidents: no incs were found";
     return QVector<StringPair>{};
-  }
   return processEqualCombinations(incidents);
 }
 
@@ -328,8 +316,9 @@ QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
   QTextStream dataS(&lapString);
   if (data.size() == 0)
     throw std::runtime_error("GenLapData error: lap data is empty");
-  for (const auto &i : data) dataS << i.first << ' ' << i.second << ',';
-  lapString.remove(lapString.size() - 1, 1);
+  ///for (const auto &i : data) dataS << i.first << ' ' << i.second << ',';
+  for (const auto &i : data) dataS << i.second << ", ";
+  lapString.remove(lapString.size() - 2, 2);
   return lapString;
 }
 
@@ -338,7 +327,9 @@ QVariant PQXmlParser::readFileContent()
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
-    ///qDebug() << data;/// debug
+    //QString dataS;
+    //dataS << data;
+    //qDebug() << dataS;/// debug
     return QVariant::fromValue(data);///todo just return
   } catch (std::exception &e)
   {
@@ -352,7 +343,9 @@ QVariant RXmlParser::readFileContent()
   try
   {
     auto data = readXMLLog(parserConsts::seqElems::DriversRaceElements);
-    ///qDebug() << data;/// debug
+    //QString dataS;
+    //dataS << data;
+    //qDebug() << dataS;/// debug
     return QVariant::fromValue(data);///todo just return
   } catch (std::exception &e)
   {
@@ -390,19 +383,12 @@ QVariant RCDParser::readFileContent()
   try
   {
     auto data = readRCD();
-    ///////// debug
-    qDebug() << "==========RCD data========\n";
-    for (const auto &i : data)
-    {
-      for (const auto &j : i) qDebug() << j.first << " " << j.second << '\n';
-    }
-    //////// end debug
+    return QVariant();
   } catch (std::exception &e)
   {
-    qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return false;
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
   }
-  return true;
   /// todo finish
 }
 
@@ -461,16 +447,12 @@ QVariant VEHParser::readFileContent()
   try
   {
     auto data = readVEH();
-    ///////// debug
-    qDebug() << "==========VEH data========\n";
-    for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
-    //////// end debug
+    return QVariant();
   } catch (std::exception &e)
   {
-    qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return false;
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
   }
-  return true;
   /// todo finish
 }
 
@@ -506,16 +488,12 @@ QVariant HDVParser::readFileContent()
   try
   {
     auto data = readHDV();
-    ///////// debug
-    qDebug() << "==========HDV data========\n";
-    for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
-    //////// end debug
+    return QVariant();
   } catch (std::exception &e)
   {
-    qDebug() << "\nreadFile error: " << e.what() << '\n';
-    return false;
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
   }
-  return true;
   /// todo finish
 }
 
@@ -559,7 +537,7 @@ QVector<StringPair> HDVParser::readHDV()
 bool ModParser::doWriteModFile(const QString &data)
 {
   // backup before write, then open and try to write, if failed try to restore
-  /// temp backup path
+  /// todo temp backup path
   auto pathWOname = fileName;
   pathWOname = pathWOname.remove(fileName.split('/').last());
   const BackupData backUpRes{ backupFile(fileName, pathWOname) };

@@ -48,15 +48,25 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
 DBHelper::DBHelper()
 {
   dbConn = QSqlDatabase::database(connName);
-  if (dbConn.isValid()) return;
+  if (dbConn.isOpen())
+  {
+    wasAlreadyOpen = true;
+    return;
+  }
   dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
+  if (!dbConn.isValid())
+    throw std::runtime_error(
+      QString("DataBase init error: no valid driver").toStdString());
   dbConn.setDatabaseName(dbName);
   if (!dbConn.open())
     throw std::runtime_error(QString("DataBase init error: ").toStdString()
                              + dbConn.lastError().text().toStdString());
 }
 
-DBHelper::~DBHelper() { dbConn.close(); }
+DBHelper::~DBHelper()
+{
+  if (!wasAlreadyOpen && dbConn.isOpen()) dbConn.close();
+}
 
 bool DBHelper::initDB() const
 {
@@ -146,7 +156,7 @@ int DBHelper::addNewSeason(const QString &name) const
   if (!q.exec(query)) checkSqlError("add new season error", q.lastError());
   return q.lastInsertId().toInt();
 }
-
+#ifdef QT_DEBUG
 void DBHelper::viewTable(const QString &tableName) const
 {
   QSqlQuery q(dbConn);
@@ -159,6 +169,7 @@ void DBHelper::viewTable(const QString &tableName) const
     qDebug() << '\n';
   }
 }
+#endif
 
 QVector<QVector<QVariant>> DBHelper::getData(const QString &tableName) const
 {
@@ -286,7 +297,7 @@ void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
 }
 
 void DBHelper::delEntryFromTable(const QString &table,
-                                 const QString &idCol,
+                                 const QString &idColName,
                                  int id) const
 {
   QSqlQuery q(dbConn);
@@ -295,7 +306,7 @@ void DBHelper::delEntryFromTable(const QString &table,
     checkSqlError("delete table entry error", q.lastError());
   QString query{ QString("delete from %1 where %2 = %3")
                    .arg(table)
-                   .arg(idCol)
+                   .arg(idColName)
                    .arg(QString::number(id)) };
   if (!q.exec(query)) checkSqlError("delete table entry error", q.lastError());
 }

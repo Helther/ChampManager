@@ -20,18 +20,16 @@ struct DriverInfo
   QVector<QPair<int, double>> lapTimes;
 };
 
-#ifdef QT_DEBUG
-inline QDebug operator<<(QDebug debug, const DriverInfo &dr)
+inline QString &operator<<(QString &retString, const DriverInfo &dr)
 {
-  QDebugStateSaver saver(debug);
-  debug.nospace() << "==========Driver data========\n";
-  for (const auto &i : dr.SeqElems) debug << i.first << " " << i.second << '\n';
-  debug.nospace() << "===========Laps==============\n";
+  QTextStream s(&retString);
+  s << "==========Driver data========\n";
+  for (const auto &i : dr.SeqElems) s << i.first << " " << i.second << '\n';
+  s << "===========Laps==============\n";
   for (const auto &i : dr.lapTimes)
-    debug.nospace() << "# " << i.first << " " << i.second << '\n';
-  return debug;
+    s << "# " << i.first << " " << i.second << '\n';
+  return retString;
 }
-#endif
 
 // xmlLog results
 struct RaceLogInfo
@@ -41,22 +39,48 @@ struct RaceLogInfo
   QVector<StringPair> incidents;
 };
 Q_DECLARE_METATYPE(RaceLogInfo)
-#ifdef QT_DEBUG
-inline QDebug operator<<(QDebug debug, const RaceLogInfo &log)
+
+inline QString &operator<<(QString &retString, const RaceLogInfo &log)
 {
-  QDebugStateSaver saver(debug);
-  debug.nospace() << "==========xml log data========\n";
-  debug.nospace() << "==========Incidents============\n";
+  QTextStream s(&retString);
+  s << "==========xml log data========\n";
+  s << "==========Incidents============\n";
   for (const auto &i : log.incidents)
-    debug.nospace() << "Incident between " << i.first << " and " << i.second
-                    << '\n';
-  debug.nospace() << "==========Incidents END============\n";
-  for (const auto &i : log.SeqElems)
-    debug.nospace() << i.first << " " << i.second << '\n';
-  for (const auto &i : log.drivers) debug << i;
-  return debug;
+    s << "Incident between " << i.first << " and " << i.second << '\n';
+  s << "==========Incidents END============\n";
+  for (const auto &i : log.SeqElems) s << i.first << " " << i.second << '\n';
+  for (const auto &i : log.drivers) retString << i;
+  return retString;
 }
-#endif
+inline QString getRCDDataString(const DriverStats &data)
+{
+  QString retString;
+  QTextStream s(&retString);
+  s << "==========RCD data========\n";
+  for (const auto &i : data)
+  {
+    for (const auto &j : i) s << j.first << " " << j.second << '\n';
+  }
+  return retString;
+}
+
+inline QString getVEHDataString(const QVector<StringPair> &data)
+{
+  QString retString;
+  QTextStream s(&retString);
+  s << "==========VEH data========\n";
+  for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
+  return retString;
+}
+
+inline QString getHDVDataString(const QVector<StringPair> &data)
+{
+  QString retString;
+  QTextStream s(&retString);
+  s << "==========HDV data========\n";
+  for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
+  return retString;
+}
 
 namespace parserConsts {
 namespace seqElems {

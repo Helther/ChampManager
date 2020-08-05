@@ -4,7 +4,9 @@
 #include <resultswindow.h>
 #include <QDialog>
 #include <appdata.h>
+#ifdef QT_DEBUG
 #include <QtDebug>/// todo debug
+#endif
 //forward decl
 class UserData;
 //
@@ -22,7 +24,9 @@ public:
 
   UserData *getUserData()
   {
-    assert(userData != nullptr);///debug
+#ifdef QT_DEBUG
+    assert(userData != nullptr);
+#endif
     return userData;
   }
 signals:
@@ -38,7 +42,7 @@ private slots:
   // called when season was removed
   void on_rmSeasonRes();
   // about menu
-  void about() {}/// todo define
+  void about() {}/// todo define and add version, qt info
   // license menu
   void license() {}/// todo define
 
