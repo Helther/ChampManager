@@ -1,0 +1,1109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rF [
+<!ENTITY rFEnt "rFactor Entity">
+]>
+<rFactorXML version="1.0">
+<RaceResults>
+<Setting>Race Weekend</Setting>
+<PlayerFile>player</PlayerFile>
+<DateTime>1560356122</DateTime>
+<TimeString>2019/06/12 19:15:22</TimeString>
+<Mod>F1 2019 v25</Mod>
+<Season></Season>
+<TrackVenue>Paul Ricard HTTT</TrackVenue>
+<TrackCourse>Paul Ricard  HTTT</TrackCourse>
+<TrackEvent>Paul Ricard HTTT GT</TrackEvent>
+<TrackData>D:\SteamLibrary\steamapps\common\rFactor 2\Installed\Locations\Circuit_Paul_Ricard\1.05\PaulRicard_HTTT_GT.MAS</TrackData>
+<TrackLength>5659.6</TrackLength>
+<GameVersion>1.1112</GameVersion>
+<Dedicated>0</Dedicated>
+<ConnectionType upload="256" download="256">Cable/DSL 256 kbps upload</ConnectionType>
+<RaceLaps>25</RaceLaps>
+<RaceTime>0</RaceTime>
+<MechFailRate>1</MechFailRate>
+<DamageMult>55</DamageMult>
+<FuelMult>4</FuelMult>
+<TireMult>0</TireMult>
+<VehiclesAllowed>ASR_F1_2018</VehiclesAllowed>
+<ParcFerme>3</ParcFerme>
+<FixedSetups>0</FixedSetups>
+<FreeSettings>244</FreeSettings>
+<FixedUpgrades>0</FixedUpgrades>
+<Practice1>
+<DateTime>1560356153</DateTime>
+<TimeString>2019/06/12 19:15:53</TimeString>
+<Laps>2147483647</Laps>
+<Minutes>60</Minutes>
+<Stream>
+<Score et="89.6">Nico Hulkenberg(4) lap=0 point=1 t=-1.000 et=89.567</Score>
+<Score et="90.8">Lance Stroll(1) lap=0 point=1 t=-1.000 et=90.812</Score>
+<Score et="92.2">Fernando Alonso(3) lap=0 point=1 t=-1.000 et=92.211</Score>
+<Score et="96.1">Kevin Magnussen(16) lap=0 point=1 t=-1.000 et=96.064</Score>
+<Score et="99.0">Player (0) lap=0 point=1 t=-1.000 et=98.986</Score>
+<Score et="99.7">Sebastian Vettel(2) lap=0 point=1 t=-1.000 et=99.709</Score>
+<Score et="102.5">Daniel Ricciardo(5) lap=0 point=1 t=-1.000 et=102.450</Score>
+<Score et="106.9">Max Verstappen(17) lap=0 point=1 t=-1.000 et=106.934</Score>
+<Score et="122.7">Esteban Ocon(19) lap=0 point=1 t=-1.000 et=122.736</Score>
+<Score et="126.1">Nico Hulkenberg(4) lap=0 point=2 t=-1.000 et=126.092</Score>
+<Score et="126.7">Robert Kubica(15) lap=0 point=1 t=-1.000 et=126.654</Score>
+<Score et="127.1">Romain Grosjean(9) lap=0 point=1 t=-1.000 et=127.102</Score>
+<Score et="127.9">Lance Stroll(1) lap=0 point=2 t=-1.000 et=127.888</Score>
+<Score et="128.6">Lewis Hamilton(7) lap=0 point=1 t=-1.000 et=128.579</Score>
+<Score et="128.8">Fernando Alonso(3) lap=0 point=2 t=-1.000 et=128.802</Score>
+<Score et="131.8">Pascal Werhlein(6) lap=0 point=1 t=-1.000 et=131.788</Score>
+<Score et="132.9">Kevin Magnussen(16) lap=0 point=2 t=-1.000 et=132.902</Score>
+<Score et="136.5">Sebastian Vettel(2) lap=0 point=2 t=-1.000 et=136.516</Score>
+<Score et="137.2">Player (0) lap=0 point=2 t=-1.000 et=137.214</Score>
+<Score et="139.1">Daniel Ricciardo(5) lap=0 point=2 t=-1.000 et=139.046</Score>
+<Score et="142.8">Max Verstappen(17) lap=0 point=2 t=-1.000 et=142.782</Score>
+<Score et="151.6">Nico Hulkenberg(4) lap=1 point=0 t=-1.000 et=151.602</Score>
+<Score et="153.8">Lance Stroll(1) lap=1 point=0 t=-1.000 et=153.828</Score>
+<Score et="154.3">Fernando Alonso(3) lap=1 point=0 t=-1.000 et=154.324</Score>
+<Score et="158.5">Kevin Magnussen(16) lap=1 point=0 t=-1.000 et=158.527</Score>
+<Score et="159.4">Esteban Ocon(19) lap=0 point=2 t=-1.000 et=159.370</Score>
+<Score et="161.9">Sebastian Vettel(2) lap=1 point=0 t=-1.000 et=161.900</Score>
+<Score et="163.7">Player (0) lap=1 point=0 t=-1.000 et=163.665</Score>
+<Score et="164.2">Robert Kubica(15) lap=0 point=2 t=-1.000 et=164.155</Score>
+<Score et="164.5">Romain Grosjean(9) lap=0 point=2 t=-1.000 et=164.466</Score>
+<Score et="164.6">Daniel Ricciardo(5) lap=1 point=0 t=-1.000 et=164.549</Score>
+<Score et="164.8">Lewis Hamilton(7) lap=0 point=2 t=-1.000 et=164.758</Score>
+<Score et="167.9">Max Verstappen(17) lap=1 point=0 t=-1.000 et=167.894</Score>
+<Score et="168.8">Pascal Werhlein(6) lap=0 point=2 t=-1.000 et=168.825</Score>
+<Score et="169.4">JeanEric Verne(12) lap=0 point=1 t=-1.000 et=169.409</Score>
+<Score et="172.8">Valtteri Bottas(11) lap=0 point=1 t=-1.000 et=172.825</Score>
+<Score et="178.4">Charles Leclerc(8) lap=0 point=1 t=-1.000 et=178.396</Score>
+<Incident et="179.3">Fernando Alonso(3) reported contact (0.10) with Cone</Incident>
+<Incident et="179.3">Fernando Alonso(3) reported contact (0.55) with Cone</Incident>
+<Incident et="183.6">Romain Grosjean(9) reported contact (0.13) with Cone</Incident>
+<Score et="185.0">Esteban Ocon(19) lap=1 point=0 t=-1.000 et=184.965</Score>
+<Score et="187.7">Kimi Raikkonen(10) lap=0 point=1 t=-1.000 et=187.716</Score>
+<Score et="190.5">Robert Kubica(15) lap=1 point=0 t=-1.000 et=190.518</Score>
+<Score et="190.7">Romain Grosjean(9) lap=1 point=0 t=-1.000 et=190.640</Score>
+<Score et="190.8">Lewis Hamilton(7) lap=1 point=0 t=-1.000 et=190.828</Score>
+<Score et="192.8">Nico Hulkenberg(4) lap=1 point=1 t=41.238 et=192.840</Score>
+<Sector et="192.8">Nico Hulkenberg(4) set new best for sector 2</Sector>
+<Score et="194.7">Pascal Werhlein(6) lap=1 point=0 t=-1.000 et=194.658</Score>
+<Score et="196.1">Lance Stroll(1) lap=1 point=1 t=42.291 et=196.119</Score>
+<Score et="196.4">Fernando Alonso(3) lap=1 point=1 t=42.023 et=196.347</Score>
+<Score et="199.8">Kevin Magnussen(16) lap=1 point=1 t=41.233 et=199.761</Score>
+<Sector et="199.8">Kevin Magnussen(16) set new best for sector 2</Sector>
+<Incident et="200.9">Lewis Hamilton(7) reported contact (1.00) with Cone</Incident>
+<Incident et="201.2">Lewis Hamilton(7) reported contact (0.06) with Cone</Incident>
+<Score et="202.6">Sebastian Vettel(2) lap=1 point=1 t=40.716 et=202.616</Score>
+<Sector et="202.6">Sebastian Vettel(2) set new best for sector 2</Sector>
+<Score et="205.8">Player (0) lap=1 point=1 t=42.163 et=205.828</Score>
+<Score et="205.9">Daniel Ricciardo(5) lap=1 point=1 t=41.352 et=205.902</Score>
+<Score et="206.5">JeanEric Verne(12) lap=0 point=2 t=-1.000 et=206.519</Score>
+<Score et="208.2">Max Verstappen(17) lap=1 point=1 t=40.282 et=208.176</Score>
+<Sector et="208.2">Max Verstappen(17) set new best for sector 2</Sector>
+<Score et="209.1">Valtteri Bottas(11) lap=0 point=2 t=-1.000 et=209.137</Score>
+<Incident et="211.9">Player (0) reported contact (0.10) with Cone</Incident>
+<Score et="215.5">Charles Leclerc(8) lap=0 point=2 t=-1.000 et=215.522</Score>
+<Score et="223.8">Kimi Raikkonen(10) lap=0 point=2 t=-1.000 et=223.800</Score>
+<Score et="226.2">Esteban Ocon(19) lap=1 point=1 t=41.200 et=226.165</Score>
+<Score et="229.2">Nico Hulkenberg(4) lap=1 point=2 t=77.605 et=229.208</Score>
+<Sector et="229.2">Nico Hulkenberg(4) set new best for sector 3</Sector>
+<Score et="232.0">Lewis Hamilton(7) lap=1 point=1 t=41.169 et=231.997</Score>
+<Score et="232.4">JeanEric Verne(12) lap=1 point=0 t=-1.000 et=232.354</Score>
+<Score et="232.6">Romain Grosjean(9) lap=1 point=1 t=41.995 et=232.636</Score>
+<Score et="233.4">Robert Kubica(15) lap=1 point=1 t=42.896 et=233.415</Score>
+<Score et="233.5">Lance Stroll(1) lap=1 point=2 t=79.661 et=233.489</Score>
+<Score et="233.7">Fernando Alonso(3) lap=1 point=2 t=79.364 et=233.688</Score>
+<Score et="234.6">Valtteri Bottas(11) lap=1 point=0 t=-1.000 et=234.569</Score>
+<Score et="236.2">Kevin Magnussen(16) lap=1 point=2 t=77.664 et=236.191</Score>
+<Score et="236.5">Pascal Werhlein(6) lap=1 point=1 t=41.844 et=236.502</Score>
+<Score et="238.6">Sebastian Vettel(2) lap=1 point=2 t=76.686 et=238.587</Score>
+<Sector et="238.6">Sebastian Vettel(2) set new best for sector 3</Sector>
+<Score et="241.5">Charles Leclerc(8) lap=1 point=0 t=-1.000 et=241.443</Score>
+<Score et="242.4">Daniel Ricciardo(5) lap=1 point=2 t=77.842 et=242.391</Score>
+<Score et="243.6">Max Verstappen(17) lap=1 point=2 t=75.717 et=243.612</Score>
+<Sector et="243.6">Max Verstappen(17) set new best for sector 3</Sector>
+<Score et="244.3">Player (0) lap=1 point=2 t=-1.000 et=244.307</Score>
+<Score et="249.1">Kimi Raikkonen(10) lap=1 point=0 t=-1.000 et=249.088</Score>
+<Score et="254.6">Nico Hulkenberg(4) lap=2 point=0 t=103.022 et=254.624</Score>
+<Sector et="254.6">Nico Hulkenberg(4) set new best for sector 1</Sector>
+<Score et="259.4">Lance Stroll(1) lap=2 point=0 t=105.556 et=259.385</Score>
+<Score et="259.7">Fernando Alonso(3) lap=2 point=0 t=105.340 et=259.665</Score>
+<Score et="261.7">Kevin Magnussen(16) lap=2 point=0 t=103.147 et=261.674</Score>
+<Score et="262.6">Esteban Ocon(19) lap=1 point=2 t=77.613 et=262.578</Score>
+<Score et="263.8">Sebastian Vettel(2) lap=2 point=0 t=101.905 et=263.805</Score>
+<Sector et="263.8">Sebastian Vettel(2) set new best for sector 1</Sector>
+<Score et="267.8">Lewis Hamilton(7) lap=1 point=2 t=76.964 et=267.792</Score>
+<Score et="268.0">Daniel Ricciardo(5) lap=2 point=0 t=103.446 et=267.996</Score>
+<Score et="268.6">Max Verstappen(17) lap=2 point=0 t=100.726 et=268.620</Score>
+<Sector et="268.6">Max Verstappen(17) set new best for sector 1</Sector>
+<Score et="269.3">Romain Grosjean(9) lap=1 point=2 t=78.621 et=269.262</Score>
+<Score et="270.2">Player (0) lap=2 point=0 t=-1.000 et=270.144</Score>
+<Score et="270.7">Robert Kubica(15) lap=1 point=2 t=80.145 et=270.663</Score>
+<Score et="273.4">Pascal Werhlein(6) lap=1 point=2 t=78.709 et=273.367</Score>
+<Score et="274.2">JeanEric Verne(12) lap=1 point=1 t=41.884 et=274.237</Score>
+<Score et="275.5">Valtteri Bottas(11) lap=1 point=1 t=40.923 et=275.492</Score>
+<Score et="283.1">Charles Leclerc(8) lap=1 point=1 t=41.672 et=283.115</Score>
+<Score et="288.1">Esteban Ocon(19) lap=2 point=0 t=103.086 et=288.051</Score>
+<Score et="290.5">Kimi Raikkonen(10) lap=1 point=1 t=41.369 et=290.457</Score>
+<Score et="291.6">Lando Norris(14) lap=0 point=1 t=-1.000 et=291.545</Score>
+<Score et="292.9">Lewis Hamilton(7) lap=2 point=0 t=102.048 et=292.876</Score>
+<Score et="294.8">Romain Grosjean(9) lap=2 point=0 t=104.193 et=294.833</Score>
+<Score et="295.7">Nico Hulkenberg(4) lap=2 point=1 t=41.076 et=295.700</Score>
+<Score et="296.7">Robert Kubica(15) lap=2 point=0 t=106.142 et=296.660</Score>
+<Score et="299.1">Pascal Werhlein(6) lap=2 point=0 t=104.416 et=299.074</Score>
+<Score et="300.9">Lance Stroll(1) lap=2 point=1 t=41.506 et=300.891</Score>
+<Score et="301.1">Fernando Alonso(3) lap=2 point=1 t=41.398 et=301.063</Score>
+<Score et="302.9">Kevin Magnussen(16) lap=2 point=1 t=41.175 et=302.849</Score>
+<Score et="304.3">Sebastian Vettel(2) lap=2 point=1 t=40.464 et=304.270</Score>
+<Score et="309.8">Daniel Ricciardo(5) lap=2 point=1 t=41.794 et=309.789</Score>
+<Score et="309.9">Max Verstappen(17) lap=2 point=1 t=41.273 et=309.894</Score>
+<Sector et="309.9">Max Verstappen(17) set new best for sector 2</Sector>
+<Score et="311.2">JeanEric Verne(12) lap=1 point=2 t=78.810 et=311.164</Score>
+<Score et="311.7">Valtteri Bottas(11) lap=1 point=2 t=77.122 et=311.691</Score>
+<Score et="312.0">Player (0) lap=2 point=1 t=41.806 et=311.949</Score>
+<Score et="320.0">Charles Leclerc(8) lap=1 point=2 t=78.559 et=320.002</Score>
+<Incident et="323.6">Fernando Alonso(3) reported contact (0.42) with another vehicle Lance Stroll(1)</Incident>
+<Incident et="323.6">Lance Stroll(1) reported contact (0.42) with another vehicle Fernando Alonso(3)</Incident>
+<Score et="326.4">Kimi Raikkonen(10) lap=1 point=2 t=77.257 et=326.345</Score>
+<Score et="327.8">Lando Norris(14) lap=0 point=2 t=-1.000 et=327.765</Score>
+<Score et="329.1">Esteban Ocon(19) lap=2 point=1 t=40.999 et=329.050</Score>
+<Score et="331.3">Carlos Sainz(18) lap=0 point=1 t=-1.000 et=331.313</Score>
+<Score et="332.0">Nico Hulkenberg(4) lap=2 point=2 t=77.361 et=331.985</Score>
+<Score et="333.2">Lewis Hamilton(7) lap=2 point=1 t=40.291 et=333.167</Score>
+<Score et="336.1">Romain Grosjean(9) lap=2 point=1 t=41.286 et=336.119</Score>
+<Score et="336.9">JeanEric Verne(12) lap=2 point=0 t=104.521 et=336.875</Score>
+<Score et="337.2">Valtteri Bottas(11) lap=2 point=0 t=102.637 et=337.206</Score>
+<Score et="338.5">Robert Kubica(15) lap=2 point=1 t=41.813 et=338.473</Score>
+<Score et="339.3">Kevin Magnussen(16) lap=2 point=2 t=77.657 et=339.331</Score>
+<Score et="340.1">Sebastian Vettel(2) lap=2 point=2 t=76.247 et=340.053</Score>
+<Score et="340.5">Pascal Werhlein(6) lap=2 point=1 t=41.442 et=340.516</Score>
+<Score et="343.2">Lance Stroll(1) lap=2 point=2 t=83.762 et=343.147</Score>
+<Score et="343.5">Fernando Alonso(3) lap=2 point=2 t=83.822 et=343.486</Score>
+<Score et="345.8">Charles Leclerc(8) lap=2 point=0 t=104.324 et=345.766</Score>
+<Score et="346.1">Max Verstappen(17) lap=2 point=2 t=77.462 et=346.083</Score>
+<Sector et="346.1">Max Verstappen(17) set new best for sector 3</Sector>
+<Score et="347.1">Daniel Ricciardo(5) lap=2 point=2 t=79.134 et=347.129</Score>
+<Score et="350.0">Player (0) lap=2 point=2 t=79.858 et=350.002</Score>
+<Score et="351.5">Kimi Raikkonen(10) lap=2 point=0 t=102.416 et=351.504</Score>
+<Score et="353.1">Lando Norris(14) lap=1 point=0 t=-1.000 et=353.092</Score>
+<Score et="357.3">Nico Hulkenberg(4) lap=3 point=0 t=102.682 et=357.306</Score>
+<Score et="364.7">Kevin Magnussen(16) lap=3 point=0 t=103.030 et=364.704</Score>
+<Score et="365.2">Sebastian Vettel(2) lap=3 point=0 t=101.426 et=365.232</Score>
+<Score et="365.4">Esteban Ocon(19) lap=2 point=2 t=77.313 et=365.364</Score>
+<Score et="367.2">Carlos Sainz(18) lap=0 point=2 t=-1.000 et=367.181</Score>
+<Score et="368.7">Lewis Hamilton(7) lap=2 point=2 t=75.776 et=368.653</Score>
+<Score et="369.3">Lance Stroll(1) lap=3 point=0 t=109.887 et=369.272</Score>
+<Score et="369.3">Fernando Alonso(3) lap=3 point=0 t=109.672 et=369.337</Score>
+<Score et="371.0">Max Verstappen(17) lap=3 point=0 t=102.402 et=371.023</Score>
+<Score et="372.6">Daniel Ricciardo(5) lap=3 point=0 t=104.559 et=372.555</Score>
+<Score et="372.6">Romain Grosjean(9) lap=2 point=2 t=77.776 et=372.609</Score>
+<Score et="375.4">Robert Kubica(15) lap=2 point=2 t=78.730 et=375.390</Score>
+<Score et="376.7">Player (0) lap=3 point=0 t=106.586 et=376.730</Score>
+<Score et="377.1">Pascal Werhlein(6) lap=2 point=2 t=78.066 et=377.140</Score>
+<Score et="379.1">JeanEric Verne(12) lap=2 point=1 t=42.172 et=379.047</Score>
+<Score et="379.2">Valtteri Bottas(11) lap=2 point=1 t=41.945 et=379.152</Score>
+<Score et="387.3">Charles Leclerc(8) lap=2 point=1 t=41.490 et=387.256</Score>
+<Score et="390.8">Esteban Ocon(19) lap=3 point=0 t=102.711 et=390.762</Score>
+<Score et="392.3">Carlos Sainz(18) lap=1 point=0 t=-1.000 et=392.293</Score>
+<Score et="392.8">Kimi Raikkonen(10) lap=2 point=1 t=41.274 et=392.778</Score>
+<Score et="393.7">Lewis Hamilton(7) lap=3 point=0 t=100.814 et=393.691</Score>
+<Score et="394.2">Lando Norris(14) lap=1 point=1 t=41.062 et=394.154</Score>
+<Score et="395.2">Sergio Perez(13) lap=0 point=1 t=-1.000 et=395.186</Score>
+<Score et="397.8">Nico Hulkenberg(4) lap=3 point=1 t=40.493 et=397.799</Score>
+<Score et="398.1">Romain Grosjean(9) lap=3 point=0 t=103.286 et=398.119</Score>
+<Score et="401.2">Robert Kubica(15) lap=3 point=0 t=104.512 et=401.172</Score>
+<Score et="402.8">Pascal Werhlein(6) lap=3 point=0 t=103.692 et=402.765</Score>
+<Score et="405.5">Kevin Magnussen(16) lap=3 point=1 t=40.793 et=405.497</Score>
+<Score et="405.5">Sebastian Vettel(2) lap=3 point=1 t=40.296 et=405.528</Score>
+<Score et="411.3">Lance Stroll(1) lap=3 point=1 t=42.033 et=411.305</Score>
+<Score et="411.4">Fernando Alonso(3) lap=3 point=1 t=42.040 et=411.377</Score>
+<Score et="411.5">Max Verstappen(17) lap=3 point=1 t=40.484 et=411.507</Score>
+<Sector et="411.5">Max Verstappen(17) set new best for sector 2</Sector>
+<Score et="413.5">Daniel Ricciardo(5) lap=3 point=1 t=40.911 et=413.466</Score>
+<Score et="416.1">Valtteri Bottas(11) lap=2 point=2 t=78.858 et=416.065</Score>
+<Score et="417.0">JeanEric Verne(12) lap=2 point=2 t=80.160 et=417.034</Score>
+<Score et="418.3">Player (0) lap=3 point=1 t=41.554 et=418.284</Score>
+<Score et="423.9">Charles Leclerc(8) lap=2 point=2 t=78.170 et=423.936</Score>
+<Score et="428.5">Kimi Raikkonen(10) lap=2 point=2 t=76.937 et=428.441</Score>
+<Score et="430.1">Lando Norris(14) lap=1 point=2 t=77.030 et=430.122</Score>
+<Score et="431.6">Esteban Ocon(19) lap=3 point=1 t=40.834 et=431.595</Score>
+<Score et="432.8">Sergio Perez(13) lap=0 point=2 t=-1.000 et=432.742</Score>
+<Score et="432.8">Carlos Sainz(18) lap=1 point=1 t=40.470 et=432.764</Score>
+<Score et="433.7">Nico Hulkenberg(4) lap=3 point=2 t=76.400 et=433.707</Score>
+<Score et="434.0">Lewis Hamilton(7) lap=3 point=1 t=40.305 et=433.996</Score>
+<Score et="439.1">Romain Grosjean(9) lap=3 point=1 t=40.979 et=439.098</Score>
+<Score et="441.3">Valtteri Bottas(11) lap=3 point=0 t=104.096 et=441.302</Score>
+<Score et="441.4">Sebastian Vettel(2) lap=3 point=2 t=76.162 et=441.394</Score>
+<Score et="442.2">Kevin Magnussen(16) lap=3 point=2 t=77.510 et=442.214</Score>
+<Score et="442.6">Robert Kubica(15) lap=3 point=1 t=41.393 et=442.565</Score>
+<Score et="442.7">JeanEric Verne(12) lap=3 point=0 t=105.848 et=442.723</Score>
+<Score et="444.2">Pascal Werhlein(6) lap=3 point=1 t=41.461 et=444.226</Score>
+<Score et="448.4">Lance Stroll(1) lap=3 point=2 t=79.133 et=448.405</Score>
+<Score et="448.8">Fernando Alonso(3) lap=3 point=2 t=79.435 et=448.772</Score>
+<Score et="449.3">Max Verstappen(17) lap=3 point=2 t=78.304 et=449.327</Score>
+<Sector et="449.3">Max Verstappen(17) set new best for sector 3</Sector>
+<Score et="449.6">Daniel Ricciardo(5) lap=3 point=2 t=77.043 et=449.598</Score>
+<Score et="449.7">Charles Leclerc(8) lap=3 point=0 t=103.878 et=449.644</Score>
+<Score et="453.5">Kimi Raikkonen(10) lap=3 point=0 t=101.999 et=453.503</Score>
+<Score et="454.4">Player (0) lap=3 point=2 t=77.649 et=454.378</Score>
+<Score et="455.3">Lando Norris(14) lap=2 point=0 t=102.213 et=455.304</Score>
+<Score et="458.9">Nico Hulkenberg(4) lap=4 point=0 t=101.616 et=458.922</Score>
+<Score et="459.8">Sergio Perez(13) lap=1 point=0 t=-1.000 et=459.766</Score>
+<Score et="466.5">Sebastian Vettel(2) lap=4 point=0 t=101.219 et=466.451</Score>
+<Score et="467.5">Kevin Magnussen(16) lap=4 point=0 t=102.789 et=467.493</Score>
+<Score et="467.7">Esteban Ocon(19) lap=3 point=2 t=76.889 et=467.651</Score>
+<Score et="468.4">Carlos Sainz(18) lap=1 point=2 t=76.068 et=468.361</Score>
+<Score et="469.3">Lewis Hamilton(7) lap=3 point=2 t=75.643 et=469.333</Score>
+<Sector et="469.3">Lewis Hamilton(7) set new best for sector 3</Sector>
+<Score et="474.4">Lance Stroll(1) lap=4 point=0 t=105.150 et=474.422</Score>
+<Score et="474.5">Fernando Alonso(3) lap=4 point=0 t=105.106 et=474.443</Score>
+<Score et="474.6">Max Verstappen(17) lap=4 point=0 t=103.547 et=474.570</Score>
+<Score et="475.1">Daniel Ricciardo(5) lap=4 point=0 t=102.522 et=475.076</Score>
+<Score et="475.3">Romain Grosjean(9) lap=3 point=2 t=77.176 et=475.295</Score>
+<Score et="479.3">Robert Kubica(15) lap=3 point=2 t=78.116 et=479.288</Score>
+<Score et="479.6">Player (0) lap=4 point=0 t=102.840 et=479.570</Score>
+<Score et="480.8">Pascal Werhlein(6) lap=3 point=2 t=78.043 et=480.808</Score>
+<Score et="481.9">Valtteri Bottas(11) lap=3 point=1 t=40.554 et=481.856</Score>
+<Score et="484.1">JeanEric Verne(12) lap=3 point=1 t=41.394 et=484.117</Score>
+<Score et="490.9">Charles Leclerc(8) lap=3 point=1 t=41.238 et=490.882</Score>
+<Score et="492.9">Esteban Ocon(19) lap=4 point=0 t=102.155 et=492.917</Score>
+<Score et="493.4">Carlos Sainz(18) lap=2 point=0 t=101.110 et=493.403</Score>
+<Incident et="493.6">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Score et="493.8">Kimi Raikkonen(10) lap=3 point=1 t=40.247 et=493.750</Score>
+<Sector et="493.8">Kimi Raikkonen(10) set new best for sector 2</Sector>
+<Incident et="494.0">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.0">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.0">Fernando Alonso(3) reported contact (0.94) with Cone</Incident>
+<Incident et="494.0">Fernando Alonso(3) reported contact (0.97) with Cone</Incident>
+<Incident et="494.0">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.0">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (0.97) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (0.94) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.1">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.97) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.94) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Score et="494.2">Lewis Hamilton(7) lap=4 point=0 t=100.506 et=494.196</Score>
+<Sector et="494.2">Lewis Hamilton(7) set new best for sector 1</Sector>
+<Incident et="494.2">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (1.00) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.84) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.81) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.81) with Cone</Incident>
+<Incident et="494.2">Fernando Alonso(3) reported contact (0.87) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.71) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.71) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.65) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.65) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.65) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.65) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.61) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.61) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.65) with Cone</Incident>
+<Incident et="494.3">Fernando Alonso(3) reported contact (0.61) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.58) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.55) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.68) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.68) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.58) with Cone</Incident>
+<Incident et="494.4">Fernando Alonso(3) reported contact (0.58) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.61) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.68) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.77) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.71) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.68) with Cone</Incident>
+<Incident et="494.5">Fernando Alonso(3) reported contact (0.74) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.74) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.74) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.58) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.48) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.13) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.52) with Cone</Incident>
+<Incident et="494.6">Fernando Alonso(3) reported contact (0.55) with Cone</Incident>
+<Incident et="494.7">Fernando Alonso(3) reported contact (0.39) with Cone</Incident>
+<Incident et="494.7">Fernando Alonso(3) reported contact (0.42) with Cone</Incident>
+<Incident et="494.7">Fernando Alonso(3) reported contact (0.23) with Cone</Incident>
+<Incident et="494.7">Fernando Alonso(3) reported contact (0.26) with Cone</Incident>
+<Incident et="494.8">Fernando Alonso(3) reported contact (0.06) with Cone</Incident>
+<Incident et="494.8">Fernando Alonso(3) reported contact (0.06) with Cone</Incident>
+<Incident et="494.8">Fernando Alonso(3) reported contact (0.00) with Cone</Incident>
+<Score et="496.0">Lando Norris(14) lap=2 point=1 t=40.666 et=495.971</Score>
+<Score et="499.6">Nico Hulkenberg(4) lap=4 point=1 t=40.641 et=499.563</Score>
+<Score et="500.7">Romain Grosjean(9) lap=4 point=0 t=102.530 et=500.649</Score>
+<Score et="501.9">Sergio Perez(13) lap=1 point=1 t=42.161 et=501.927</Score>
+<Score et="505.0">Robert Kubica(15) lap=4 point=0 t=103.828 et=505.000</Score>
+<Score et="506.3">Pascal Werhlein(6) lap=4 point=0 t=103.564 et=506.329</Score>
+<Score et="506.6">Sebastian Vettel(2) lap=4 point=1 t=40.128 et=506.579</Score>
+<Sector et="506.6">Sebastian Vettel(2) set new best for sector 2</Sector>
+<Score et="508.2">Kevin Magnussen(16) lap=4 point=1 t=40.687 et=508.179</Score>
+<Score et="516.1">Lance Stroll(1) lap=4 point=1 t=41.621 et=516.042</Score>
+<Score et="516.1">Fernando Alonso(3) lap=4 point=1 t=41.669 et=516.112</Score>
+<Score et="516.9">Max Verstappen(17) lap=4 point=1 t=42.318 et=516.887</Score>
+<Score et="517.2">Daniel Ricciardo(5) lap=4 point=1 t=42.091 et=517.167</Score>
+<Score et="517.6">Valtteri Bottas(11) lap=3 point=2 t=76.279 et=517.581</Score>
+<Score et="520.7">JeanEric Verne(12) lap=3 point=2 t=77.955 et=520.678</Score>
+<Score et="520.9">Player (0) lap=4 point=1 t=41.279 et=520.849</Score>
+<Score et="527.5">Charles Leclerc(8) lap=3 point=2 t=77.807 et=527.450</Score>
+<Score et="529.2">Kimi Raikkonen(10) lap=3 point=2 t=75.683 et=529.186</Score>
+<Score et="531.8">Lando Norris(14) lap=2 point=2 t=76.499 et=531.804</Score>
+<Score et="533.6">Esteban Ocon(19) lap=4 point=1 t=40.659 et=533.576</Score>
+<Score et="533.8">Carlos Sainz(18) lap=2 point=1 t=40.347 et=533.750</Score>
+<Score et="534.0">Lewis Hamilton(7) lap=4 point=1 t=39.815 et=534.011</Score>
+<Sector et="534.0">Lewis Hamilton(7) set new best for sector 2</Sector>
+<Score et="535.5">Nico Hulkenberg(4) lap=4 point=2 t=76.605 et=535.527</Score>
+<Score et="539.3">Sergio Perez(13) lap=1 point=2 t=79.536 et=539.302</Score>
+<Score et="541.4">Romain Grosjean(9) lap=4 point=1 t=40.741 et=541.391</Score>
+<Score et="542.0">Sebastian Vettel(2) lap=4 point=2 t=75.492 et=541.942</Score>
+<Sector et="542.0">Sebastian Vettel(2) set new best for sector 3</Sector>
+<Score et="542.7">Valtteri Bottas(11) lap=4 point=0 t=101.403 et=542.705</Score>
+<Score et="544.1">Kevin Magnussen(16) lap=4 point=2 t=76.607 et=544.100</Score>
+<Score et="546.2">JeanEric Verne(12) lap=4 point=0 t=103.496 et=546.219</Score>
+<Score et="546.4">Robert Kubica(15) lap=4 point=1 t=41.406 et=546.406</Score>
+<Score et="547.4">Pascal Werhlein(6) lap=4 point=1 t=41.028 et=547.357</Score>
+<Score et="552.2">Fernando Alonso(3) lap=4 point=2 t=77.794 et=552.237</Score>
+<Score et="552.9">Max Verstappen(17) lap=4 point=2 t=78.330 et=552.899</Score>
+<Score et="553.0">Charles Leclerc(8) lap=4 point=0 t=103.357 et=553.000</Score>
+<Score et="553.4">Lance Stroll(1) lap=4 point=2 t=78.919 et=553.341</Score>
+<Score et="553.6">Daniel Ricciardo(5) lap=4 point=2 t=78.484 et=553.561</Score>
+<Score et="554.2">Kimi Raikkonen(10) lap=4 point=0 t=100.664 et=554.166</Score>
+<Score et="556.9">Lando Norris(14) lap=3 point=0 t=101.553 et=556.857</Score>
+<Score et="557.3">Player (0) lap=4 point=2 t=77.769 et=557.339</Score>
+<Score et="560.6">Nico Hulkenberg(4) lap=5 point=0 t=101.679 et=560.601</Score>
+<Score et="565.4">Sergio Perez(13) lap=2 point=0 t=105.672 et=565.438</Score>
+<Score et="566.9">Sebastian Vettel(2) lap=5 point=0 t=100.428 et=566.879</Score>
+<Sector et="566.9">Sebastian Vettel(2) set new best for sector 1</Sector>
+<Score et="569.3">Kevin Magnussen(16) lap=5 point=0 t=101.780 et=569.272</Score>
+<Score et="569.6">Carlos Sainz(18) lap=2 point=2 t=76.232 et=569.635</Score>
+<Score et="570.7">Esteban Ocon(19) lap=4 point=2 t=77.775 et=570.692</Score>
+<Score et="577.3">Fernando Alonso(3) lap=5 point=0 t=102.836 et=577.279</Score>
+<Score et="577.7">Max Verstappen(17) lap=5 point=0 t=103.101 et=577.671</Score>
+<Score et="578.4">Romain Grosjean(9) lap=4 point=2 t=77.736 et=578.386</Score>
+<Score et="578.8">Lewis Hamilton(7) lap=4 point=2 t=84.558 et=578.754</Score>
+<Score et="579.4">Daniel Ricciardo(5) lap=5 point=0 t=104.276 et=579.352</Score>
+<Score et="583.0">Valtteri Bottas(11) lap=4 point=1 t=40.299 et=583.004</Score>
+<Score et="583.0">Robert Kubica(15) lap=4 point=2 t=78.001 et=583.001</Score>
+<Score et="583.2">Player (0) lap=5 point=0 t=103.583 et=583.153</Score>
+<Score et="583.6">Pascal Werhlein(6) lap=4 point=2 t=77.280 et=583.609</Score>
+<Score et="587.4">JeanEric Verne(12) lap=4 point=1 t=41.202 et=587.421</Score>
+<Score et="594.1">Charles Leclerc(8) lap=4 point=1 t=41.128 et=594.128</Score>
+<Score et="594.1">Kimi Raikkonen(10) lap=4 point=1 t=39.957 et=594.123</Score>
+<Score et="594.5">Carlos Sainz(18) lap=3 point=0 t=101.073 et=594.476</Score>
+<Score et="595.8">Esteban Ocon(19) lap=5 point=0 t=102.871 et=595.788</Score>
+<Score et="597.3">Lando Norris(14) lap=3 point=1 t=40.426 et=597.283</Score>
+<Score et="601.0">Nico Hulkenberg(4) lap=5 point=1 t=40.361 et=600.962</Score>
+<Score et="604.0">Lewis Hamilton(7) lap=5 point=0 t=109.809 et=604.005</Score>
+<Score et="604.3">Romain Grosjean(9) lap=5 point=0 t=103.635 et=604.284</Score>
+<Score et="607.3">Sergio Perez(13) lap=2 point=1 t=41.865 et=607.302</Score>
+<Score et="607.4">Sebastian Vettel(2) lap=5 point=1 t=40.469 et=607.348</Score>
+<Score et="608.6">Robert Kubica(15) lap=5 point=0 t=103.621 et=608.621</Score>
+<Score et="609.1">Pascal Werhlein(6) lap=5 point=0 t=102.735 et=609.064</Score>
+<Score et="609.8">Kevin Magnussen(16) lap=5 point=1 t=40.521 et=609.793</Score>
+<Score et="618.3">Fernando Alonso(3) lap=5 point=1 t=41.057 et=618.336</Score>
+<Score et="618.4">Max Verstappen(17) lap=5 point=1 t=40.714 et=618.386</Score>
+<Score et="618.6">Valtteri Bottas(11) lap=4 point=2 t=75.917 et=618.622</Score>
+<Score et="619.9">Daniel Ricciardo(5) lap=5 point=1 t=40.567 et=619.919</Score>
+<Score et="623.7">JeanEric Verne(12) lap=4 point=2 t=77.508 et=623.727</Score>
+<Score et="624.8">Player (0) lap=5 point=1 t=41.657 et=624.810</Score>
+<Score et="629.5">Kimi Raikkonen(10) lap=4 point=2 t=75.349 et=629.515</Score>
+<Sector et="629.5">Kimi Raikkonen(10) set new best for sector 3</Sector>
+<Score et="631.3">Charles Leclerc(8) lap=4 point=2 t=78.311 et=631.311</Score>
+<Score et="632.9">Lando Norris(14) lap=3 point=2 t=76.011 et=632.868</Score>
+<Score et="634.5">Carlos Sainz(18) lap=3 point=1 t=40.017 et=634.493</Score>
+<Score et="636.3">Esteban Ocon(19) lap=5 point=1 t=40.482 et=636.270</Score>
+<Score et="636.5">Nico Hulkenberg(4) lap=5 point=2 t=75.894 et=636.495</Score>
+<Score et="642.6">Sebastian Vettel(2) lap=5 point=2 t=75.667 et=642.546</Score>
+<Score et="643.6">Valtteri Bottas(11) lap=5 point=0 t=100.915 et=643.620</Score>
+<Score et="644.6">Lewis Hamilton(7) lap=5 point=1 t=40.592 et=644.597</Score>
+<Sector et="644.6">Lewis Hamilton(7) set new best for sector 2</Sector>
+<Score et="645.4">Sergio Perez(13) lap=2 point=2 t=79.927 et=645.365</Score>
+<Score et="645.7">Kevin Magnussen(16) lap=5 point=2 t=76.382 et=645.655</Score>
+<Score et="645.8">Romain Grosjean(9) lap=5 point=1 t=41.538 et=645.822</Score>
+<Score et="649.2">JeanEric Verne(12) lap=5 point=0 t=102.922 et=649.141</Score>
+<Score et="649.8">Robert Kubica(15) lap=5 point=1 t=41.174 et=649.795</Score>
+<Score et="650.2">Pascal Werhlein(6) lap=5 point=1 t=41.131 et=650.194</Score>
+<Score et="653.3">Max Verstappen(17) lap=5 point=2 t=75.604 et=653.275</Score>
+<Score et="654.3">Fernando Alonso(3) lap=5 point=2 t=77.022 et=654.301</Score>
+<Score et="654.4">Kimi Raikkonen(10) lap=5 point=0 t=100.213 et=654.379</Score>
+<Sector et="654.4">Kimi Raikkonen(10) set new best for sector 1</Sector>
+<Score et="655.5">Daniel Ricciardo(5) lap=5 point=2 t=76.183 et=655.535</Score>
+<Score et="656.7">Charles Leclerc(8) lap=5 point=0 t=103.723 et=656.724</Score>
+<Score et="657.8">Lando Norris(14) lap=4 point=0 t=100.967 et=657.824</Score>
+<Score et="660.6">Player (0) lap=5 point=2 t=77.410 et=660.563</Score>
+<Score et="667.4">Sebastian Vettel(2) lap=6 point=0 t=100.486 et=667.365</Score>
+<Score et="669.7">Carlos Sainz(18) lap=3 point=2 t=75.250 et=669.726</Score>
+<Sector et="669.7">Carlos Sainz(18) set new best for sector 3</Sector>
+<Score et="671.5">Sergio Perez(13) lap=3 point=0 t=106.015 et=671.453</Score>
+<Score et="672.0">Esteban Ocon(19) lap=5 point=2 t=76.160 et=671.948</Score>
+<Score et="679.2">Fernando Alonso(3) lap=6 point=0 t=101.930 et=679.209</Score>
+<Score et="679.5">Lewis Hamilton(7) lap=5 point=2 t=75.510 et=679.515</Score>
+<Score et="680.7">Daniel Ricciardo(5) lap=6 point=0 t=101.302 et=680.654</Score>
+<Score et="681.6">Romain Grosjean(9) lap=5 point=2 t=77.346 et=681.630</Score>
+<Score et="683.9">Valtteri Bottas(11) lap=5 point=1 t=40.275 et=683.895</Score>
+<Score et="685.5">Player (0) lap=6 point=0 t=102.380 et=685.533</Score>
+<Score et="686.4">Robert Kubica(15) lap=5 point=2 t=77.806 et=686.427</Score>
+<Score et="686.8">Pascal Werhlein(6) lap=5 point=2 t=77.731 et=686.795</Score>
+<Score et="690.1">JeanEric Verne(12) lap=5 point=1 t=40.932 et=690.073</Score>
+<Score et="694.3">Kimi Raikkonen(10) lap=5 point=1 t=39.867 et=694.246</Score>
+<Score et="694.5">Carlos Sainz(18) lap=4 point=0 t=100.033 et=694.509</Score>
+<Sector et="694.5">Carlos Sainz(18) set new best for sector 1</Sector>
+<Score et="697.6">Charles Leclerc(8) lap=5 point=1 t=40.888 et=697.611</Score>
+<Score et="697.9">Lando Norris(14) lap=4 point=1 t=40.109 et=697.932</Score>
+<Score et="706.8">Romain Grosjean(9) lap=6 point=0 t=102.477 et=706.761</Score>
+<Score et="707.2">Sebastian Vettel(2) lap=6 point=1 t=39.782 et=707.147</Score>
+<Sector et="707.2">Sebastian Vettel(2) set new best for sector 2</Sector>
+<Score et="712.3">Robert Kubica(15) lap=6 point=0 t=103.650 et=712.271</Score>
+<Score et="712.5">Pascal Werhlein(6) lap=6 point=0 t=103.409 et=712.473</Score>
+<Score et="713.3">Sergio Perez(13) lap=3 point=1 t=41.806 et=713.258</Score>
+<Incident et="719.0">Robert Kubica(15) reported contact (0.23) with another vehicle Pascal Werhlein(6)</Incident>
+<Incident et="719.0">Pascal Werhlein(6) reported contact (0.23) with another vehicle Robert Kubica(15)</Incident>
+<Score et="719.3">Valtteri Bottas(11) lap=5 point=2 t=75.690 et=719.310</Score>
+<Score et="719.5">Fernando Alonso(3) lap=6 point=1 t=40.321 et=719.531</Score>
+<Score et="721.1">Daniel Ricciardo(5) lap=6 point=1 t=40.459 et=721.113</Score>
+<Score et="726.3">JeanEric Verne(12) lap=5 point=2 t=77.110 et=726.251</Score>
+<Score et="726.7">Player (0) lap=6 point=1 t=41.132 et=726.666</Score>
+<Score et="729.3">Kimi Raikkonen(10) lap=5 point=2 t=74.933 et=729.313</Score>
+<Sector et="729.3">Kimi Raikkonen(10) set new best for sector 3</Sector>
+<Score et="733.8">Charles Leclerc(8) lap=5 point=2 t=77.084 et=733.808</Score>
+<Score et="734.1">Lando Norris(14) lap=4 point=2 t=76.220 et=734.043</Score>
+<Score et="734.4">Carlos Sainz(18) lap=4 point=1 t=39.926 et=734.435</Score>
+<Score et="742.2">Sebastian Vettel(2) lap=6 point=2 t=74.776 et=742.141</Score>
+<Sector et="742.2">Sebastian Vettel(2) set new best for sector 3</Sector>
+<Score et="744.2">Valtteri Bottas(11) lap=6 point=0 t=100.568 et=744.188</Score>
+<Score et="747.2">Romain Grosjean(9) lap=6 point=1 t=40.397 et=747.158</Score>
+<Score et="750.3">Sergio Perez(13) lap=3 point=2 t=78.793 et=750.245</Score>
+<Score et="751.6">JeanEric Verne(12) lap=6 point=0 t=102.416 et=751.557</Score>
+<Score et="754.1">Kimi Raikkonen(10) lap=6 point=0 t=99.665 et=754.044</Score>
+<Sector et="754.1">Kimi Raikkonen(10) set new best for sector 1</Sector>
+<Score et="754.1">Robert Kubica(15) lap=6 point=1 t=41.865 et=754.136</Score>
+<Score et="754.2">Pascal Werhlein(6) lap=6 point=1 t=41.767 et=754.240</Score>
+<Score et="755.0">Fernando Alonso(3) lap=6 point=2 t=75.805 et=755.014</Score>
+<Score et="756.6">Daniel Ricciardo(5) lap=6 point=2 t=75.941 et=756.595</Score>
+<Score et="760.0">Charles Leclerc(8) lap=6 point=0 t=103.264 et=759.988</Score>
+<Score et="763.8">Player (0) lap=6 point=2 t=78.280 et=763.813</Score>
+<Score et="766.8">Sebastian Vettel(2) lap=7 point=0 t=99.410 et=766.775</Score>
+<Sector et="766.8">Sebastian Vettel(2) set new best for sector 1</Sector>
+<Score et="769.5">Carlos Sainz(18) lap=4 point=2 t=75.018 et=769.527</Score>
+<Score et="776.2">Sergio Perez(13) lap=4 point=0 t=104.749 et=776.202</Score>
+<Score et="779.8">Fernando Alonso(3) lap=7 point=0 t=100.621 et=779.830</Score>
+<Score et="782.8">Romain Grosjean(9) lap=6 point=2 t=76.022 et=782.783</Score>
+<Score et="784.1">Valtteri Bottas(11) lap=6 point=1 t=39.923 et=784.111</Score>
+<Incident et="789.1">Player (0) reported contact (0.03) with Immovable</Incident>
+<Score et="790.7">Pascal Werhlein(6) lap=6 point=2 t=78.203 et=790.676</Score>
+<Score et="791.3">Robert Kubica(15) lap=6 point=2 t=79.048 et=791.320</Score>
+<Score et="792.3">JeanEric Verne(12) lap=6 point=1 t=40.703 et=792.260</Score>
+<Score et="793.8">Kimi Raikkonen(10) lap=6 point=1 t=39.744 et=793.789</Score>
+<Sector et="793.8">Kimi Raikkonen(10) set new best for sector 2</Sector>
+<Score et="795.4">Carlos Sainz(18) lap=5 point=0 t=100.852 et=795.362</Score>
+<Score et="800.7">Charles Leclerc(8) lap=6 point=1 t=40.740 et=800.727</Score>
+<Score et="804.0">Player (0) lap=7 point=0 t=-1.000 et=804.026</Score>
+<Score et="806.4">Sebastian Vettel(2) lap=7 point=1 t=39.657 et=806.432</Score>
+<Sector et="806.4">Sebastian Vettel(2) set new best for sector 2</Sector>
+<Score et="816.2">Pascal Werhlein(6) lap=7 point=0 t=103.683 et=816.156</Score>
+<Score et="817.0">Robert Kubica(15) lap=7 point=0 t=104.739 et=817.010</Score>
+<Score et="818.0">Sergio Perez(13) lap=4 point=1 t=41.806 et=818.008</Score>
+<Sector et="819.2">Kimi Raikkonen(10) set new best for sector 2</Sector>
+<Score et="819.6">Valtteri Bottas(11) lap=6 point=2 t=75.396 et=819.584</Score>
+<Score et="820.2">Fernando Alonso(3) lap=7 point=1 t=40.359 et=820.189</Score>
+<Sector et="825.0">Sebastian Vettel(2) set new best for sector 2</Sector>
+</Stream>
+<MostLapsCompleted>7</MostLapsCompleted>
+<Driver>
+<Name>Sebastian Vettel</Name>
+<Connected>1</Connected>
+<VehFile>FERRARI_05_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Sebastian Vettel #05</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Scuderia Ferrari</Category>
+<CarType>Scuderia Ferrari</CarType>
+<CarClass>Scuderia Ferrari</CarClass>
+<CarNumber>05</CarNumber>
+<TeamName>Scuderia Ferrari</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>1</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>1</LapRankIncludingDiscos>
+<Lap num="1" p="3" et="--.---" fuel="0.886" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="1" et="161.9003" s1="40.7157" s2="35.9706" s3="25.2188" fuel="0.784" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.9051</Lap>
+<Lap num="3" p="2" et="263.8055" s1="40.4642" s2="35.7830" s3="25.1790" fuel="0.682" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.4261</Lap>
+<Lap num="4" p="3" et="365.2316" s1="40.2963" s2="35.8661" s3="25.0566" fuel="0.580" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.2191</Lap>
+<Lap num="5" p="1" et="466.4507" s1="40.1281" s2="35.3635" s3="24.9366" fuel="0.478" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.4281</Lap>
+<Lap num="6" p="2" et="566.8788" s1="40.4693" s2="35.1981" s3="24.8188" fuel="0.373" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.4862</Lap>
+<Lap num="7" p="1" et="667.3650" s1="39.7820" s2="34.9944" s3="24.6337" fuel="0.275" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">99.4101</Lap>
+<BestLapTime>99.4101</BestLapTime>
+<Laps>7</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="7">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Kimi Raikkonen</Name>
+<Connected>1</Connected>
+<VehFile>FERRARI_07_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Kimi Raikkonen #07</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Scuderia Ferrari</Category>
+<CarType>Scuderia Ferrari</CarType>
+<CarClass>Scuderia Ferrari</CarClass>
+<CarNumber>07</CarNumber>
+<TeamName>Scuderia Ferrari</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>2</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>2</LapRankIncludingDiscos>
+<Lap num="1" p="11" et="--.---" fuel="0.890" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="4" et="249.0876" s1="41.3690" s2="35.8879" s3="25.1595" fuel="0.784" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.4164</Lap>
+<Lap num="3" p="4" et="351.5040" s1="41.2737" s2="35.6632" s3="25.0618" fuel="0.678" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.9987</Lap>
+<Lap num="4" p="2" et="453.5027" s1="40.2469" s2="35.4365" s3="24.9803" fuel="0.573" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.6637</Lap>
+<Lap num="5" p="1" et="554.1664" s1="39.9570" s2="35.3919" s3="24.8640" fuel="0.467" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.2130</Lap>
+<Lap num="6" p="1" et="654.3793" s1="39.8671" s2="35.0663" s3="24.7317" fuel="0.365" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">99.6650</Lap>
+<BestLapTime>99.6650</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Carlos Sainz</Name>
+<Connected>1</Connected>
+<VehFile>REDBULL_03_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Carlos Sainz #03</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Aston Martin Red Bull Racing</Category>
+<CarType>Aston Martin Red Bull Racing</CarType>
+<CarClass>Aston Martin Red Bull Racing</CarClass>
+<CarNumber>03</CarNumber>
+<TeamName>Aston Martin Red Bull Racing</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>3</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>3</LapRankIncludingDiscos>
+<Lap num="1" p="20" et="--.---" fuel="0.682" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="3" et="392.2934" s1="40.4702" s2="35.5978" s3="25.0416" fuel="0.573" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.1095</Lap>
+<Lap num="3" p="5" et="493.4030" s1="40.3469" s2="35.8851" s3="24.8410" fuel="0.471" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.0730</Lap>
+<Lap num="4" p="1" et="594.4760" s1="40.0168" s2="35.2329" s3="24.7834" fuel="0.365" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.0331</Lap>
+<Lap num="5" p="3" et="694.5090" s1="39.9257" s2="35.0927" s3="25.8341" fuel="0.259" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.8525</Lap>
+<BestLapTime>100.0331</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Lewis Hamilton</Name>
+<Connected>1</Connected>
+<VehFile>MERCEDES_44_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Lewis Hamilton #44</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Mercedes AMG Petronas Motorsport</Category>
+<CarType>Mercedes AMG Petronas Motorspor</CarType>
+<CarClass>Mercedes AMG Petronas Motorspor</CarClass>
+<CarNumber>44</CarNumber>
+<TeamName>Mercedes AMG Petronas Motorsport</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>4</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>4</LapRankIncludingDiscos>
+<Lap num="1" p="8" et="--.---" fuel="0.667" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="3" et="190.8282" s1="41.1692" s2="35.7946" s3="25.0845" fuel="0.565" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.0482</Lap>
+<Lap num="3" p="2" et="292.8764" s1="40.2909" s2="35.4855" s3="25.0380" fuel="0.467" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.8143</Lap>
+<Lap num="4" p="1" et="393.6908" s1="40.3054" s2="35.3373" s3="24.8629" fuel="0.361" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.5056</Lap>
+<Lap num="5" p="2" et="494.1963" s1="39.8147" s2="44.7430" s3="25.2510" fuel="0.255" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">109.8087</Lap>
+<BestLapTime>100.5056</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Valtteri Bottas</Name>
+<Connected>1</Connected>
+<VehFile>MERCEDES_77_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Valtteri Bottas #77</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Mercedes AMG Petronas Motorsport</Category>
+<CarType>Mercedes AMG Petronas Motorspor</CarType>
+<CarClass>Mercedes AMG Petronas Motorspor</CarClass>
+<CarNumber>77</CarNumber>
+<TeamName>Mercedes AMG Petronas Motorsport</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>5</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>5</LapRankIncludingDiscos>
+<Lap num="1" p="12" et="--.---" fuel="0.886" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="4" et="234.5690" s1="40.9226" s2="36.1998" s3="25.5149" fuel="0.784" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.6373</Lap>
+<Lap num="3" p="5" et="337.2063" s1="41.9455" s2="36.9128" s3="25.2375" fuel="0.686" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.0958</Lap>
+<Lap num="4" p="5" et="441.3021" s1="40.5536" s2="35.7250" s3="25.1244" fuel="0.584" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.4030</Lap>
+<Lap num="5" p="5" et="542.7051" s1="40.2985" s2="35.6188" s3="24.9978" fuel="0.482" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.9151</Lap>
+<Lap num="6" p="5" et="643.6202" s1="40.2748" s2="35.4151" s3="24.8781" fuel="0.376" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.5681</Lap>
+<BestLapTime>100.5681</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Fernando Alonso</Name>
+<Connected>1</Connected>
+<VehFile>MCLAREN_14_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Fernando Alonso #14</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, McLaren F1 Team</Category>
+<CarType>McLaren F1 Team</CarType>
+<CarClass>McLaren F1 Team</CarClass>
+<CarNumber>14</CarNumber>
+<TeamName>McLaren F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>6</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>6</LapRankIncludingDiscos>
+<Lap num="1" p="4" et="--.---" fuel="0.890" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="2" et="154.3243" s1="42.0227" s2="37.3412" s3="25.9763" fuel="0.780" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.3402</Lap>
+<Lap num="3" p="14" et="259.6645" s1="41.3984" s2="42.4232" s3="25.8507" fuel="0.682" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">109.6724</Lap>
+<Lap num="4" p="16" et="369.3369" s1="42.0402" s2="37.3950" s3="25.6711" fuel="0.580" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.1063</Lap>
+<Lap num="5" p="13" et="474.4432" s1="41.6685" s2="36.1252" s3="25.0421" fuel="0.471" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.8358</Lap>
+<Lap num="6" p="10" et="577.2791" s1="41.0570" s2="35.9650" s3="24.9081" fuel="0.369" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.9302</Lap>
+<Lap num="7" p="6" et="679.2092" s1="40.3214" s2="35.4833" s3="24.8161" fuel="0.267" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.6208</Lap>
+<BestLapTime>100.6208</BestLapTime>
+<Laps>7</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="7">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Max Verstappen</Name>
+<Connected>1</Connected>
+<VehFile>REDBULL_33_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Max Verstappen #33</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Aston Martin Red Bull Racing</Category>
+<CarType>Aston Martin Red Bull Racing</CarType>
+<CarClass>Aston Martin Red Bull Racing</CarClass>
+<CarNumber>33</CarNumber>
+<TeamName>Aston Martin Red Bull Racing</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>7</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>7</LapRankIncludingDiscos>
+<Lap num="1" p="18" et="--.---" fuel="0.682" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="1" et="167.8942" s1="40.2823" s2="35.4351" s3="25.0089" fuel="0.576" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.7263</Lap>
+<Lap num="3" p="1" et="268.6204" s1="41.2733" s2="36.1889" s3="24.9402" fuel="0.475" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.4024</Lap>
+<Lap num="4" p="1" et="371.0228" s1="40.4840" s2="37.8200" s3="25.2430" fuel="0.365" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.5470</Lap>
+<Lap num="5" p="4" et="474.5698" s1="42.3176" s2="36.0120" s3="24.7719" fuel="0.259" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.1014</Lap>
+<BestLapTime>100.7263</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Lando Norris</Name>
+<Connected>1</Connected>
+<VehFile>MCLAREN_02_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Lando Norris #02</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, McLaren F1 Team</Category>
+<CarType>McLaren F1 Team</CarType>
+<CarClass>McLaren F1 Team</CarClass>
+<CarNumber>02</CarNumber>
+<TeamName>McLaren F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>8</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>8</LapRankIncludingDiscos>
+<Lap num="1" p="19" et="--.---" fuel="0.549" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="5" et="353.0916" s1="41.0624" s2="35.9676" s3="25.1829" fuel="0.443" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.2128</Lap>
+<Lap num="3" p="7" et="455.3045" s1="40.6663" s2="35.8330" s3="25.0533" fuel="0.341" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.5526</Lap>
+<Lap num="4" p="6" et="556.8571" s1="40.4263" s2="35.5847" s3="24.9557" fuel="0.239" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">100.9667</Lap>
+<BestLapTime>100.9667</BestLapTime>
+<Laps>4</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="4">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Daniel Ricciardo</Name>
+<Connected>1</Connected>
+<VehFile>RENAULT_55_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Daniel Ricciardo #55</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Renault Sport F1 Team</Category>
+<CarType>Renault Sport F1 Team</CarType>
+<CarClass>Renault Sport F1 Team</CarClass>
+<CarNumber>55</CarNumber>
+<TeamName>Renault Sport F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>9</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>9</LapRankIncludingDiscos>
+<Lap num="1" p="6" et="--.---" fuel="0.812" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="4" et="164.5494" s1="41.3524" s2="36.4892" s3="25.6048" fuel="0.710" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.4464</Lap>
+<Lap num="3" p="9" et="267.9958" s1="41.7936" s2="37.3400" s3="25.4253" fuel="0.608" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.5589</Lap>
+<Lap num="4" p="7" et="372.5548" s1="40.9115" s2="36.1319" s3="25.4783" fuel="0.506" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.5216</Lap>
+<Lap num="5" p="11" et="475.0764" s1="42.0905" s2="36.3938" s3="25.7915" fuel="0.400" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.2758</Lap>
+<Lap num="6" p="8" et="579.3522" s1="40.5666" s2="35.6164" s3="25.1188" fuel="0.294" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.3018</Lap>
+<BestLapTime>101.3018</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Nico Hulkenberg</Name>
+<Connected>1</Connected>
+<VehFile>RENAULT_27_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Nico Hulkenberg #27</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Renault Sport F1 Team</Category>
+<CarType>Renault Sport F1 Team</CarType>
+<CarClass>Renault Sport F1 Team</CarClass>
+<CarNumber>27</CarNumber>
+<TeamName>Renault Sport F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>10</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>10</LapRankIncludingDiscos>
+<Lap num="1" p="5" et="--.---" fuel="0.678" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="1" et="151.6022" s1="41.2378" s2="36.3677" s3="25.4166" fuel="0.576" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.0220</Lap>
+<Lap num="3" p="6" et="254.6242" s1="41.0759" s2="36.2847" s3="25.3215" fuel="0.471" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.6821</Lap>
+<Lap num="4" p="4" et="357.3064" s1="40.4931" s2="35.9073" s3="25.2154" fuel="0.369" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.6158</Lap>
+<Lap num="5" p="8" et="458.9221" s1="40.6410" s2="35.9637" s3="25.0745" fuel="0.263" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.6792</Lap>
+<BestLapTime>101.6158</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Kevin Magnussen</Name>
+<Connected>1</Connected>
+<VehFile>HAAS_20_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Kevin Magnussen #20</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Haas F1 Team</Category>
+<CarType>Haas F1 Team</CarType>
+<CarClass>Haas F1 Team</CarClass>
+<CarNumber>20</CarNumber>
+<TeamName>Haas F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>11</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>11</LapRankIncludingDiscos>
+<Lap num="1" p="17" et="--.---" fuel="0.663" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="2" et="158.5274" s1="41.2334" s2="36.4302" s3="25.4831" fuel="0.557" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.1467</Lap>
+<Lap num="3" p="7" et="261.6741" s1="41.1752" s2="36.4820" s3="25.3726" fuel="0.459" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.0298</Lap>
+<Lap num="4" p="9" et="364.7039" s1="40.7927" s2="36.7176" s3="25.2786" fuel="0.357" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.7888</Lap>
+<Lap num="5" p="9" et="467.4927" s1="40.6867" s2="35.9203" s3="25.1727" fuel="0.251" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">101.7797</Lap>
+<BestLapTime>101.7797</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Esteban Ocon</Name>
+<Connected>1</Connected>
+<VehFile>FORCEINDIA_31_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Esteban Ocon #31</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Sahara Force India F1 Team</Category>
+<CarType>Sahara Force India F1 Team</CarType>
+<CarClass>Sahara Force India F1 Team</CarClass>
+<CarNumber>31</CarNumber>
+<TeamName>Sahara Force India F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>12</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>12</LapRankIncludingDiscos>
+<Lap num="1" p="20" et="--.---" fuel="0.671" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="4" et="184.9651" s1="41.2003" s2="36.4127" s3="25.4728" fuel="0.569" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.0858</Lap>
+<Lap num="3" p="7" et="288.0509" s1="40.9987" s2="36.3141" s3="25.3979" fuel="0.467" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.7106</Lap>
+<Lap num="4" p="6" et="390.7615" s1="40.8339" s2="36.0554" s3="25.2661" fuel="0.361" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.1554</Lap>
+<Lap num="5" p="10" et="492.9169" s1="40.6592" s2="37.1155" s3="25.0964" fuel="0.255" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.8711</Lap>
+<BestLapTime>102.1554</BestLapTime>
+<Laps>5</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="5">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Player </Name>
+<Connected>1</Connected>
+<VehFile>SAUBER_16_ASR.VEH</VehFile>
+<UpgradeCode>00020000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Charles Leclerc #16</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Alfa Romeo Sauber F1 Team</Category>
+<CarType>Alfa Romeo Sauber F1 Team</CarType>
+<CarClass>Alfa Romeo Sauber F1 Team</CarClass>
+<CarNumber>16</CarNumber>
+<TeamName>Alfa Romeo Sauber F1 Team</TeamName>
+<isPlayer>1</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>13</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>13</LapRankIncludingDiscos>
+<Lap num="1" p="1" et="--.---" fuel="0.671" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="8" et="163.6647" s1="42.1633" fuel="0.576" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="3" p="17" et="270.1437" s1="41.8056" s2="38.0523" s3="26.7281" fuel="0.486" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">106.5860</Lap>
+<Lap num="4" p="11" et="376.7297" s1="41.5543" s2="36.0944" s3="25.1916" fuel="0.396" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.8403</Lap>
+<Lap num="5" p="14" et="479.5700" s1="41.2793" s2="36.4893" s3="25.8140" fuel="0.302" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.5826</Lap>
+<Lap num="6" p="13" et="583.1526" s1="41.6570" s2="35.7529" s3="24.9705" fuel="0.208" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.3805</Lap>
+<Lap num="7" p="13" et="685.5331" s1="41.1324" s2="37.1475" fuel="0.118" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft" pit="1">--.----</Lap>
+<BestLapTime>102.3805</BestLapTime>
+<Laps>7</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="7">PlayerControl,Clutch,AutoBlip</ControlAndAids>
+</Driver>
+<Driver>
+<Name>JeanEric Verne</Name>
+<Connected>1</Connected>
+<VehFile>TOROROSSO_10_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>JeanEric Verne #10</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Red Bull Toro Rosso Honda</Category>
+<CarType>Red Bull Toro Rosso Honda</CarType>
+<CarClass>Red Bull Toro Rosso Honda</CarClass>
+<CarNumber>10</CarNumber>
+<TeamName>Red Bull Toro Rosso Honda</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>14</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>14</LapRankIncludingDiscos>
+<Lap num="1" p="13" et="--.---" fuel="0.808" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="10" et="232.3537" s1="41.8837" s2="36.9266" s3="25.7107" fuel="0.698" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.5210</Lap>
+<Lap num="3" p="14" et="336.8747" s1="42.1719" s2="37.9879" s3="25.6885" fuel="0.592" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.8482</Lap>
+<Lap num="4" p="14" et="442.7230" s1="41.3940" s2="36.5608" s3="25.5411" fuel="0.490" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.4960</Lap>
+<Lap num="5" p="16" et="546.2189" s1="41.2017" s2="36.3063" s3="25.4143" fuel="0.384" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.9222</Lap>
+<Lap num="6" p="14" et="649.1412" s1="40.9322" s2="36.1780" s3="25.3057" fuel="0.278" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.4159</Lap>
+<BestLapTime>102.4159</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Romain Grosjean</Name>
+<Connected>1</Connected>
+<VehFile>FORCEINDIA_11_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Romain Grosjean #11</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Sahara Force India F1 Team</Category>
+<CarType>Sahara Force India F1 Team</CarType>
+<CarClass>Sahara Force India F1 Team</CarClass>
+<CarNumber>11</CarNumber>
+<TeamName>Sahara Force India F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>15</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>15</LapRankIncludingDiscos>
+<Lap num="1" p="10" et="--.---" fuel="0.800" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="8" et="190.6404" s1="41.9951" s2="36.6261" s3="25.5712" fuel="0.702" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.1925</Lap>
+<Lap num="3" p="9" et="294.8329" s1="41.2856" s2="36.4905" s3="25.5102" fuel="0.600" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.2863</Lap>
+<Lap num="4" p="10" et="398.1192" s1="40.9792" s2="36.1969" s3="25.3541" fuel="0.498" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.5302</Lap>
+<Lap num="5" p="12" et="500.6494" s1="40.7412" s2="36.9951" s3="25.8985" fuel="0.392" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.6348</Lap>
+<Lap num="6" p="14" et="604.2842" s1="41.5378" s2="35.8083" s3="25.1306" fuel="0.290" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.4766</Lap>
+<BestLapTime>102.4766</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Pascal Werhlein</Name>
+<Connected>1</Connected>
+<VehFile>TOROROSSO_28_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Pascal Werhlein #28</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Red Bull Toro Rosso Honda</Category>
+<CarType>Red Bull Toro Rosso Honda</CarType>
+<CarClass>Red Bull Toro Rosso Honda</CarClass>
+<CarNumber>28</CarNumber>
+<TeamName>Red Bull Toro Rosso Honda</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>16</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>16</LapRankIncludingDiscos>
+<Lap num="1" p="7" et="--.---" fuel="0.882" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="9" et="194.6580" s1="41.8444" s2="36.8642" s3="25.7069" fuel="0.776" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.4155</Lap>
+<Lap num="3" p="11" et="299.0735" s1="41.4423" s2="36.6240" s3="25.6253" fuel="0.675" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.6916</Lap>
+<Lap num="4" p="14" et="402.7651" s1="41.4607" s2="36.5825" s3="25.5207" fuel="0.565" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.5639</Lap>
+<Lap num="5" p="13" et="506.3290" s1="41.0277" s2="36.2524" s3="25.4545" fuel="0.463" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">102.7347</Lap>
+<Lap num="6" p="15" et="609.0637" s1="41.1306" s2="36.6007" s3="25.6782" fuel="0.361" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.4094</Lap>
+<Lap num="7" p="16" et="712.4731" s1="41.7666" s2="36.4366" s3="25.4796" fuel="0.251" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.6827</Lap>
+<BestLapTime>102.7347</BestLapTime>
+<Laps>7</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="7">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Charles Leclerc</Name>
+<Connected>1</Connected>
+<VehFile>SAUBER_09_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Charles Leclerc #09</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Alfa Romeo Sauber F1 Team</Category>
+<CarType>Alfa Romeo Sauber F1 Team</CarType>
+<CarClass>Alfa Romeo Sauber F1 Team</CarClass>
+<CarNumber>09</CarNumber>
+<TeamName>Alfa Romeo Sauber F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>17</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>17</LapRankIncludingDiscos>
+<Lap num="1" p="9" et="--.---" fuel="0.788" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="10" et="241.4426" s1="41.6723" s2="36.8871" s3="25.7643" fuel="0.686" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.3236</Lap>
+<Lap num="3" p="12" et="345.7662" s1="41.4902" s2="36.6797" s3="25.7076" fuel="0.584" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.8775</Lap>
+<Lap num="4" p="14" et="449.6437" s1="41.2380" s2="36.5685" s3="25.5499" fuel="0.482" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.3565</Lap>
+<Lap num="5" p="17" et="553.0002" s1="41.1276" s2="37.1834" s3="25.4124" fuel="0.376" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.7233</Lap>
+<Lap num="6" p="17" et="656.7235" s1="40.8878" s2="36.1966" s3="26.1798" fuel="0.271" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.2642</Lap>
+<BestLapTime>103.2642</BestLapTime>
+<Laps>6</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="6">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Robert Kubica</Name>
+<Connected>1</Connected>
+<VehFile>WILLIAMS_35_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Robert Kubica #35</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Williams Martini Racing</Category>
+<CarType>Williams Martini Racing</CarType>
+<CarClass>Williams Martini Racing</CarClass>
+<CarNumber>35</CarNumber>
+<TeamName>Williams Martini Racing</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>18</Position>
+<ClassPosition>1</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>18</LapRankIncludingDiscos>
+<Lap num="1" p="16" et="--.---" fuel="0.886" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="11" et="190.5183" s1="42.8965" s2="37.2481" s3="25.9975" fuel="0.780" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">106.1421</Lap>
+<Lap num="3" p="13" et="296.6604" s1="41.8129" s2="36.9170" s3="25.7818" fuel="0.682" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.5117</Lap>
+<Lap num="4" p="15" et="401.1721" s1="41.3931" s2="36.7225" s3="25.7122" fuel="0.576" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.8278</Lap>
+<Lap num="5" p="18" et="504.9999" s1="41.4061" s2="36.5947" s3="25.6202" fuel="0.475" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.6210</Lap>
+<Lap num="6" p="18" et="608.6209" s1="41.1742" s2="36.6315" s3="25.8446" fuel="0.373" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">103.6503</Lap>
+<Lap num="7" p="18" et="712.2712" s1="41.8646" s2="37.1839" s3="25.6902" fuel="0.271" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.7386</Lap>
+<BestLapTime>103.6210</BestLapTime>
+<Laps>7</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="7">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Sergio Perez</Name>
+<Connected>1</Connected>
+<VehFile>HAAS_08_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Sergio Perez #08</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Haas F1 Team</Category>
+<CarType>Haas F1 Team</CarType>
+<CarClass>Haas F1 Team</CarClass>
+<CarNumber>08</CarNumber>
+<TeamName>Haas F1 Team</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>19</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>19</LapRankIncludingDiscos>
+<Lap num="1" p="19" et="--.---" fuel="0.894" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="20" et="459.7659" s1="42.1612" s2="37.3747" s3="26.1357" fuel="0.792" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.6717</Lap>
+<Lap num="3" p="20" et="565.4376" s1="41.8649" s2="38.0623" s3="26.0880" fuel="0.690" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">106.0152</Lap>
+<Lap num="4" p="19" et="671.4528" s1="41.8057" s2="36.9869" s3="25.9562" fuel="0.584" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">104.7488</Lap>
+<BestLapTime>104.7488</BestLapTime>
+<Laps>4</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="4">AIControl</ControlAndAids>
+</Driver>
+<Driver>
+<Name>Lance Stroll</Name>
+<Connected>1</Connected>
+<VehFile>WILLIAMS_18_ASR.VEH</VehFile>
+<UpgradeCode>00000000 00000000 00000000 00000000</UpgradeCode>
+<VehName>Lance Stroll #18</VehName>
+<Category>F1 ASR 2018, Equipos Oficiales, Williams Martini Racing</Category>
+<CarType>Williams Martini Racing</CarType>
+<CarClass>Williams Martini Racing</CarClass>
+<CarNumber>18</CarNumber>
+<TeamName>Williams Martini Racing</TeamName>
+<isPlayer>0</isPlayer>
+<ServerScored>1</ServerScored>
+<Position>20</Position>
+<ClassPosition>2</ClassPosition>
+<Points>0</Points>
+<ClassPoints>0</ClassPoints>
+<LapRankIncludingDiscos>20</LapRankIncludingDiscos>
+<Lap num="1" p="2" et="--.---" fuel="0.533" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">--.----</Lap>
+<Lap num="2" p="2" et="153.8281" s1="42.2913" s2="37.3696" s3="25.8957" fuel="0.427" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.5565</Lap>
+<Lap num="3" p="15" et="259.3846" s1="41.5062" s2="42.2560" s3="26.1252" fuel="0.322" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">109.8875</Lap>
+<Lap num="4" p="16" et="369.2721" s1="42.0325" s2="37.1004" s3="26.0166" fuel="0.224" twfl="1.000" twfr="1.000" twrl="1.000" twrr="1.000" fcompound="2,HyperSoft" rcompound="2,HyperSoft">105.1495</Lap>
+<BestLapTime>105.1495</BestLapTime>
+<Laps>4</Laps>
+<Pitstops>0</Pitstops>
+<FinishStatus>None</FinishStatus>
+<ControlAndAids startLap="1" endLap="4">AIControl</ControlAndAids>
+</Driver>
+</Practice1>
+</RaceResults>
+</rFactorXML>

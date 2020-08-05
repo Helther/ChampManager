@@ -1,0 +1,363 @@
+==========xml log data========
+==========Incidents============
+Incident between Fernando Alonso and Lance Stroll
+Incident between Robert Kubica and Pascal Werhlein
+==========Incidents END============
+PlayerFile player
+TimeString 2019/06/12 19:15:22
+Mod F1 2019 v25
+TrackVenue Paul Ricard HTTT
+RaceLaps 25
+==========Driver data========
+Name Sebastian Vettel
+VehFile FERRARI_05_ASR.VEH
+VehName Sebastian Vettel #05
+CarType Scuderia Ferrari
+CarClass Scuderia Ferrari
+CarNumber 05
+TeamName Scuderia Ferrari
+Position 1
+ClassPosition 1
+Lap 101.905, 101.426, 101.219, 100.428, 100.486, 99.4101
+BestLapTime 99.4101
+===========Laps==============
+# 1 101.905
+# 2 101.426
+# 3 101.219
+# 4 100.428
+# 5 100.486
+# 6 99.4101
+==========Driver data========
+Name Kimi Raikkonen
+VehFile FERRARI_07_ASR.VEH
+VehName Kimi Raikkonen #07
+CarType Scuderia Ferrari
+CarClass Scuderia Ferrari
+CarNumber 07
+TeamName Scuderia Ferrari
+Position 2
+ClassPosition 2
+Lap 102.416, 101.999, 100.664, 100.213, 99.665
+BestLapTime 99.6650
+===========Laps==============
+# 1 102.416
+# 2 101.999
+# 3 100.664
+# 4 100.213
+# 5 99.665
+==========Driver data========
+Name Carlos Sainz
+VehFile REDBULL_03_ASR.VEH
+VehName Carlos Sainz #03
+CarType Aston Martin Red Bull Racing
+CarClass Aston Martin Red Bull Racing
+CarNumber 03
+TeamName Aston Martin Red Bull Racing
+Position 3
+ClassPosition 1
+Lap 101.109, 101.073, 100.033, 100.853
+BestLapTime 100.0331
+===========Laps==============
+# 1 101.109
+# 2 101.073
+# 3 100.033
+# 4 100.853
+==========Driver data========
+Name Lewis Hamilton
+VehFile MERCEDES_44_ASR.VEH
+VehName Lewis Hamilton #44
+CarType Mercedes AMG Petronas Motorspor
+CarClass Mercedes AMG Petronas Motorspor
+CarNumber 44
+TeamName Mercedes AMG Petronas Motorsport
+Position 4
+ClassPosition 1
+Lap 102.048, 100.814, 100.506, 109.809
+BestLapTime 100.5056
+===========Laps==============
+# 1 102.048
+# 2 100.814
+# 3 100.506
+# 4 109.809
+==========Driver data========
+Name Valtteri Bottas
+VehFile MERCEDES_77_ASR.VEH
+VehName Valtteri Bottas #77
+CarType Mercedes AMG Petronas Motorspor
+CarClass Mercedes AMG Petronas Motorspor
+CarNumber 77
+TeamName Mercedes AMG Petronas Motorsport
+Position 5
+ClassPosition 2
+Lap 102.637, 104.096, 101.403, 100.915, 100.568
+BestLapTime 100.5681
+===========Laps==============
+# 1 102.637
+# 2 104.096
+# 3 101.403
+# 4 100.915
+# 5 100.568
+==========Driver data========
+Name Fernando Alonso
+VehFile MCLAREN_14_ASR.VEH
+VehName Fernando Alonso #14
+CarType McLaren F1 Team
+CarClass McLaren F1 Team
+CarNumber 14
+TeamName McLaren F1 Team
+Position 6
+ClassPosition 1
+Lap 105.34, 109.672, 105.106, 102.836, 101.93, 100.621
+BestLapTime 100.6208
+===========Laps==============
+# 1 105.34
+# 2 109.672
+# 3 105.106
+# 4 102.836
+# 5 101.93
+# 6 100.621
+==========Driver data========
+Name Max Verstappen
+VehFile REDBULL_33_ASR.VEH
+VehName Max Verstappen #33
+CarType Aston Martin Red Bull Racing
+CarClass Aston Martin Red Bull Racing
+CarNumber 33
+TeamName Aston Martin Red Bull Racing
+Position 7
+ClassPosition 2
+Lap 100.726, 102.402, 103.547, 103.101
+BestLapTime 100.7263
+===========Laps==============
+# 1 100.726
+# 2 102.402
+# 3 103.547
+# 4 103.101
+==========Driver data========
+Name Lando Norris
+VehFile MCLAREN_02_ASR.VEH
+VehName Lando Norris #02
+CarType McLaren F1 Team
+CarClass McLaren F1 Team
+CarNumber 02
+TeamName McLaren F1 Team
+Position 8
+ClassPosition 2
+Lap 102.213, 101.553, 100.967
+BestLapTime 100.9667
+===========Laps==============
+# 1 102.213
+# 2 101.553
+# 3 100.967
+==========Driver data========
+Name Daniel Ricciardo
+VehFile RENAULT_55_ASR.VEH
+VehName Daniel Ricciardo #55
+CarType Renault Sport F1 Team
+CarClass Renault Sport F1 Team
+CarNumber 55
+TeamName Renault Sport F1 Team
+Position 9
+ClassPosition 1
+Lap 103.446, 104.559, 102.522, 104.276, 101.302
+BestLapTime 101.3018
+===========Laps==============
+# 1 103.446
+# 2 104.559
+# 3 102.522
+# 4 104.276
+# 5 101.302
+==========Driver data========
+Name Nico Hulkenberg
+VehFile RENAULT_27_ASR.VEH
+VehName Nico Hulkenberg #27
+CarType Renault Sport F1 Team
+CarClass Renault Sport F1 Team
+CarNumber 27
+TeamName Renault Sport F1 Team
+Position 10
+ClassPosition 2
+Lap 103.022, 102.682, 101.616, 101.679
+BestLapTime 101.6158
+===========Laps==============
+# 1 103.022
+# 2 102.682
+# 3 101.616
+# 4 101.679
+==========Driver data========
+Name Kevin Magnussen
+VehFile HAAS_20_ASR.VEH
+VehName Kevin Magnussen #20
+CarType Haas F1 Team
+CarClass Haas F1 Team
+CarNumber 20
+TeamName Haas F1 Team
+Position 11
+ClassPosition 1
+Lap 103.147, 103.03, 102.789, 101.78
+BestLapTime 101.7797
+===========Laps==============
+# 1 103.147
+# 2 103.03
+# 3 102.789
+# 4 101.78
+==========Driver data========
+Name Esteban Ocon
+VehFile FORCEINDIA_31_ASR.VEH
+VehName Esteban Ocon #31
+CarType Sahara Force India F1 Team
+CarClass Sahara Force India F1 Team
+CarNumber 31
+TeamName Sahara Force India F1 Team
+Position 12
+ClassPosition 1
+Lap 103.086, 102.711, 102.155, 102.871
+BestLapTime 102.1554
+===========Laps==============
+# 1 103.086
+# 2 102.711
+# 3 102.155
+# 4 102.871
+==========Driver data========
+Name Player 
+VehFile SAUBER_16_ASR.VEH
+VehName Charles Leclerc #16
+CarType Alfa Romeo Sauber F1 Team
+CarClass Alfa Romeo Sauber F1 Team
+CarNumber 16
+TeamName Alfa Romeo Sauber F1 Team
+Position 13
+ClassPosition 1
+Lap 0, 106.586, 102.84, 103.583, 102.38, 0
+BestLapTime 102.3805
+===========Laps==============
+# 1 0
+# 2 106.586
+# 3 102.84
+# 4 103.583
+# 5 102.38
+# 6 0
+==========Driver data========
+Name JeanEric Verne
+VehFile TOROROSSO_10_ASR.VEH
+VehName JeanEric Verne #10
+CarType Red Bull Toro Rosso Honda
+CarClass Red Bull Toro Rosso Honda
+CarNumber 10
+TeamName Red Bull Toro Rosso Honda
+Position 14
+ClassPosition 1
+Lap 104.521, 105.848, 103.496, 102.922, 102.416
+BestLapTime 102.4159
+===========Laps==============
+# 1 104.521
+# 2 105.848
+# 3 103.496
+# 4 102.922
+# 5 102.416
+==========Driver data========
+Name Romain Grosjean
+VehFile FORCEINDIA_11_ASR.VEH
+VehName Romain Grosjean #11
+CarType Sahara Force India F1 Team
+CarClass Sahara Force India F1 Team
+CarNumber 11
+TeamName Sahara Force India F1 Team
+Position 15
+ClassPosition 2
+Lap 104.192, 103.286, 102.53, 103.635, 102.477
+BestLapTime 102.4766
+===========Laps==============
+# 1 104.192
+# 2 103.286
+# 3 102.53
+# 4 103.635
+# 5 102.477
+==========Driver data========
+Name Pascal Werhlein
+VehFile TOROROSSO_28_ASR.VEH
+VehName Pascal Werhlein #28
+CarType Red Bull Toro Rosso Honda
+CarClass Red Bull Toro Rosso Honda
+CarNumber 28
+TeamName Red Bull Toro Rosso Honda
+Position 16
+ClassPosition 2
+Lap 104.415, 103.692, 103.564, 102.735, 103.409, 103.683
+BestLapTime 102.7347
+===========Laps==============
+# 1 104.415
+# 2 103.692
+# 3 103.564
+# 4 102.735
+# 5 103.409
+# 6 103.683
+==========Driver data========
+Name Charles Leclerc
+VehFile SAUBER_09_ASR.VEH
+VehName Charles Leclerc #09
+CarType Alfa Romeo Sauber F1 Team
+CarClass Alfa Romeo Sauber F1 Team
+CarNumber 09
+TeamName Alfa Romeo Sauber F1 Team
+Position 17
+ClassPosition 2
+Lap 104.324, 103.877, 103.356, 103.723, 103.264
+BestLapTime 103.2642
+===========Laps==============
+# 1 104.324
+# 2 103.877
+# 3 103.356
+# 4 103.723
+# 5 103.264
+==========Driver data========
+Name Robert Kubica
+VehFile WILLIAMS_35_ASR.VEH
+VehName Robert Kubica #35
+CarType Williams Martini Racing
+CarClass Williams Martini Racing
+CarNumber 35
+TeamName Williams Martini Racing
+Position 18
+ClassPosition 1
+Lap 106.142, 104.512, 103.828, 103.621, 103.65, 104.739
+BestLapTime 103.6210
+===========Laps==============
+# 1 106.142
+# 2 104.512
+# 3 103.828
+# 4 103.621
+# 5 103.65
+# 6 104.739
+==========Driver data========
+Name Sergio Perez
+VehFile HAAS_08_ASR.VEH
+VehName Sergio Perez #08
+CarType Haas F1 Team
+CarClass Haas F1 Team
+CarNumber 08
+TeamName Haas F1 Team
+Position 19
+ClassPosition 2
+Lap 105.672, 106.015, 104.749
+BestLapTime 104.7488
+===========Laps==============
+# 1 105.672
+# 2 106.015
+# 3 104.749
+==========Driver data========
+Name Lance Stroll
+VehFile WILLIAMS_18_ASR.VEH
+VehName Lance Stroll #18
+CarType Williams Martini Racing
+CarClass Williams Martini Racing
+CarNumber 18
+TeamName Williams Martini Racing
+Position 20
+ClassPosition 2
+Lap 105.556, 109.888, 105.15
+BestLapTime 105.1495
+===========Laps==============
+# 1 105.556
+# 2 109.888
+# 3 105.15

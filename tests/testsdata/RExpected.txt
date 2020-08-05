@@ -1,0 +1,464 @@
+==========xml log data========
+==========Incidents============
+==========Incidents END============
+PlayerFile player
+TimeString 2019/06/11 23:06:49
+Mod F1 2019 v25
+TrackVenue Paul Ricard HTTT
+RaceLaps 25
+==========Driver data========
+Name Kimi Raikkonen
+VehFile FERRARI_07_ASR.VEH
+VehName Kimi Raikkonen #07
+CarType Scuderia Ferrari
+CarClass Scuderia Ferrari
+CarNumber 07
+TeamName Scuderia Ferrari
+GridPos 3
+Position 1
+ClassGridPos 2
+ClassPosition 1
+Lap 101.808, 101.134, 100.645, 100.964, 99.3623, 98.9778
+BestLapTime 98.9778
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 101.808
+# 2 101.134
+# 3 100.645
+# 4 100.964
+# 5 99.3623
+# 6 98.9778
+==========Driver data========
+Name Valtteri Bottas
+VehFile MERCEDES_77_ASR.VEH
+VehName Valtteri Bottas #77
+CarType Mercedes AMG Petronas Motorspor
+CarClass Mercedes AMG Petronas Motorspor
+CarNumber 77
+TeamName Mercedes AMG Petronas Motorsport
+GridPos 5
+Position 2
+ClassGridPos 1
+ClassPosition 1
+Lap 102.088, 101.302, 101.118, 100.289, 99.9888, 99.3318
+BestLapTime 99.3318
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 102.088
+# 2 101.302
+# 3 101.118
+# 4 100.289
+# 5 99.9888
+# 6 99.3318
+==========Driver data========
+Name Carlos Sainz
+VehFile REDBULL_03_ASR.VEH
+VehName Carlos Sainz #03
+CarType Aston Martin Red Bull Racing
+CarClass Aston Martin Red Bull Racing
+CarNumber 03
+TeamName Aston Martin Red Bull Racing
+GridPos 4
+Position 3
+ClassGridPos 2
+ClassPosition 1
+Lap 101.988, 101.187, 100.991, 100.902, 99.9086, 99.4828
+BestLapTime 99.4828
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 101.988
+# 2 101.187
+# 3 100.991
+# 4 100.902
+# 5 99.9086
+# 6 99.4828
+==========Driver data========
+Name Max Verstappen
+VehFile REDBULL_33_ASR.VEH
+VehName Max Verstappen #33
+CarType Aston Martin Red Bull Racing
+CarClass Aston Martin Red Bull Racing
+CarNumber 33
+TeamName Aston Martin Red Bull Racing
+GridPos 2
+Position 8
+ClassGridPos 1
+ClassPosition 2
+Lap 101.545, 101.023, 100.59, 99.6501, 99.4853, 117.217
+BestLapTime 99.4853
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 101.545
+# 2 101.023
+# 3 100.59
+# 4 99.6501
+# 5 99.4853
+# 6 117.217
+==========Driver data========
+Name Sebastian Vettel
+VehFile FERRARI_05_ASR.VEH
+VehName Sebastian Vettel #05
+CarType Scuderia Ferrari
+CarClass Scuderia Ferrari
+CarNumber 05
+TeamName Scuderia Ferrari
+GridPos 1
+Position 9
+ClassGridPos 1
+ClassPosition 2
+Lap 101.385, 101.016, 100.541, 100.092, 99.6702, 118.828
+BestLapTime 99.6702
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 101.385
+# 2 101.016
+# 3 100.541
+# 4 100.092
+# 5 99.6702
+# 6 118.828
+==========Driver data========
+Name Lewis Hamilton
+VehFile MERCEDES_44_ASR.VEH
+VehName Lewis Hamilton #44
+CarType Mercedes AMG Petronas Motorspor
+CarClass Mercedes AMG Petronas Motorspor
+CarNumber 44
+TeamName Mercedes AMG Petronas Motorsport
+GridPos 6
+Position 13
+ClassGridPos 2
+ClassPosition 2
+Lap 102.008, 101.498, 101.096, 101.439, 99.8159, 123.597
+BestLapTime 99.8159
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 102.008
+# 2 101.498
+# 3 101.096
+# 4 101.439
+# 5 99.8159
+# 6 123.597
+==========Driver data========
+Name Fernando Alonso
+VehFile MCLAREN_14_ASR.VEH
+VehName Fernando Alonso #14
+CarType McLaren F1 Team
+CarClass McLaren F1 Team
+CarNumber 14
+TeamName McLaren F1 Team
+GridPos 7
+Position 4
+ClassGridPos 1
+ClassPosition 1
+Lap 102.976, 102.251, 101.644, 101.205, 100.468, 100.696
+BestLapTime 100.4684
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 102.976
+# 2 102.251
+# 3 101.644
+# 4 101.205
+# 5 100.468
+# 6 100.696
+==========Driver data========
+Name Nico Hulkenberg
+VehFile RENAULT_27_ASR.VEH
+VehName Nico Hulkenberg #27
+CarType Renault Sport F1 Team
+CarClass Renault Sport F1 Team
+CarNumber 27
+TeamName Renault Sport F1 Team
+GridPos 9
+Position 14
+ClassGridPos 2
+ClassPosition 2
+Lap 102.918, 103.403, 101.722, 101.232, 100.554, 123.344
+BestLapTime 100.5538
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 102.918
+# 2 103.403
+# 3 101.722
+# 4 101.232
+# 5 100.554
+# 6 123.344
+==========Driver data========
+Name Kevin Magnussen
+VehFile HAAS_20_ASR.VEH
+VehName Kevin Magnussen #20
+CarType Haas F1 Team
+CarClass Haas F1 Team
+CarNumber 20
+TeamName Haas F1 Team
+GridPos 14
+Position 7
+ClassGridPos 2
+ClassPosition 1
+Lap 103.865, 103.068, 102.34, 101.779, 100.987, 101.132
+BestLapTime 100.9869
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 103.865
+# 2 103.068
+# 3 102.34
+# 4 101.779
+# 5 100.987
+# 6 101.132
+==========Driver data========
+Name Daniel Ricciardo
+VehFile RENAULT_55_ASR.VEH
+VehName Daniel Ricciardo #55
+CarType Renault Sport F1 Team
+CarClass Renault Sport F1 Team
+CarNumber 55
+TeamName Renault Sport F1 Team
+GridPos 8
+Position 5
+ClassGridPos 1
+ClassPosition 1
+Lap 102.948, 102.597, 101.895, 101.477, 101.02, 102.091
+BestLapTime 101.0196
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 102.948
+# 2 102.597
+# 3 101.895
+# 4 101.477
+# 5 101.02
+# 6 102.091
+==========Driver data========
+Name Romain Grosjean
+VehFile FORCEINDIA_11_ASR.VEH
+VehName Romain Grosjean #11
+CarType Sahara Force India F1 Team
+CarClass Sahara Force India F1 Team
+CarNumber 11
+TeamName Sahara Force India F1 Team
+GridPos 11
+Position 6
+ClassGridPos 2
+ClassPosition 1
+Lap 103.448, 103.007, 102.689, 101.978, 101.612, 101.112
+BestLapTime 101.1115
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 103.448
+# 2 103.007
+# 3 102.689
+# 4 101.978
+# 5 101.612
+# 6 101.112
+==========Driver data========
+Name Lando Norris
+VehFile MCLAREN_02_ASR.VEH
+VehName Lando Norris #02
+CarType McLaren F1 Team
+CarClass McLaren F1 Team
+CarNumber 02
+TeamName McLaren F1 Team
+GridPos 13
+Position 16
+ClassGridPos 2
+ClassPosition 2
+Lap 103.664, 102.854, 102.635, 102.393, 101.326, 123.923
+BestLapTime 101.3257
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 103.664
+# 2 102.854
+# 3 102.635
+# 4 102.393
+# 5 101.326
+# 6 123.923
+==========Driver data========
+Name Esteban Ocon
+VehFile FORCEINDIA_31_ASR.VEH
+VehName Esteban Ocon #31
+CarType Sahara Force India F1 Team
+CarClass Sahara Force India F1 Team
+CarNumber 31
+TeamName Sahara Force India F1 Team
+GridPos 10
+Position 15
+ClassGridPos 1
+ClassPosition 2
+Lap 103.741, 102.685, 102.712, 102.289, 101.341, 122.74
+BestLapTime 101.3409
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 103.741
+# 2 102.685
+# 3 102.712
+# 4 102.289
+# 5 101.341
+# 6 122.74
+==========Driver data========
+Name Charles Leclerc
+VehFile SAUBER_09_ASR.VEH
+VehName Charles Leclerc #09
+CarType Alfa Romeo Sauber F1 Team
+CarClass Alfa Romeo Sauber F1 Team
+CarNumber 09
+TeamName Alfa Romeo Sauber F1 Team
+GridPos 19
+Position 11
+ClassGridPos 1
+ClassPosition 1
+Lap 109.309, 104.655, 103.808, 103.745, 102.367, 101.827
+BestLapTime 101.8266
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 109.309
+# 2 104.655
+# 3 103.808
+# 4 103.745
+# 5 102.367
+# 6 101.827
+==========Driver data========
+Name Robert Kubica
+VehFile WILLIAMS_35_ASR.VEH
+VehName Robert Kubica #35
+CarType Williams Martini Racing
+CarClass Williams Martini Racing
+CarNumber 35
+TeamName Williams Martini Racing
+GridPos 16
+Position 19
+ClassGridPos 1
+ClassPosition 2
+Lap 106.395, 103.565, 102.939, 102.548, 102.05, 124.176
+BestLapTime 102.0496
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 106.395
+# 2 103.565
+# 3 102.939
+# 4 102.548
+# 5 102.05
+# 6 124.176
+==========Driver data========
+Name Pascal Werhlein
+VehFile TOROROSSO_28_ASR.VEH
+VehName Pascal Werhlein #28
+CarType Red Bull Toro Rosso Honda
+CarClass Red Bull Toro Rosso Honda
+CarNumber 28
+TeamName Red Bull Toro Rosso Honda
+GridPos 15
+Position 10
+ClassGridPos 1
+ClassPosition 1
+Lap 105.995, 103.572, 102.898, 102.421, 102.154, 102.117
+BestLapTime 102.1174
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 105.995
+# 2 103.572
+# 3 102.898
+# 4 102.421
+# 5 102.154
+# 6 102.117
+==========Driver data========
+Name JeanEric Verne
+VehFile TOROROSSO_10_ASR.VEH
+VehName JeanEric Verne #10
+CarType Red Bull Toro Rosso Honda
+CarClass Red Bull Toro Rosso Honda
+CarNumber 10
+TeamName Red Bull Toro Rosso Honda
+GridPos 17
+Position 18
+ClassGridPos 2
+ClassPosition 2
+Lap 106.457, 103.619, 102.904, 102.39, 102.152, 122.763
+BestLapTime 102.1516
+Pitstops 1
+FinishStatus None
+===========Laps==============
+# 1 106.457
+# 2 103.619
+# 3 102.904
+# 4 102.39
+# 5 102.152
+# 6 122.763
+==========Driver data========
+Name Player 
+VehFile SAUBER_16_ASR.VEH
+VehName Charles Leclerc #16
+CarType Alfa Romeo Sauber F1 Team
+CarClass Alfa Romeo Sauber F1 Team
+CarNumber 16
+TeamName Alfa Romeo Sauber F1 Team
+GridPos 20
+Position 17
+ClassGridPos 2
+ClassPosition 2
+Lap 112.671, 105.011, 103.935, 103.337, 0, 102.288
+BestLapTime 102.2881
+Pitstops 0
+FinishStatus DNF
+===========Laps==============
+# 1 112.671
+# 2 105.011
+# 3 103.935
+# 4 103.337
+# 5 0
+# 6 102.288
+==========Driver data========
+Name Lance Stroll
+VehFile WILLIAMS_18_ASR.VEH
+VehName Lance Stroll #18
+CarType Williams Martini Racing
+CarClass Williams Martini Racing
+CarNumber 18
+TeamName Williams Martini Racing
+GridPos 18
+Position 12
+ClassGridPos 2
+ClassPosition 1
+Lap 108.235, 104.561, 103.894, 104.789, 102.758, 102.718
+BestLapTime 102.7183
+Pitstops 0
+FinishStatus None
+===========Laps==============
+# 1 108.235
+# 2 104.561
+# 3 103.894
+# 4 104.789
+# 5 102.758
+# 6 102.718
+==========Driver data========
+Name Sergio Perez
+VehFile HAAS_08_ASR.VEH
+VehName Sergio Perez #08
+CarType Haas F1 Team
+CarClass Haas F1 Team
+CarNumber 08
+TeamName Haas F1 Team
+GridPos 12
+Position 20
+ClassGridPos 1
+ClassPosition 2
+Lap 109.142, 104.768
+BestLapTime 104.7682
+Pitstops 0
+FinishStatus DNF
+===========Laps==============
+# 1 109.142
+# 2 104.768
