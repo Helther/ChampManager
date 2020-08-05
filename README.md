@@ -1,14 +1,22 @@
 # Champoinship Manager
-<img align=right src="rsc/better_icon.png" width='256' alt='Icon'>
+<img align=right src="rsc/better_icon.png" width='128' alt='Icon'>
 
-
-## Getting Started
-
+Championship Manager is a cross platform desktop application accessing log files, which has been created after participating in a race weekend by a rFactor 2 api.
+After adding logs to Championship Manager, they get proccessed and stored in SQLite database instance for later viewing via the results gui.
+[screen]
 ## Features
-
+The list of included features so far:
+ * adding race logs in a weekend format (grouping)
+ * adding race logs to separate seasons
+ * navigating race list in a gui view filtered by a season
+ * inspecting detailed info of a selected race session via details view
+ * all actions are syncronized with the database
 ## Usage
-
-
+The app consists of tabs, of which only results tab available for now.
+Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
+[select sessions]
+Adding new races or adding/deleting seasons are done by accessing main menu 
+[gif add race season switch beetween]
 
 ## Dependencies
 1. A C++ compiler that supports C++17.
@@ -20,18 +28,19 @@ The following compilers should work:
 
 2. [CMake 3.12+](https://cmake.org/)
 
-3. [Qt 5.14.1+](https://www.qt.io/)
+3. [Qt 5.14.1+(Qt5Widgets, Qt5Gui, Qt5Core, Qt5Sq)](https://www.qt.io/)
 
 ### Build
-You can build main target via CMake or using .pro file
+Target platforms are windows and linux. You can build main target via CMake or using .pro file.
+From build directory
 ```
  $ cmake --build --target ChampManager
 ```
 
 ## Testing
-For testing was used CMake's CTest. [CTest docs](https://cmake.org/cmake/help/latest/manual/ctest.1.html) So far there is one unit test, for the file parser.
+For testing was used CMake's ctest [ctest docs](https://cmake.org/cmake/help/latest/manual/ctest.1.html). So far there is one unit test, for the file parser.
 ### Building the tests
-Ctests are build via CMake by specifying test target.
+ctests are build via CMake by specifying test target.
 ```
  $ cmake --build --target test_parser
 ```
@@ -52,7 +61,7 @@ To run built tests
 
  * add user profile with championship settings and statistics
  * add gui for viewing/add/editing championship participants
- * add championship progression after every new race and season with periodic udpates to teams and drivers
+ * add championship progression after every new race and season with periodic updates to teams and drivers
 
 ## License
 
