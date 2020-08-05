@@ -3,7 +3,9 @@
 
 Championship Manager is a cross platform desktop application accessing log files, which has been created after participating in a race weekend by a rFactor 2 api.
 After adding logs to Championship Manager, they get proccessed and stored in SQLite database instance for later viewing via the results gui.
+
 [screen]
+
 ## Features
 The list of included features so far:
  * adding race logs in a weekend format (grouping)
@@ -16,11 +18,14 @@ The app consists of tabs, of which only results tab available for now.
 Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
 
 [select sessions]
-* Navigating the results tab * 
+
+_Navigating the results tab_ 
+
 Adding new races or adding/deleting seasons are done by accessing main menu 
 
 [gif add race season switch beetween]
-* Adding new results and viewing the changes *
+
+_Adding new results and viewing the changes_
 ## Dependencies
 1. A C++ compiler that supports C++17.
 The following compilers should work:
