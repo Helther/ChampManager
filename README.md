@@ -18,13 +18,13 @@ The list of included features so far:
 The app consists of tabs, of which only results tab available for now.
 Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
 
-[select sessions]
+![select sessions](rsc/preview1.gif)
 
 _Navigating the results tab_ 
 
-Adding new races or adding/deleting seasons are done by accessing main menu 
+Adding new races or adding/deleting seasons is done by accessing main menu 
 
-[gif add race season switch beetween]
+![gif add race season switch beetween](rsc/preview2.gif)
 
 _Adding new results and viewing the changes_
 ## Dependencies
