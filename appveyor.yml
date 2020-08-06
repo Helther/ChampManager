@@ -2,9 +2,9 @@ image:
   - Visual Studio 2019
 clone_folder: c:\projects\cm
 
-install:
+before_build:
   - set QTDIR=C:\Qt\5.14.2\mingw73_64
-  - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
+  - set PATH=%QTDIR%\bin;C:\MinGW\bin;%PATH%
 
 build_script:
 - cmd: >-
@@ -14,7 +14,8 @@ build_script:
     cmake .
     
     cd build
-
+    
+    cmake -G MinGW Makefiles ..
     cmake --build . --target all --config "Release"
 
 test_script:
