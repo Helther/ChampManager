@@ -8,6 +8,8 @@ before_build:
 
 build_script:
 - cmd: >-
+ 
+    rmdir build
 
     mkdir build
     
