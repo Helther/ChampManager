@@ -16,7 +16,7 @@ build_script:
     cd build
     
     cmake -G "MinGW Makefiles" ..
-    cmake --build . --target all --config "Release"
+    cmake --build . --config "Release"
 
 test_script:
 - cmd: ctest -C Debug
