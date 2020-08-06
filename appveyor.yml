@@ -14,8 +14,6 @@ build_script:
     cmake .
     
     cd build
-        
-    #cmake -G "MinGW Makefiles" ..
     
     cmake --build . 
 
