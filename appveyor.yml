@@ -6,10 +6,13 @@ before_build:
   - set QTDIR=C:\Qt\5.14.2\mingw73_64
   - set PATH=%QTDIR%\bin;C:\MinGW\bin;%PATH%
 
+  - cmake -G "" .
 build_script:
 - cmd: >-
  
     mkdir build
+    
+    cmake -G MinGW Makefiles ..
     
     cmake .
     
