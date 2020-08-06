@@ -11,9 +11,7 @@ build_script:
  
     mkdir build
     
-    cmake -G "MinGW Makefiles" .
-    
-    cmake -C
+    cmake -G "MinGW Makefiles" ..
     
     cd build
     
