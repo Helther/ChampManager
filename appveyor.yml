@@ -10,7 +10,9 @@ build_script:
 - cmd: >-
 
     mkdir build
-
+    
+    cmake .
+    
     cd build
 
     cmake --build . --target all --config "Release"
