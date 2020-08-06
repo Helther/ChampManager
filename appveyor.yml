@@ -14,12 +14,10 @@ build_script:
     cmake .
     
     cd build
-    
-    cmake --clean .
-    
+        
     cmake -G "MinGW Makefiles" ..
     
-    cmake --build .
+    cmake --build . --clean-first
 
 test_script:
 - cmd: ctest -C Debug
