@@ -1,6 +1,6 @@
 image:
   - Visual Studio 2019
-clone_folder: c:\projects\cm
+clone_folder: c:\projects\cm_src
 
 before_build:
   - set QTDIR=C:\Qt\5.14.2\mingw73_64
@@ -9,8 +9,6 @@ before_build:
 build_script:
 - cmd: >-
  
-    rmdir build
-
     mkdir build
     
     cmake .
@@ -19,7 +17,7 @@ build_script:
         
     cmake -G "MinGW Makefiles" ..
     
-    cmake --build . --clean-first
+    cmake --build . 
 
 test_script:
 - cmd: ctest -C Debug
