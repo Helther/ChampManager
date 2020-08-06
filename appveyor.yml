@@ -4,7 +4,7 @@ clone_folder: c:\projects\cm_src
 
 before_build:
   - set QTDIR=C:\Qt\5.14.2\mingw73_64
-  - set PATH=%QTDIR%\bin;%PATH%
+  - set PATH=%QTDIR%\bin;C:\MinGW\bin;%PATH%
 
 build_script:
 - cmd: >-
