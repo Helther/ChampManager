@@ -91,7 +91,7 @@ namespace seqElems {
     "PlayerFile",// str
     "TimeString",// str
     "Mod",// str
-    "TrackVenue",
+    "TrackCourse",
     "RaceLaps"// int
   };
   inline const QVector<QString> DriversRaceElements{

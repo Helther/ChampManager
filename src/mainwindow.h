@@ -42,9 +42,9 @@ private slots:
   // called when season was removed
   void on_rmSeasonRes();
   // about menu
-  void about() {}/// todo define and add version, qt info
+  void about();/// todo define and add version, qt info
   // license menu
-  void license() {}/// todo define
+  void license();
 
 private:
   // initializes user data

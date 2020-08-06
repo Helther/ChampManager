@@ -13,6 +13,15 @@
 #include <dbhelper.h>
 #include <QMessageBox>
 
+inline constexpr auto aboutAppText =
+  R"(Championship Manager is a desktop application
+for managing racing carrier by proccessing logs
+and settings files provided by rFactor 2 app.
+
+It uses Qt Framework v5 and falls under it's license GNU (L)GPL.
+
+Copyright (C) 2020 Gusev Anton, email address: kaeldevop@gmai.com.)";
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent), ui(new Ui::MainWindow), tabW(new QTabWidget),
     resultsW(new Resultswindow)
@@ -69,6 +78,28 @@ void MainWindow::on_rmSeasonRes()
   });
   seasonD->open();
 }
+
+void MainWindow::about()
+{
+  QDialog *aboutDialog = new QDialog;
+  aboutDialog->setAttribute(Qt::WA_DeleteOnClose);
+  QDialogButtonBox *okButton = new QDialogButtonBox;
+  okButton = new QDialogButtonBox(QDialogButtonBox::Ok);
+  connect(okButton, &QDialogButtonBox::accepted, aboutDialog, &QDialog::accept);
+  QLabel *textLabel = new QLabel;
+  QLabel *picLabel = new QLabel;
+  textLabel->setText(aboutAppText);
+  auto pic = QPixmap(":/better_icon.png");
+  picLabel->setPixmap(pic.scaledToWidth(128));
+  QGridLayout *layout = new QGridLayout;
+  layout->addWidget(textLabel, 0, 0);
+  layout->addWidget(picLabel, 0, 1);
+  layout->addWidget(okButton, 1, 0, 1, 2, Qt::AlignCenter);
+  aboutDialog->setLayout(layout);
+  aboutDialog->show();
+}
+
+void MainWindow::license() { QMessageBox::aboutQt(this, tr("About Qt")); }
 
 void MainWindow::initData()
 {

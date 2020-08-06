@@ -41,6 +41,9 @@ void testXMLFileRead()
   auto pStringE = pstream.readAll();
   auto qStringE = qstream.readAll();
   auto rStringE = rstream.readAll();
+  pFileE.close();
+  qFileE.close();
+  rFileE.close();
   ASSERT_EQUAL("Pracice log file", pString, pStringE);
   ASSERT_EQUAL("Quali log file", qString, qStringE);
   ASSERT_EQUAL("Race log file", rString, rStringE);

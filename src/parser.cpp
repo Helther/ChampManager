@@ -160,6 +160,13 @@ QString XmlParser::findXMLElement(QXmlStreamReader &xml,
       result = xml.text().toString();
       break;
     }
+    if (xml.name() == "BestLapTime")/// todo temp solution for bLap parsing
+    {
+      xml.readNext();
+      result = xml.text().toString();
+      findXMLElement(xml, "Laps");
+      break;
+    }
     xml.readNext();
   }
   if (xml.hasError()) throw std::runtime_error(xml.errorString().toStdString());
@@ -195,7 +202,6 @@ QVector<QPair<QString, QString>>
   for (const auto &elem : seqData)
   {
     findXMLElement(xml, elem, XMLEndName);
-
     xml.readNext();
     const auto currentElem = xml.text().toString();
     if (currentElem.isEmpty())
@@ -269,31 +275,42 @@ QVector<DriverInfo> XmlParser::processDrivers(QXmlStreamReader &xml,
     DriverInfo currentDriver;
     for (const auto &elem : seqData)
     {
-      findXMLElement(xml, elem, XMLName);
       if (elem == "Lap")
       {
-        currentDriver.lapTimes = processDriverLaps(xml);
+        const auto laps = processDriverLaps(xml);
+        currentDriver.lapTimes = laps.second;
         const auto lapData = generateLapData(currentDriver.lapTimes);
         currentDriver.SeqElems.push_back({ elem, lapData });
+        //look for best lap but there may not be one
+        if (laps.first.isEmpty())
+          currentDriver.SeqElems.push_back({ elem, QString::number(0.0) });
+        else
+          currentDriver.SeqElems.push_back({ "BestLapTime", laps.first });
         continue;
-      } else
-        xml.readNext();
+      }
+      if (elem == "BestLapTime") continue;
+      findXMLElement(xml, elem, XMLName);
+      xml.readNext();
       if (xml.text().isEmpty())
         throw std::runtime_error("processDrivers: elem value is empty");
       currentDriver.SeqElems.push_back({ elem, xml.text().toString() });
     }
     drivers.push_back(currentDriver);
-  }/// todo there may not be BestLapTime and Lap at all
+  }
   return drivers;
 }
 
-QVector<QPair<int, double>> XmlParser::processDriverLaps(QXmlStreamReader &xml)
-{
+QPair<QString, QVector<QPair<int, double>>>
+  XmlParser::processDriverLaps(QXmlStreamReader &xml)
+{// there may not be any lap data
   const QString XMLName = "Lap";
   const QString notTimedLapText = "--.----";
-  const QString XMLEndName = "BestLapTime";
+  const QString XMLEndName = "Laps";
   QVector<QPair<int, double>> LapTimes;
   int LapNumber = 1;
+  QString bLapTime;
+  bool noBLap =
+    false;// look fo bestlap at the end, if last elem if empty then no best lap
   while (!(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
            && xml.name() == XMLEndName))
   {
@@ -305,18 +322,22 @@ QVector<QPair<int, double>> XmlParser::processDriverLaps(QXmlStreamReader &xml)
     {
       LapTimes.push_back(QPair<int, double>(LapNumber, 0.));
     }
+    if (laptime.isEmpty()) noBLap = true;
     ++LapNumber;
   }
-  return LapTimes;
+  if (!noBLap)
+  {
+    bLapTime = QString::number(LapTimes.last().second);
+    LapTimes.pop_back();
+  }
+  return { bLapTime, LapTimes };
 }
 
 QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
 {
   QString lapString;
+  if (data.isEmpty()) return lapString;
   QTextStream dataS(&lapString);
-  if (data.size() == 0)
-    throw std::runtime_error("GenLapData error: lap data is empty");
-  ///for (const auto &i : data) dataS << i.first << ' ' << i.second << ',';
   for (const auto &i : data) dataS << i.second << ", ";
   lapString.remove(lapString.size() - 2, 2);
   return lapString;

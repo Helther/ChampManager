@@ -38,7 +38,7 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        race_fid INTEGER not null,
                                        type TEXT,
                                        TimeString TEXT,
-                                       TrackVenue TEXT,
+                                       TrackCourse TEXT,
                                        RaceLaps INTEGER,
                                        constraint k_ses_id primary key (ses_id),
                                        constraint k_race_fid foreign key (race_fid)
@@ -201,10 +201,11 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
   }
   for (auto &race : retData)
   {
-    if (!q.exec(QString("select ses_id, type, TimeString, TrackVenue, RaceLaps "
-                        "from %1 where race_fid = %2")
-                  .arg(DBTableNames::Sessions)
-                  .arg(race.raceId)))
+    if (!q.exec(
+          QString("select ses_id, type, TimeString, TrackCourse, RaceLaps "
+                  "from %1 where race_fid = %2")
+            .arg(DBTableNames::Sessions)
+            .arg(race.raceId)))
       checkSqlError("get race data, session list error", q.lastError());
     while (q.next())
     {
@@ -241,7 +242,7 @@ int DBHelper::addNewSession(const QString &type,
   const auto trackName =
     std::find_if(sesData.SeqElems.begin(),
                  sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "TrackVenue"; });
+                 [](const auto &i) { return i.first == "TrackCourse"; });
   const auto lapsNum =
     std::find_if(sesData.SeqElems.begin(),
                  sesData.SeqElems.end(),
@@ -251,7 +252,7 @@ int DBHelper::addNewSession(const QString &type,
     throw std::runtime_error("add new session error: data incomplete");
 
   QSqlQuery q(dbConn);
-  QString query{ QString("insert into %1 (type, TimeString, TrackVenue, "
+  QString query{ QString("insert into %1 (type, TimeString, TrackCourse, "
                          "Racelaps, race_fid) values (?, ?, ?, ?, ?)")
                    .arg(DBTableNames::Sessions) };
   q.prepare(query);
@@ -277,7 +278,7 @@ void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
   {
     QSqlQuery q(dbConn);
     auto query =
-      QString("select TrackVenue, RaceLaps from %1 where ses_id = %2")
+      QString("select TrackCourse, RaceLaps from %1 where ses_id = %2")
         .arg(DBTableNames::Sessions)
         .arg(QString::number(id));
     if (!q.exec(query)) checkSqlError("session validity error", q.lastError());

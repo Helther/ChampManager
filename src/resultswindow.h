@@ -94,6 +94,7 @@ public:
 
 private:
   QStringList parseLaps(const QString &lapsString);
+  // returns -1 if there was no bestlap
   int getBLapRow();
 
   QStringList lapTimes;

@@ -323,7 +323,7 @@ QVariant LapsCompModel::data(const QModelIndex &index, int role) const
       if (row == i && col == 1) return lapTimes.at(i);
       break;
     case Qt::FontRole:
-      if (row == bLapRow && col == 1)
+      if (bLapRow != -1 && row == bLapRow && col == 1)
       {//change font only for bestlap
         QFont boldFont;
         boldFont.setBold(true);
@@ -358,11 +358,13 @@ QVariant LapsCompModel::headerData(int section,
 
 QStringList LapsCompModel::parseLaps(const QString &lapsString)
 {
+  if (lapsString.isEmpty()) return QStringList();
   return lapsString.split(", ");
 }
 
 int LapsCompModel::getBLapRow()
 {
+  if (qFuzzyCompare(bestLap.toDouble(), 0)) return -1;
   for (int i = 0; i < lapTimes.size(); ++i)
     if (abs(bestLap.toDouble() - lapTimes.at(i).toDouble()) < 0.002) return i;
   throw std::runtime_error("lapsCompModel: cant match best lap");

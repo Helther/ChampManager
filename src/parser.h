@@ -96,7 +96,7 @@ private:
     processDrivers(QXmlStreamReader &xml, const QVector<QString> &seqData);
 
   // parse driver lap times
-  [[nodiscard]] QVector<QPair<int, double>>
+  [[nodiscard]] QPair<QString, QVector<QPair<int, double>>>
     processDriverLaps(QXmlStreamReader &xml);
   // creates csv string of lap times for db
   QString generateLapData(QVector<QPair<int, double>> data);
