@@ -1,10 +1,10 @@
 #include "test_utility.h"
 #include "../src/parser.h"
 
-QVector<QString> testFiles{ "P.xml",
-                            "Q.xml",
-                            "R.xml" /*"t.rcd", "t.veh", "t.HDV",*/ };
-QVector<QString> testFilesExpected{
+static QVector<QString> testFiles{ "P.xml",
+                                   "Q.xml",
+                                   "R.xml" /*"t.rcd", "t.veh", "t.HDV",*/ };
+static QVector<QString> testFilesExpected{
   "PExpected.txt",
   "QExpected.txt",
   "RExpected.txt" /*"t.rcd", "t.veh", "t.HDV",*/

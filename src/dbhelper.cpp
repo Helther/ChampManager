@@ -78,11 +78,7 @@ bool DBHelper::initDB() const
     return false;
   }
   //table existence check
-  const QVector<QString> tableNames{ DBTableNames::Races,
-                                     DBTableNames::RaceRes,
-                                     DBTableNames::Seasons,
-                                     DBTableNames::Sessions };
-  for (const auto &table : tableNames)
+  for (const auto &table : allTableNames)
   {
     if (!dbConn.tables().contains(table))
       throw std::runtime_error(
@@ -94,26 +90,23 @@ bool DBHelper::initDB() const
 
 void DBHelper::destroyDB() const
 {
+  Perf p("destrdb");/// todo temp
   const QString query = "drop table ";
   QSqlQuery q(dbConn);
   QSqlError destroyError;
-  if (dbConn.tables().contains(DBTableNames::Seasons)
-      && !q.exec(query + DBTableNames::Seasons))
-    destroyError = q.lastError();
-  if (dbConn.tables().contains(DBTableNames::Races)
-      && !q.exec(query + DBTableNames::Races))
-    destroyError = q.lastError();
-  if (dbConn.tables().contains(DBTableNames::RaceRes)
-      && !q.exec(query + DBTableNames::RaceRes))
-    destroyError = q.lastError();
-  if (dbConn.tables().contains(DBTableNames::Sessions)
-      && !q.exec(query + DBTableNames::Sessions))
-    destroyError = q.lastError();
+  for (const auto &table : allTableNames)
+  {
+    if (dbConn.tables().contains(table) && !q.exec(query + table))
+    {
+      destroyError = q.lastError();
+      break;
+    }
+  }
   checkSqlError("destr db error", destroyError);
 }
 
 void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
-{
+{// caller must start transaction
   const QString queryColumns{ "insert into " + DBTableNames::RaceRes
                               + " ( session_fid" };
   const QString queryValues{ "values (?" };
@@ -210,18 +203,19 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
     while (q.next())
     {
       race.sessions.push_back(
-        { q.value(0).value<int>(), q.value(1).value<QString>() });
+        { q.value(0).value<int>(), q.value(1).toString() });
     }
     q.seek(0);
-    race.date = q.value(2).value<QString>();
-    race.track = q.value(3).value<QString>();
+    race.date = q.value(2).toString();
+    race.track = q.value(3).toString();
     race.laps = q.value(4).value<int>();
   }
   return retData;
 }
 
 QSqlError DBHelper::initResultsTables() const
-{
+{// caller must start transaction
+  Perf p("initdb");/// todo temp
   QSqlQuery init(dbConn);
   if (!init.exec(CREATE_SEASON)) return init.lastError();
   if (!init.exec(CREATE_RACES)) return init.lastError();
@@ -271,7 +265,7 @@ void DBHelper::delSeasonData(int ses_id) const
 }
 
 void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
-{
+{// caller must start transaction
   SessionData SData;
   bool first = true;
   for (auto id : ids)
@@ -300,7 +294,7 @@ void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
 void DBHelper::delEntryFromTable(const QString &table,
                                  const QString &idColName,
                                  int id) const
-{
+{// caller must start transaction
   QSqlQuery q(dbConn);
   // exec this to activate Fkeys On actions
   if (!q.exec("PRAGMA foreign_keys=ON"))
@@ -310,6 +304,15 @@ void DBHelper::delEntryFromTable(const QString &table,
                    .arg(idColName)
                    .arg(QString::number(id)) };
   if (!q.exec(query)) checkSqlError("delete table entry error", q.lastError());
+}
+
+void DBHelper::resetDB()
+{// caller must start transaction
+  Perf p("reset db");/// todo temp
+  QSqlQuery q(dbConn);
+  for (const auto &table : allTableNames)
+    if (!q.exec(QString("delete from %1").arg(table)))
+      checkSqlError("reset db error", q.lastError());
 }
 
 void DBHelper::checkSqlError(const QString &msg, const QSqlError &error) const

@@ -5,6 +5,7 @@
 #include <appdata.h>
 #include <QAbstractTableModel>
 
+
 struct LapsComp
 {
   QString driver;
@@ -38,6 +39,7 @@ public:
 public slots:
   // used when results added
   void on_resultsChanged(const SeasonData &season);
+  void on_dbReset();
 
   // used when new season selected
 private slots:
@@ -50,14 +52,18 @@ private slots:
   void on_clearTableSelect();
 
 private:
+  //= construction methods
   void layoutSetup();
+  void viewWidgetsSetup();
+  void setItemHeaderData();
+  void createContextMenus();
+  //=
   // builds up tree item model with race list
   void updateItemModel(const SeasonData &season);
   // builds up model for race results
   void updateTableModel(int sessionId, bool isRace);
   // sets race view headers names after model rebuild
-  void setItemHeaderData();
-  void createContextMenus();
+
 
   SeasonData currentSeason;
   DBHelper *dbHandler;
@@ -95,13 +101,15 @@ public:
 private:
   QStringList parseLaps(const QString &lapsString);
   // returns -1 if there was no bestlap
-  int getBLapRow();
+  int getBLapRow() const;
+  // convets time string from x.xxx to x:xx.xxx
+  QString convertToLapTime(const QString &lapTime) const;
 
-  QStringList lapTimes;
-  QString bestLap;
-  int rows;
-  int columns;
-  int bLapRow;
+  const QStringList lapTimes;
+  const QString bestLap;
+  const int rows;
+  const int columns;
+  const int bLapRow;
 };
 
 #endif// RESULTSWINDOW_H

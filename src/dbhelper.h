@@ -64,6 +64,8 @@ public:
   void delEntryFromTable(const QString &table,
                          const QString &idColName,
                          int id) const;
+  // delets all entries from all tables
+  void resetDB();
   // select from all table columns
   QVector<QVector<QVariant>> getData(const QString &tableName) const;
   // return data for building results item model
@@ -105,6 +107,10 @@ private:
   const QString connName = "dbConn";
   const QString dbName = "CMM.db3";
   const QString dbPath = "./";/// todo temp
+  const QVector<QString> allTableNames{ DBTableNames::Races,
+                                        DBTableNames::RaceRes,
+                                        DBTableNames::Seasons,
+                                        DBTableNames::Sessions };
 };
 
 #endif// DBHELPER_H

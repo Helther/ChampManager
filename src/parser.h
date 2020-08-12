@@ -64,7 +64,10 @@ class XmlParser : public Parser
 public:
   explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
 
-  RaceLogInfo getParseData() { return readFileContent().value<RaceLogInfo>(); }
+  [[nodiscard]] RaceLogInfo getParseData()
+  {
+    return readFileContent().value<RaceLogInfo>();
+  }
 
 protected:
   [[nodiscard]] FileType readFileType();
@@ -158,6 +161,11 @@ public:
   }
   QVariant readFileContent() override;
 
+  [[nodiscard]] DriverStats getParseData()
+  {
+    return readFileContent().value<DriverStats>();
+  }
+
 private:
   DriverStats readRCD();
 };
@@ -172,6 +180,11 @@ public:
   }
   QVariant readFileContent() override;
 
+  [[nodiscard]] QVector<StringPair> getParseData()
+  {
+    return readFileContent().value<QVector<StringPair>>();
+  }
+
 private:
   QVector<StringPair> readVEH();
 };
@@ -185,6 +198,11 @@ public:
       throw std::runtime_error("fileType check error wrong file type");
   }
   QVariant readFileContent() override;
+
+  [[nodiscard]] QVector<StringPair> getParseData()
+  {
+    return readFileContent().value<QVector<StringPair>>();
+  }
 
 private:
   QVector<StringPair> readHDV();

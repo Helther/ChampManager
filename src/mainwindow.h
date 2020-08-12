@@ -31,6 +31,7 @@ public:
   }
 signals:
   void on_resultsChanged(const SeasonData &season);
+  void on_dbReseted();
 public slots:
   void on_seasonsChanged(const SeasonData);
 
@@ -42,9 +43,11 @@ private slots:
   // called when season was removed
   void on_rmSeasonRes();
   // about menu
-  void about();/// todo define and add version, qt info
+  void about();
   // license menu
   void license();
+  // deletes all tables in db and crates empty ones
+  void resetBdData();
 
 private:
   // initializes user data
@@ -62,6 +65,7 @@ private:
   QMenu *helpMenu;
   QAction *newRaceAct;
   QAction *rmSeasonRacesAct;
+  QAction *resetAllDataAct;
   QAction *exitAct;
   QAction *licenseAct;
   QAction *aboutAct;
@@ -118,8 +122,7 @@ public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
 signals:
-  void
-    addedRace(const SeasonData &season);///todo connect to results widget update
+  void addedRace(const SeasonData &season);
 private slots:
   void on_addSeason();
   void updateSeasonsCombo(const SeasonData &season);

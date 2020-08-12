@@ -223,7 +223,7 @@ QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml)
            && xml.name() == XMLEndName))
   {
     const auto currentElem = findXMLElement(xml, XMLName, XMLEndName, true);
-    if (currentElem.isEmpty())// check if found something, continue if empty
+    if (currentElem.isNull())// check if found something, continue if empty
       continue;
     // process two names involved in incident
     auto currentDriverName = currentElem.split("(", Qt::SkipEmptyParts).first();
@@ -315,14 +315,14 @@ QPair<QString, QVector<QPair<int, double>>>
            && xml.name() == XMLEndName))
   {
     auto laptime = findXMLElement(xml, XMLName, XMLEndName, true, true);
-    if (xml.text() != notTimedLapText && !laptime.isEmpty())
+    if (xml.text() != notTimedLapText && !laptime.isNull())
     {
       LapTimes.push_back(QPair<int, double>(LapNumber, laptime.toDouble()));
-    } else if (!laptime.isEmpty())
+    } else if (!laptime.isNull())
     {
       LapTimes.push_back(QPair<int, double>(LapNumber, 0.));
     }
-    if (laptime.isEmpty()) noBLap = true;
+    if (laptime.isNull()) noBLap = true;
     ++LapNumber;
   }
   if (!noBLap)
@@ -404,7 +404,7 @@ QVariant RCDParser::readFileContent()
   try
   {
     auto data = readRCD();
-    return QVariant();
+    return QVariant::fromValue(data);
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()
@@ -468,7 +468,7 @@ QVariant VEHParser::readFileContent()
   try
   {
     auto data = readVEH();
-    return QVariant();
+    return QVariant::fromValue(data);
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()
@@ -509,7 +509,7 @@ QVariant HDVParser::readFileContent()
   try
   {
     auto data = readHDV();
-    return QVariant();
+    return QVariant::fromValue(data);
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()

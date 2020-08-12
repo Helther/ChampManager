@@ -13,6 +13,10 @@
 #include <dbhelper.h>
 #include <QMessageBox>
 
+#define DCTEST_DATA_DIR TESTDATA_PATH
+
+#define APP_ICON "://better_icon.png"
+
 inline constexpr auto aboutAppText =
   R"(Championship Manager is a desktop application
 for managing racing carrier by proccessing logs
@@ -36,19 +40,16 @@ MainWindow::MainWindow(QWidget *parent)
   ui->centralwidget->setLayout(layout);
   createActions();
   createMenus();
-  setWindowIcon(QIcon("://better_icon.png"));
-  /*
-  /// todo temp while no init
-  auto on_destroyed = []() {
-    QFile db("CMM.db3");
-    if (db.exists()) db.remove();
-  };
-  connect(this, &QWidget::destroyed, on_destroyed);
-  */
+  setWindowIcon(QIcon(APP_ICON));
+
   connect(this,
           &MainWindow::on_resultsChanged,
           resultsW,
           &Resultswindow::on_resultsChanged);
+  connect(this,
+          &MainWindow::on_dbReseted,
+          resultsW,
+          &Resultswindow::on_dbReset);
 }
 
 MainWindow::~MainWindow()
@@ -83,13 +84,12 @@ void MainWindow::about()
 {
   QDialog *aboutDialog = new QDialog;
   aboutDialog->setAttribute(Qt::WA_DeleteOnClose);
-  QDialogButtonBox *okButton = new QDialogButtonBox;
-  okButton = new QDialogButtonBox(QDialogButtonBox::Ok);
+  QDialogButtonBox *okButton = new QDialogButtonBox(QDialogButtonBox::Ok);
   connect(okButton, &QDialogButtonBox::accepted, aboutDialog, &QDialog::accept);
   QLabel *textLabel = new QLabel;
   QLabel *picLabel = new QLabel;
   textLabel->setText(aboutAppText);
-  auto pic = QPixmap(":/better_icon.png");
+  auto pic = QPixmap(APP_ICON);
   picLabel->setPixmap(pic.scaledToWidth(128));
   QGridLayout *layout = new QGridLayout;
   layout->addWidget(textLabel, 0, 0);
@@ -101,24 +101,52 @@ void MainWindow::about()
 
 void MainWindow::license() { QMessageBox::aboutQt(this, tr("About Qt")); }
 
+void MainWindow::resetBdData()
+{
+  auto reply = QMessageBox::question(
+    this,
+    "Confirm deletion",
+    "Are you  sure you want to delete all data, including profile settings?",
+    QMessageBox::Yes | QMessageBox::No);
+  if (reply == QMessageBox::Yes)
+  {
+    DBHelper db;
+    try
+    {
+      db.transactionStart();//------------ transact start
+      db.resetDB();
+      userData->updateSeasons();/// todo design proper data init
+      userData->addSeason("Season 1");///first time init
+      db.transactionCommit();//------------ transact commit
+      resultsW->init(getUserData()->getSeasons());
+      emit on_dbReseted();
+    } catch (std::exception &e)
+    {
+      db.transactionRollback();
+      QMessageBox::critical(this, "Reset Data Error", e.what());
+    }
+  }
+}
+
 void MainWindow::initData()
 {
+  DBHelper db;
   try
   {
-    DBHelper DB;
-    const bool isThereDB = DB.initDB();
+    db.transactionStart();//------------ transact start
+    const bool isThereDB = db.initDB();
     userData = new UserData();
     if (!isThereDB) userData->addSeason("Season 1");///first time init
+    db.transactionCommit();//------------ transact commit
+    resultsW->init(getUserData()->getSeasons());
   } catch (std::exception &e)
   {
-    DBHelper DBDestroyer;
-    DBDestroyer.destroyDB();
+    db.transactionRollback();
     QErrorMessage *msg = new QErrorMessage(this);
     connect(msg, &QErrorMessage::finished, this, &MainWindow::close);
     msg->showMessage(e.what());
     msg->show();
   }
-  resultsW->init(getUserData()->getSeasons());
 }
 
 void MainWindow::createActions()
@@ -137,6 +165,8 @@ void MainWindow::createActions()
   connect(licenseAct, &QAction::triggered, this, &MainWindow::license);
   aboutAct = new QAction("About");
   connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
+  resetAllDataAct = new QAction("Reset all data");
+  connect(resetAllDataAct, &QAction::triggered, this, &MainWindow::resetBdData);
 }
 
 void MainWindow::createMenus()
@@ -144,6 +174,8 @@ void MainWindow::createMenus()
   fileMenu = menuBar()->addMenu("File");
   fileMenu->addAction(newRaceAct);
   fileMenu->addAction(rmSeasonRacesAct);
+  fileMenu->addSeparator();
+  fileMenu->addAction(resetAllDataAct);
   fileMenu->addSeparator();
   fileMenu->addAction(exitAct);
   helpMenu = menuBar()->addMenu("Help");
@@ -170,30 +202,30 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
           this,
           &NewRaceDialog::on_addSeason);
   ///todo debug
-  pFilePath->setText(TESTDATA_PATH + QString("P.xml"));
-  qFilePath->setText(TESTDATA_PATH + QString("Q.xml"));
-  rFilePath->setText(TESTDATA_PATH + QString("R.xml"));
+  pFilePath->setText(DCTEST_DATA_DIR + QString("P.xml"));
+  qFilePath->setText(DCTEST_DATA_DIR + QString("Q.xml"));
+  rFilePath->setText(DCTEST_DATA_DIR + QString("R.xml"));
   ///
   auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    if (!fileName.isEmpty()) this->pFilePath->setText(fileName);
+    if (!fileName.isNull()) this->pFilePath->setText(fileName);
   };
   auto getQFilePath = [this]() {
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    if (!fileName.isEmpty()) this->qFilePath->setText(fileName);
+    if (!fileName.isNull()) this->qFilePath->setText(fileName);
   };
   auto getRFilePath = [this]() {
     const auto fileName = QFileDialog::getOpenFileName(this,
                                                        tr("Open File"),
                                                        tr("./"),
                                                        tr("XML Files (*.xml)"));
-    if (!fileName.isEmpty()) this->rFilePath->setText(fileName);
+    if (!fileName.isNull()) this->rFilePath->setText(fileName);
   };
   connect(pBrowseButton, &QPushButton::clicked, getPFilePath);
   connect(qBrowseButton, &QPushButton::clicked, getQFilePath);
@@ -230,13 +262,13 @@ void NewRaceDialog::updateSeasonsCombo(const SeasonData &season)
 
 void NewRaceDialog::accept()
 {
+  DBHelper db;
   try
   {/// todo make a helper func and rework
     Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
-    DBHelper db;
     // transact lifetime is try block
-    db.transactionStart();// transact start
+    db.transactionStart();//------------ transact start
     int raceId = db.addNewRace(seasonId);
     auto p = QFile(pFilePath->text());
     auto q = QFile(qFilePath->text());
@@ -263,12 +295,11 @@ void NewRaceDialog::accept()
 
     db.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
 
-    db.transactionCommit();// transact commit
+    db.transactionCommit();//------------ transact commit
     QDialog::accept();
     emit addedRace(seasonW->getSeasonData());
   } catch (std::exception &e)
   {
-    DBHelper db;
     db.transactionRollback();
     QMessageBox::critical(this, "Add Results Error", e.what());
   }
@@ -399,5 +430,5 @@ void AddSeason::accept()
     emit addedSeason(newSeason);
     return;
   }
-  QMessageBox::critical(this, "Error", "can't add the season");
+  QMessageBox::critical(this, "Error", "can't add the season: invalid name");
 }
