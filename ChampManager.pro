@@ -1,7 +1,6 @@
 QT += core widgets sql gui
 
 CONFIG += c++17 #console
-#CONFIG -= app_bundle
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -23,20 +22,25 @@ SOURCES += \
     src/mainwindow.cpp \
     src/appdata.cpp \
 
-RESOURCES += rsc/cm.qrc
+HEADERS += \
+        src/parser.h \
+        src/parserConsts.h \
+        src/dbhelper.h \
+        src/resultswindow.h \
+        src/mainwindow.h \
+        src/appdata.h \
+
+FORMS += \
+        src/mainwindow.ui \
+
+RESOURCES += rsc/cm.qrc \
+
+# test folder define
+DEFINES += TESTDATA_PATH=\\\"$${PWD}/tests/testsdata/\\\"
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-HEADERS += \
-    src/parser.h \
-    src/parserConsts.h \
-    src/dbhelper.h \
-    src/resultswindow.h \
-    src/mainwindow.h \
-    src/appdata.h \
 
-FORMS += \
-    src/mainwindow.ui \

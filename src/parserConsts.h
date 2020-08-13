@@ -52,7 +52,7 @@ inline QString &operator<<(QString &retString, const RaceLogInfo &log)
   for (const auto &i : log.drivers) retString << i;
   return retString;
 }
-inline QString getRCDDataString(const DriverStats &data)
+[[nodiscard]] inline QString getRCDDataString(const DriverStats &data)
 {
   QString retString;
   QTextStream s(&retString);
@@ -64,7 +64,7 @@ inline QString getRCDDataString(const DriverStats &data)
   return retString;
 }
 
-inline QString getVEHDataString(const QVector<StringPair> &data)
+[[nodiscard]] inline QString getVEHDataString(const QVector<StringPair> &data)
 {
   QString retString;
   QTextStream s(&retString);
@@ -73,7 +73,7 @@ inline QString getVEHDataString(const QVector<StringPair> &data)
   return retString;
 }
 
-inline QString getHDVDataString(const QVector<StringPair> &data)
+[[nodiscard]] inline QString getHDVDataString(const QVector<StringPair> &data)
 {
   QString retString;
   QTextStream s(&retString);

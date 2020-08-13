@@ -10,6 +10,10 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QMenu>
+#include <QMessageBox>
+
+#define MAX_LAPSCOMPARE_ROW_SIZE 5
+#define POSITION_COL_NUM 10
 
 Resultswindow::Resultswindow(QWidget *parent)
   : QWidget(parent), dbHandler(new DBHelper), treeView(new QTreeView),
@@ -19,35 +23,13 @@ Resultswindow::Resultswindow(QWidget *parent)
     seasonsCombo(new QComboBox), treeMenu(new QMenu), tableMenu(new QMenu)
 {
   layoutSetup();
+  viewWidgetsSetup();
   setItemHeaderData();
-  /// todo wrap around in view setter
-  treeView->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-  treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  treeView->setAlternatingRowColors(true);
-  treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-
-  connect(treeView,
-          &QTreeView::customContextMenuRequested,
-          this,
-          &Resultswindow::on_treeViewContextMenu);
-
-  tableView->setSelectionMode(QAbstractItemView::SelectionMode::MultiSelection);
-  tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  tableView->setAlternatingRowColors(true);
-  tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-
-  connect(tableView,
-          &QTableView::customContextMenuRequested,
-          this,
-          &Resultswindow::on_tableViewContextMenu);
-
+  createContextMenus();
   connect(seasonsCombo,
           QOverload<int>::of(&QComboBox::activated),
           this,
           QOverload<int>::of(&Resultswindow::on_seasonChanged));
-  createContextMenus();
 }
 
 Resultswindow::~Resultswindow() { delete dbHandler; }
@@ -62,7 +44,6 @@ void Resultswindow::init(const QVector<SeasonData> &seasons)
           &QItemSelectionModel::selectionChanged,
           this,
           &Resultswindow::on_selectionChanged);
-
   currentSeason = seasonData;
 }
 
@@ -80,6 +61,12 @@ void Resultswindow::on_resultsChanged(const SeasonData &season)
   if (currentSeason.id == season.id)// do nothing if added to a different season
     updateItemModel(season);
   tableModel->clear();
+}
+
+void Resultswindow::on_dbReset()
+{
+  tableModel->clear();
+  itemModel->clear();
 }
 
 void Resultswindow::on_seasonChanged(int seasonComboIndex)
@@ -143,7 +130,7 @@ void Resultswindow::on_delRaceAct()
 
 void Resultswindow::on_compareLapsAct()
 {
-  Perf p("compare laps");
+  Perf p("compare laps");///todo temp
   const int nameColId = 2;
   const int lapsColId = 13;
   const int bestLapId = 14;
@@ -172,7 +159,7 @@ void Resultswindow::on_compareLapsAct()
   QGridLayout *lapsLayout = new QGridLayout;
   int rowCounter = 0;
   int currentRow = 0;
-  int maxRowElemCount = 5;
+  int maxRowElemCount = MAX_LAPSCOMPARE_ROW_SIZE;
   for (const auto &i : lapsData)
   {
     LapsCompModel *lapsModel = new LapsCompModel(i);
@@ -184,8 +171,10 @@ void Resultswindow::on_compareLapsAct()
     lapsView->resizeRowsToContents();
     QGroupBox *lapsGroup = new QGroupBox;
     QGridLayout *lapsGrid = new QGridLayout;
-    lapsGrid->addWidget(new QLabel("Driver: " + i.driver), 0, 0);
-    lapsGrid->addWidget(lapsView, 1, 0, 2, 2);
+    QLabel *lbl = new QLabel("Driver: " + i.driver);
+    lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    lapsGrid->addWidget(lbl, 0, 0);
+    lapsGrid->addWidget(lapsView, 1, 0, 3, 1);
     lapsGroup->setLayout(lapsGrid);
     lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
     rowCounter++;
@@ -196,14 +185,14 @@ void Resultswindow::on_compareLapsAct()
     }
   }
   lapsW->setLayout(lapsLayout);
-  lapsW->show();/// todo add sizing and stretch
+  lapsW->show();
 }
 
 void Resultswindow::on_clearTableSelect() { tableView->clearSelection(); }
 
 void Resultswindow::updateItemModel(const SeasonData &season)
 {
-  Perf p("updateItemModel func");
+  Perf p("updateItemModel func");///todo temp
   if (itemModel->rowCount() != 0) itemModel->clear();
   DBHelper db;
   auto raceData = db.getRaceData(season.id);
@@ -226,16 +215,15 @@ void Resultswindow::updateItemModel(const SeasonData &season)
     }
   }
   treeView->setModel(itemModel);
-
   setItemHeaderData();
 }
 
 void Resultswindow::updateTableModel(int sessionId, bool isRace)
 {
-  Perf p("updateTableModel func");
+  Perf p("updateTableModel func");/// todo temp
   tableModel->setTable(DBTableNames::RaceRes);
   tableModel->setFilter(QString("session_fid = \"%1\"").arg(sessionId));
-  tableModel->setSort(10, Qt::SortOrder::AscendingOrder);
+  tableModel->setSort(POSITION_COL_NUM, Qt::SortOrder::AscendingOrder);
   tableModel->select();
   tableView->setModel(tableModel);
   if (isRace)
@@ -293,11 +281,36 @@ void Resultswindow::layoutSetup()
   setLayout(mainLayout);
 }
 
+void Resultswindow::viewWidgetsSetup()
+{
+  treeView->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+  treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  treeView->setAlternatingRowColors(true);
+  treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+  connect(treeView,
+          &QTreeView::customContextMenuRequested,
+          this,
+          &Resultswindow::on_treeViewContextMenu);
+
+  tableView->setSelectionMode(QAbstractItemView::SelectionMode::MultiSelection);
+  tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+  tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+  tableView->setAlternatingRowColors(true);
+  tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+  connect(tableView,
+          &QTableView::customContextMenuRequested,
+          this,
+          &Resultswindow::on_tableViewContextMenu);
+}
+
 LapsCompModel::LapsCompModel(const LapsComp &lapsData, QObject *parent)
   : QAbstractTableModel(parent), lapTimes(parseLaps(lapsData.laps)),
     bestLap(lapsData.bestLap), rows(lapTimes.size()), columns(2),
     bLapRow(getBLapRow())
-{}///todo check for leaks
+{}
 
 int LapsCompModel::rowCount(const QModelIndex & /*parent*/) const
 {
@@ -313,14 +326,13 @@ QVariant LapsCompModel::data(const QModelIndex &index, int role) const
 {
   int row = index.row();
   int col = index.column();
-  // generate a log message when this method gets called
   for (int i = 0; i < lapTimes.size(); ++i)
   {
     switch (role)
     {
     case Qt::DisplayRole:
       if (row == i && col == 0) return QString(QString::number(i + 1));
-      if (row == i && col == 1) return lapTimes.at(i);
+      if (row == i && col == 1) return convertToLapTime(lapTimes.at(i));
       break;
     case Qt::FontRole:
       if (bLapRow != -1 && row == bLapRow && col == 1)
@@ -362,10 +374,31 @@ QStringList LapsCompModel::parseLaps(const QString &lapsString)
   return lapsString.split(", ");
 }
 
-int LapsCompModel::getBLapRow()
+int LapsCompModel::getBLapRow() const
 {
   if (qFuzzyCompare(bestLap.toDouble(), 0)) return -1;
   for (int i = 0; i < lapTimes.size(); ++i)
     if (abs(bestLap.toDouble() - lapTimes.at(i).toDouble()) < 0.002) return i;
+  // not good but works with given values ranges and adjusts for rounding issue
+  //in the log files
   throw std::runtime_error("lapsCompModel: cant match best lap");
+}
+
+QString LapsCompModel::convertToLapTime(const QString &lapTime) const
+{
+  auto sections = lapTime.split('.');
+  QString result;
+  for (int i = 0; i < sections.size(); ++i)
+  {
+    if (i == 0)
+    {
+      int minutes = static_cast<int>(sections[0].toFloat() / 60.f);
+      int seconds = static_cast<int>(fmodf(sections[0].toFloat(), 60.f));
+      result.append(QString::number(minutes) + ':' + QString::number(seconds));
+    }
+    if (i == 1) result.append("." + sections[1]);
+  }
+  if (result == "0:0")// case for invalid lap time
+    return "-:----";
+  return result;
 }

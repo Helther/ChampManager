@@ -4,9 +4,7 @@
 #include <resultswindow.h>
 #include <QDialog>
 #include <appdata.h>
-#ifdef QT_DEBUG
-#include <QtDebug>/// todo debug
-#endif
+
 //forward decl
 class UserData;
 //
@@ -31,6 +29,7 @@ public:
   }
 signals:
   void on_resultsChanged(const SeasonData &season);
+  void on_dbReseted();
 public slots:
   void on_seasonsChanged(const SeasonData);
 
@@ -42,9 +41,11 @@ private slots:
   // called when season was removed
   void on_rmSeasonRes();
   // about menu
-  void about();/// todo define and add version, qt info
+  void about();
   // license menu
   void license();
+  // deletes all tables in db and crates empty ones
+  void resetBdData();
 
 private:
   // initializes user data
@@ -62,6 +63,7 @@ private:
   QMenu *helpMenu;
   QAction *newRaceAct;
   QAction *rmSeasonRacesAct;
+  QAction *resetAllDataAct;
   QAction *exitAct;
   QAction *licenseAct;
   QAction *aboutAct;
@@ -82,7 +84,7 @@ class ChooseSeason : public QWidget
 public:
   ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent = nullptr);
   SeasonData getSeasonData();
-  auto getSeasons() { return seasonsCopy; }
+  inline auto getSeasons() { return seasonsCopy; }
   void setSeasons(const QVector<SeasonData> &sData);
 
 private:
@@ -118,8 +120,7 @@ public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
 signals:
-  void
-    addedRace(const SeasonData &season);///todo connect to results widget update
+  void addedRace(const SeasonData &season);
 private slots:
   void on_addSeason();
   void updateSeasonsCombo(const SeasonData &season);
