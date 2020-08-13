@@ -171,7 +171,9 @@ void Resultswindow::on_compareLapsAct()
     lapsView->resizeRowsToContents();
     QGroupBox *lapsGroup = new QGroupBox;
     QGridLayout *lapsGrid = new QGridLayout;
-    lapsGrid->addWidget(new QLabel("Driver: " + i.driver), 0, 0);
+    QLabel *lbl = new QLabel("Driver: " + i.driver);
+    lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    lapsGrid->addWidget(lbl, 0, 0);
     lapsGrid->addWidget(lapsView, 1, 0, 3, 1);
     lapsGroup->setLayout(lapsGrid);
     lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
@@ -377,6 +379,8 @@ int LapsCompModel::getBLapRow() const
   if (qFuzzyCompare(bestLap.toDouble(), 0)) return -1;
   for (int i = 0; i < lapTimes.size(); ++i)
     if (abs(bestLap.toDouble() - lapTimes.at(i).toDouble()) < 0.002) return i;
+  // not good but works with given values ranges and adjusts for rounding issue
+  //in the log files
   throw std::runtime_error("lapsCompModel: cant match best lap");
 }
 

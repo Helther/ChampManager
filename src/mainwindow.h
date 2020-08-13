@@ -4,9 +4,7 @@
 #include <resultswindow.h>
 #include <QDialog>
 #include <appdata.h>
-#ifdef QT_DEBUG
-#include <QtDebug>/// todo debug
-#endif
+
 //forward decl
 class UserData;
 //
@@ -86,7 +84,7 @@ class ChooseSeason : public QWidget
 public:
   ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent = nullptr);
   SeasonData getSeasonData();
-  auto getSeasons() { return seasonsCopy; }
+  inline auto getSeasons() { return seasonsCopy; }
   void setSeasons(const QVector<SeasonData> &sData);
 
 private:

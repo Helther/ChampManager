@@ -5,7 +5,7 @@
 #include <appdata.h>
 #include <QAbstractTableModel>
 
-
+// used to initialize a model for viewing lap comparisons
 struct LapsComp
 {
   QString driver;

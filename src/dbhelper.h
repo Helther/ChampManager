@@ -71,7 +71,7 @@ public:
   // return data for building results item model
   QVector<RaceData> getRaceData(int seasonId);
 
-  QSqlDatabase getDBConnection() { return dbConn; }
+  inline QSqlDatabase getDBConnection() { return dbConn; }
 
   void transactionStart()
   {

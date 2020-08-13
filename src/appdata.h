@@ -20,11 +20,11 @@ class UserData
 public:
   UserData();
 
-  void init();
+  void init(bool isReset);
   SeasonData addSeason(const QString &name);
   void updateSeasons();
   ///SeasonData getCurrentSeason() { return currentSeason; }
-  QVector<SeasonData> getSeasons() const { return seasons; }
+  inline QVector<SeasonData> getSeasons() const { return seasons; }
   ///void setCurrentSeason(SeasonData season) { currentSeason = season; }
 
 private:

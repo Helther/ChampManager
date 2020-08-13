@@ -41,12 +41,11 @@ option(ENABLE_TESTING "Enable Test Builds" ON)
 
 if(ENABLE_TESTING)
   enable_testing()
+  set(TESTDATA_PATHS "${CMAKE_CURRENT_SOURCE_DIR}")
+  string(APPEND TESTDATA_PATHS "/tests/testsdata/")
+  add_compile_definitions( TESTDATA_PATH="${TESTDATA_PATHS}" )
   message(
     "Building Tests."
   )
   add_subdirectory(tests)
 endif()
-
-set(TESTDATA_PATHS "${CMAKE_CURRENT_SOURCE_DIR}")
-string(APPEND TESTDATA_PATHS "/tests/testsdata/")
-add_compile_definitions( TESTDATA_PATH="${TESTDATA_PATHS}" )

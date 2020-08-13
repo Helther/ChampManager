@@ -106,6 +106,22 @@ bool Parser::openFile(QFile &file, const QIODevice::OpenMode &mode)
   throw std::runtime_error("File doesn't exist");
 }
 
+QVariant XmlParser::readFileContent()
+{
+  try
+  {
+    auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
+    //QString dataS;
+    //dataS << data;
+    //qDebug() << dataS;/// debug
+    return QVariant::fromValue(data);
+  } catch (std::exception &e)
+  {
+    throw std::runtime_error(QString("readFile error: ").toStdString()
+                             + e.what());
+  }
+}
+
 FileType XmlParser::readFileType()
 {
   // find log type token
@@ -309,8 +325,8 @@ QPair<QString, QVector<QPair<int, double>>>
   QVector<QPair<int, double>> LapTimes;
   int LapNumber = 1;
   QString bLapTime;
-  bool noBLap =
-    false;// look fo bestlap at the end, if last elem if empty then no best lap
+  bool noBLap = false;
+  // look fo bestlap at the end, if last elem if empty then no best lap
   while (!(xml.tokenType() == QXmlStreamReader::TokenType::StartElement
            && xml.name() == XMLEndName))
   {
@@ -343,22 +359,6 @@ QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
   return lapString;
 }
 
-QVariant PQXmlParser::readFileContent()
-{
-  try
-  {
-    auto data = readXMLLog(parserConsts::seqElems::DriversPQElements);
-    //QString dataS;
-    //dataS << data;
-    //qDebug() << dataS;/// debug
-    return QVariant::fromValue(data);///todo just return
-  } catch (std::exception &e)
-  {
-    throw std::runtime_error(QString("readFile error: ").toStdString()
-                             + e.what());
-  }
-}
-
 QVariant RXmlParser::readFileContent()
 {
   try
@@ -367,7 +367,7 @@ QVariant RXmlParser::readFileContent()
     //QString dataS;
     //dataS << data;
     //qDebug() << dataS;/// debug
-    return QVariant::fromValue(data);///todo just return
+    return QVariant::fromValue(data);
   } catch (std::exception &e)
   {
     throw std::runtime_error(QString("readFile error: ").toStdString()
@@ -410,7 +410,6 @@ QVariant RCDParser::readFileContent()
     throw std::runtime_error(QString("readFile error: ").toStdString()
                              + e.what());
   }
-  /// todo finish
 }
 
 DriverStats RCDParser::readRCD()
@@ -474,7 +473,6 @@ QVariant VEHParser::readFileContent()
     throw std::runtime_error(QString("readFile error: ").toStdString()
                              + e.what());
   }
-  /// todo finish
 }
 
 QVector<StringPair> VEHParser::readVEH()
@@ -515,7 +513,6 @@ QVariant HDVParser::readFileContent()
     throw std::runtime_error(QString("readFile error: ").toStdString()
                              + e.what());
   }
-  /// todo finish
 }
 
 QVector<StringPair> HDVParser::readHDV()
@@ -558,7 +555,7 @@ QVector<StringPair> HDVParser::readHDV()
 bool ModParser::doWriteModFile(const QString &data)
 {
   // backup before write, then open and try to write, if failed try to restore
-  /// todo temp backup path
+  /// backup path is the same as original
   auto pathWOname = fileName;
   pathWOname = pathWOname.remove(fileName.split('/').last());
   const BackupData backUpRes{ backupFile(fileName, pathWOname) };

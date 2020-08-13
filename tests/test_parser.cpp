@@ -17,9 +17,9 @@ void testXMLFileRead()
   auto p = QFile(TESTDATA_PATH + testFiles[0]);
   auto q = QFile(TESTDATA_PATH + testFiles[1]);
   auto r = QFile(TESTDATA_PATH + testFiles[2]);
-  auto pParser = PQXmlParser(p);
+  auto pParser = PXmlParser(p);
   auto pData = pParser.getParseData();
-  auto qParser = PQXmlParser(q);
+  auto qParser = QXmlParser(q);
   auto qData = qParser.getParseData();
   auto rParser = RXmlParser(r);
   auto rData = rParser.getParseData();

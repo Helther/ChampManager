@@ -40,11 +40,12 @@ The following compilers should work:
 3. [Qt 5.14.1+(Qt5Widgets, Qt5Gui, Qt5Core, Qt5Sq)](https://www.qt.io/)
 
 ### Build
-Target platforms are windows and linux. You can build main target via CMake or using .pro file.
+Target platforms are windows and linux. You can build main target via CMake, although i was using QtCreator, which generates cmake cache file, specifying env paths.
 From build directory
 ```
  $ cmake --build --target ChampManager
 ```
+Or use qmake with .pro file.
 
 ## Testing
 For testing was used CMake's ctest [ctest docs](https://cmake.org/cmake/help/latest/manual/ctest.1.html). So far there is one unit test, for the file parser.

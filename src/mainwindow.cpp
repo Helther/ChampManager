@@ -26,6 +26,7 @@ It uses Qt Framework v5 and falls under it's license GNU (L)GPL.
 
 Copyright (C) 2020 Gusev Anton, email address: kaeldevop@gmai.com.)";
 
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent), ui(new Ui::MainWindow), tabW(new QTabWidget),
     resultsW(new Resultswindow)
@@ -110,19 +111,13 @@ void MainWindow::resetBdData()
     QMessageBox::Yes | QMessageBox::No);
   if (reply == QMessageBox::Yes)
   {
-    DBHelper db;
     try
     {
-      db.transactionStart();//------------ transact start
-      db.resetDB();
-      userData->updateSeasons();/// todo design proper data init
-      userData->addSeason("Season 1");///first time init
-      db.transactionCommit();//------------ transact commit
+      userData->init(true);// reset user data
       resultsW->init(getUserData()->getSeasons());
       emit on_dbReseted();
     } catch (std::exception &e)
     {
-      db.transactionRollback();
       QMessageBox::critical(this, "Reset Data Error", e.what());
     }
   }
@@ -130,18 +125,12 @@ void MainWindow::resetBdData()
 
 void MainWindow::initData()
 {
-  DBHelper db;
   try
   {
-    db.transactionStart();//------------ transact start
-    const bool isThereDB = db.initDB();
     userData = new UserData();
-    if (!isThereDB) userData->addSeason("Season 1");///first time init
-    db.transactionCommit();//------------ transact commit
     resultsW->init(getUserData()->getSeasons());
   } catch (std::exception &e)
   {
-    db.transactionRollback();
     QErrorMessage *msg = new QErrorMessage(this);
     connect(msg, &QErrorMessage::finished, this, &MainWindow::close);
     msg->showMessage(e.what());
@@ -202,9 +191,9 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
           this,
           &NewRaceDialog::on_addSeason);
   ///todo debug
-  pFilePath->setText(DCTEST_DATA_DIR + QString("P.xml"));
-  qFilePath->setText(DCTEST_DATA_DIR + QString("Q.xml"));
-  rFilePath->setText(DCTEST_DATA_DIR + QString("R.xml"));
+  pFilePath->setText(QString(DCTEST_DATA_DIR) + QString("P.xml"));
+  qFilePath->setText(QString(DCTEST_DATA_DIR) + QString("Q.xml"));
+  rFilePath->setText(QString(DCTEST_DATA_DIR) + QString("R.xml"));
   ///
   auto getPFilePath = [this]() {/// todo make a helper function
     const auto fileName = QFileDialog::getOpenFileName(this,
@@ -264,7 +253,7 @@ void NewRaceDialog::accept()
 {
   DBHelper db;
   try
-  {/// todo make a helper func and rework
+  {
     Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
     // transact lifetime is try block
@@ -273,13 +262,9 @@ void NewRaceDialog::accept()
     auto p = QFile(pFilePath->text());
     auto q = QFile(qFilePath->text());
     auto r = QFile(rFilePath->text());
-    auto pParser = PQXmlParser(p);
-    if (pParser.getFileType() != FileType::PracticeLog)
-      throw std::runtime_error("wrong file type");
+    auto pParser = PXmlParser(p);
     auto pData = pParser.getParseData();
-    auto qParser = PQXmlParser(q);
-    if (qParser.getFileType() != FileType::QualiLog)
-      throw std::runtime_error("wrong file type");
+    auto qParser = QXmlParser(q);
     auto qData = qParser.getParseData();
     auto rParser = RXmlParser(r);
     auto rData = rParser.getParseData();

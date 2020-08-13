@@ -62,14 +62,16 @@ private:
 class XmlParser : public Parser
 {
 public:
-  explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
-
   [[nodiscard]] RaceLogInfo getParseData()
   {
     return readFileContent().value<RaceLogInfo>();
   }
 
 protected:
+  explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
+
+  QVariant readFileContent() override;
+
   [[nodiscard]] FileType readFileType();
 
   //=========================specific log parsing sub methods ==========
@@ -78,7 +80,7 @@ protected:
 
 private:
   // reads through file using xml reader reference in search of given element
-  // name, returns element value, if never found returns empty qstring
+  // name, returns element value, if never found returns null qstring
   QString findXMLElement(QXmlStreamReader &xml,
                          const QString &elemName,
                          const QString &stopEndElem = "atEnd",
@@ -101,21 +103,29 @@ private:
   // parse driver lap times
   [[nodiscard]] QPair<QString, QVector<QPair<int, double>>>
     processDriverLaps(QXmlStreamReader &xml);
+
   // creates csv string of lap times for db
   QString generateLapData(QVector<QPair<int, double>> data);
 };
 
-class PQXmlParser : public XmlParser
+class PXmlParser : public XmlParser
 {
 public:
-  explicit PQXmlParser(QFile &file) : XmlParser(file)
+  explicit PXmlParser(QFile &file) : XmlParser(file)
   {
-    if (!(fileType == FileType::QualiLog || fileType == FileType::PracticeLog))
+    if (!(fileType == FileType::PracticeLog))
       throw std::runtime_error("fileType check error wrong file type");
   }
+};
 
-protected:
-  QVariant readFileContent() override;
+class QXmlParser : public XmlParser
+{
+public:
+  explicit QXmlParser(QFile &file) : XmlParser(file)
+  {
+    if (!(fileType == FileType::QualiLog))
+      throw std::runtime_error("fileType check error wrong file type");
+  }
 };
 
 class RXmlParser : public XmlParser
