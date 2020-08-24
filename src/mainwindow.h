@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <resultswindow.h>
 #include <QDialog>
+#include <QPushButton>
 #include <appdata.h>
 
 //forward decl
@@ -141,11 +142,10 @@ private:
   QPushButton *pBrowseButton;
   QPushButton *qBrowseButton;
   QPushButton *rBrowseButton;
-
   QDialogButtonBox *buttonBox;
 };
 
-//======================Add New Season Dialog===========================//
+//====================== Add New Season Dialog =====================//
 class AddSeason : public QDialog
 {
   Q_OBJECT
@@ -160,6 +160,25 @@ private:
   void accept() override;
   QLineEdit *lineEdit;
   QDialogButtonBox *buttonBox;
+};
+
+//===================== Browse button =========================//
+
+class BrowseButton : public QPushButton
+{
+  Q_OBJECT
+
+public:
+  BrowseButton(QLineEdit *pathLine,
+               const QString &fileFilter = QString(),
+               QWidget *parent = nullptr);
+
+private slots:
+  void chooseFile();
+
+private:
+  QLineEdit *pathLinePtr;
+  QString filter;
 };
 
 #endif// MAINWINDOW_H
