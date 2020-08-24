@@ -57,13 +57,14 @@ private:
   void viewWidgetsSetup();
   void setItemHeaderData();
   void createContextMenus();
+  QWidget *buildLapsView(const QVector<LapsComp> &lapsData);
   //=
   // builds up tree item model with race list
   void updateItemModel(const SeasonData &season);
   // builds up model for race results
   void updateTableModel(int sessionId, bool isRace);
   // sets race view headers names after model rebuild
-
+  QVector<LapsComp> getLapsData();
 
   SeasonData currentSeason;
   DBHelper *dbHandler;

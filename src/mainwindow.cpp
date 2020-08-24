@@ -180,9 +180,9 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
     qLabel(new QLabel("Select Qualifying log:")),
     rLabel(new QLabel("Select Race log:")), pFilePath(new QLineEdit),
     qFilePath(new QLineEdit), rFilePath(new QLineEdit),
-    pBrowseButton(new QPushButton("Browse")),
-    qBrowseButton(new QPushButton("Browse")),
-    rBrowseButton(new QPushButton("Browse"))
+    pBrowseButton(new BrowseButton(pFilePath, "XML Files (*.xml")),
+    qBrowseButton(new BrowseButton(qFilePath, "XML Files (*.xml)")),
+    rBrowseButton(new BrowseButton(rFilePath, "XML Files (*.xml)"))
 {
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle("Add New Race");
@@ -195,30 +195,6 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   qFilePath->setText(QString(DCTEST_DATA_DIR) + QString("Q.xml"));
   rFilePath->setText(QString(DCTEST_DATA_DIR) + QString("R.xml"));
   ///
-  auto getPFilePath = [this]() {/// todo make a helper function
-    const auto fileName = QFileDialog::getOpenFileName(this,
-                                                       tr("Open File"),
-                                                       tr("./"),
-                                                       tr("XML Files (*.xml)"));
-    if (!fileName.isNull()) this->pFilePath->setText(fileName);
-  };
-  auto getQFilePath = [this]() {
-    const auto fileName = QFileDialog::getOpenFileName(this,
-                                                       tr("Open File"),
-                                                       tr("./"),
-                                                       tr("XML Files (*.xml)"));
-    if (!fileName.isNull()) this->qFilePath->setText(fileName);
-  };
-  auto getRFilePath = [this]() {
-    const auto fileName = QFileDialog::getOpenFileName(this,
-                                                       tr("Open File"),
-                                                       tr("./"),
-                                                       tr("XML Files (*.xml)"));
-    if (!fileName.isNull()) this->rFilePath->setText(fileName);
-  };
-  connect(pBrowseButton, &QPushButton::clicked, getPFilePath);
-  connect(qBrowseButton, &QPushButton::clicked, getQFilePath);
-  connect(rBrowseButton, &QPushButton::clicked, getRFilePath);
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -251,7 +227,7 @@ void NewRaceDialog::updateSeasonsCombo(const SeasonData &season)
 
 void NewRaceDialog::accept()
 {
-  DBHelper db;
+  DBHelper db;///todo may throw
   try
   {
     Perf perf("add new race func");///todo temp
@@ -416,4 +392,27 @@ void AddSeason::accept()
     return;
   }
   QMessageBox::critical(this, "Error", "can't add the season: invalid name");
+}
+
+
+BrowseButton::BrowseButton(QLineEdit *pathLine,
+                           const QString &fileFilter,
+                           QWidget *parent)
+  : QPushButton("Browse", parent), pathLinePtr(pathLine), filter(fileFilter)
+{
+  if (pathLinePtr == nullptr)
+    throw std::runtime_error("Browse bad path line obj");
+  connect(this, &QPushButton::clicked, this, &BrowseButton::chooseFile);
+}
+
+void BrowseButton::chooseFile()
+{
+  const auto fileName =
+    QFileDialog::getOpenFileName(this, "Select a File", "./", filter);
+  if (!fileName.isNull())
+  {
+    if (pathLinePtr == nullptr)
+      throw std::runtime_error("Browse bad path line obj");
+    pathLinePtr->setText(fileName);
+  }
 }

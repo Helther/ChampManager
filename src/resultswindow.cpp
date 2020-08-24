@@ -131,61 +131,16 @@ void Resultswindow::on_delRaceAct()
 void Resultswindow::on_compareLapsAct()
 {
   Perf p("compare laps");///todo temp
-  const int nameColId = 2;
-  const int lapsColId = 13;
-  const int bestLapId = 14;
-  auto indexes = tableView->selectionModel()->selectedRows();
-  if (indexes.isEmpty()) return;
-  QVector<LapsComp> lapsData;
-  for (const auto &i : indexes)
+  QWidget *lapsW = nullptr;
+  try
   {
-    if (i.isValid())
-    {
-      auto name = tableModel->index(i.row(), nameColId);
-      auto laps = tableModel->index(i.row(), lapsColId);
-      auto bLap = tableModel->index(i.row(), bestLapId);
-      if (name.isValid() && laps.isValid() && bLap.isValid())
-        lapsData.push_back({ name.data().toString(),
-                             laps.data().toString(),
-                             bLap.data().toString() });
-      continue;
-    }
-    throw std::runtime_error("Compare Laps Creation error");
-  }
-
-  QWidget *lapsW = new QWidget;
-  lapsW->setAttribute(Qt::WA_DeleteOnClose);
-  lapsW->setWindowTitle("Lap Times Compare");
-  QGridLayout *lapsLayout = new QGridLayout;
-  int rowCounter = 0;
-  int currentRow = 0;
-  int maxRowElemCount = MAX_LAPSCOMPARE_ROW_SIZE;
-  for (const auto &i : lapsData)
+    lapsW = buildLapsView(getLapsData());
+    if (lapsW != nullptr) lapsW->show();
+  } catch (std::exception &e)
   {
-    LapsCompModel *lapsModel = new LapsCompModel(i);
-    QTableView *lapsView = new QTableView;
-    lapsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    lapsView->setAlternatingRowColors(true);
-    lapsView->setModel(lapsModel);
-    lapsView->resizeColumnsToContents();
-    lapsView->resizeRowsToContents();
-    QGroupBox *lapsGroup = new QGroupBox;
-    QGridLayout *lapsGrid = new QGridLayout;
-    QLabel *lbl = new QLabel("Driver: " + i.driver);
-    lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    lapsGrid->addWidget(lbl, 0, 0);
-    lapsGrid->addWidget(lapsView, 1, 0, 3, 1);
-    lapsGroup->setLayout(lapsGrid);
-    lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
-    rowCounter++;
-    if (rowCounter > maxRowElemCount)
-    {
-      currentRow++;
-      rowCounter = 0;
-    }
+    if (lapsW != nullptr) delete lapsW;
+    QMessageBox::critical(this, "Error", "Can't show comparison");
   }
-  lapsW->setLayout(lapsLayout);
-  lapsW->show();
 }
 
 void Resultswindow::on_clearTableSelect() { tableView->clearSelection(); }
@@ -235,6 +190,32 @@ void Resultswindow::updateTableModel(int sessionId, bool isRace)
   tableView->resizeColumnsToContents();
 }
 
+QVector<LapsComp> Resultswindow::getLapsData()
+{
+  const int nameColId = 2;
+  const int lapsColId = 13;
+  const int bestLapId = 14;
+  QVector<LapsComp> lapsData;
+  auto indexes = tableView->selectionModel()->selectedRows();
+  if (indexes.isEmpty()) return lapsData;
+  for (const auto &i : indexes)
+  {
+    if (i.isValid())
+    {
+      auto name = tableModel->index(i.row(), nameColId);
+      auto laps = tableModel->index(i.row(), lapsColId);
+      auto bLap = tableModel->index(i.row(), bestLapId);
+      if (name.isValid() && laps.isValid() && bLap.isValid())
+        lapsData.push_back({ name.data().toString(),
+                             laps.data().toString(),
+                             bLap.data().toString() });
+      continue;
+    }
+    throw std::runtime_error("Compare Laps Creation error");
+  }
+  return lapsData;
+}
+
 void Resultswindow::setItemHeaderData()
 {
   itemModel->setHorizontalHeaderItem(0, new QStandardItem("Track/Session"));
@@ -256,6 +237,44 @@ void Resultswindow::createContextMenus()
   tableMenu->addAction("Clear selection",
                        this,
                        &Resultswindow::on_clearTableSelect);
+}
+
+QWidget *Resultswindow::buildLapsView(const QVector<LapsComp> &lapsData)
+{
+  QWidget *lapsW = new QWidget;
+  lapsW->setAttribute(Qt::WA_DeleteOnClose);
+  lapsW->setWindowTitle("Lap Times Compare");
+  QGridLayout *lapsLayout = new QGridLayout;
+  int rowCounter = 0;
+  int currentRow = 0;
+  int maxRowElemCount = MAX_LAPSCOMPARE_ROW_SIZE;
+  if (lapsData.isEmpty()) return nullptr;
+  for (const auto &i : lapsData)
+  {
+    LapsCompModel *lapsModel = new LapsCompModel(i);
+    QTableView *lapsView = new QTableView;
+    lapsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    lapsView->setAlternatingRowColors(true);
+    lapsView->setModel(lapsModel);
+    lapsView->resizeColumnsToContents();
+    lapsView->resizeRowsToContents();
+    QGroupBox *lapsGroup = new QGroupBox;
+    QGridLayout *lapsGrid = new QGridLayout;
+    QLabel *lbl = new QLabel("Driver: " + i.driver);
+    lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    lapsGrid->addWidget(lbl, 0, 0);
+    lapsGrid->addWidget(lapsView, 1, 0, 3, 1);
+    lapsGroup->setLayout(lapsGrid);
+    lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
+    rowCounter++;
+    if (rowCounter > maxRowElemCount)
+    {
+      currentRow++;
+      rowCounter = 0;
+    }
+  }
+  lapsW->setLayout(lapsLayout);
+  return lapsW;
 }
 
 
