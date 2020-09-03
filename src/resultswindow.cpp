@@ -139,7 +139,9 @@ void Resultswindow::on_compareLapsAct()
   } catch (std::exception &e)
   {
     if (lapsW != nullptr) delete lapsW;
-    QMessageBox::critical(this, "Error", "Can't show comparison");
+    QMessageBox::critical(this,
+                          "Error",
+                          QString("Can't show comparison: ") + e.what());
   }
 }
 
@@ -244,11 +246,11 @@ QWidget *Resultswindow::buildLapsView(const QVector<LapsComp> &lapsData)
   QWidget *lapsW = new QWidget;
   lapsW->setAttribute(Qt::WA_DeleteOnClose);
   lapsW->setWindowTitle("Lap Times Compare");
-  QGridLayout *lapsLayout = new QGridLayout;
   int rowCounter = 0;
   int currentRow = 0;
   int maxRowElemCount = MAX_LAPSCOMPARE_ROW_SIZE;
   if (lapsData.isEmpty()) return nullptr;
+  QGridLayout *lapsLayout = new QGridLayout;
   for (const auto &i : lapsData)
   {
     LapsCompModel *lapsModel = new LapsCompModel(i);

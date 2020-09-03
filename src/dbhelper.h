@@ -95,7 +95,7 @@ public:
 private:
   // creates tables in dataBase
   QSqlError initResultsTables() const;
-
+  void initConnection();
 
   //==========================misc============================//
   // throws if there was an sql error
@@ -104,7 +104,7 @@ private:
   QSqlDatabase dbConn;
   bool wasAlreadyOpen = false;
   const QString dbDriverName = "QSQLITE";
-  const QString connName = "dbConn";
+  QString connName = "dbConn";
   const QString dbName = "CMM.db3";
   const QString dbPath = "./";/// todo temp
   const QVector<QString> allTableNames{ DBTableNames::Races,

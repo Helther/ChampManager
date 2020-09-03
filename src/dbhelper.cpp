@@ -45,23 +45,7 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                             references races (race_id)
                                                 ON DELETE CASCADE))";
 
-DBHelper::DBHelper()
-{
-  dbConn = QSqlDatabase::database(connName);
-  if (dbConn.isOpen())
-  {
-    wasAlreadyOpen = true;
-    return;
-  }
-  dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
-  if (!dbConn.isValid())
-    throw std::runtime_error(
-      QString("DataBase init error: no valid driver").toStdString());
-  dbConn.setDatabaseName(dbName);
-  if (!dbConn.open())
-    throw std::runtime_error(QString("DataBase init error: ").toStdString()
-                             + dbConn.lastError().text().toStdString());
-}
+DBHelper::DBHelper() { initConnection(); }
 
 DBHelper::~DBHelper()
 {
@@ -224,6 +208,23 @@ QSqlError DBHelper::initResultsTables() const
   return QSqlError();
 }
 
+void DBHelper::initConnection()
+{
+  dbConn = QSqlDatabase::database(connName);
+  if (dbConn.isOpen())
+  {
+    wasAlreadyOpen = true;
+    return;
+  }
+  dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
+  if (!dbConn.isValid())
+    throw std::runtime_error(
+      QString("DataBase init error: no valid driver").toStdString());
+  dbConn.setDatabaseName(dbName);
+  if (!dbConn.open())
+    throw std::runtime_error(QString("DataBase init error: ").toStdString()
+                             + dbConn.lastError().text().toStdString());
+}
 
 int DBHelper::addNewSession(const QString &type,
                             int raceId,

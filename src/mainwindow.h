@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
-#include <resultswindow.h>
 #include <QDialog>
 #include <QPushButton>
+#include <resultswindow.h>
 #include <appdata.h>
+#include <parser.h>
+#include <dbhelper.h>
 
 //forward decl
 class UserData;
@@ -129,6 +131,19 @@ private slots:
 private:
   void accept() override;
   void layoutSetup();
+
+  template<class Parser>
+  int addSession(const QString &filePath, int raceId, DBHelper &db)
+  {
+    auto file = QFile(filePath);
+    auto parser = Parser(file);
+    auto data = parser.getParseData();
+    int sessionId =
+      db.addNewSession(getFileTypeById(parser.getFileType()), raceId, data);
+    db.addNewResults(data, sessionId);
+    return sessionId;
+  }
+
   //================== Widgets ===================//
   ChooseSeason *seasonW;
   QPushButton *addSeasonButton;

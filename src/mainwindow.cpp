@@ -9,8 +9,6 @@
 #include <QGridLayout>
 #include <QErrorMessage>
 #include <QFileDialog>
-#include <parser.h>
-#include <dbhelper.h>
 #include <QMessageBox>
 
 #define DCTEST_DATA_DIR TESTDATA_PATH
@@ -194,7 +192,7 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   pFilePath->setText(QString(DCTEST_DATA_DIR) + QString("P.xml"));
   qFilePath->setText(QString(DCTEST_DATA_DIR) + QString("Q.xml"));
   rFilePath->setText(QString(DCTEST_DATA_DIR) + QString("R.xml"));
-  ///
+  /// end debug
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -235,27 +233,10 @@ void NewRaceDialog::accept()
     // transact lifetime is try block
     db.transactionStart();//------------ transact start
     int raceId = db.addNewRace(seasonId);
-    auto p = QFile(pFilePath->text());
-    auto q = QFile(qFilePath->text());
-    auto r = QFile(rFilePath->text());
-    auto pParser = PXmlParser(p);
-    auto pData = pParser.getParseData();
-    auto qParser = QXmlParser(q);
-    auto qData = qParser.getParseData();
-    auto rParser = RXmlParser(r);
-    auto rData = rParser.getParseData();
-    int pSessionId =
-      db.addNewSession(getFileTypeById(pParser.getFileType()), raceId, pData);
-    db.addNewResults(pData, pSessionId);
-    int qSessionId =
-      db.addNewSession(getFileTypeById(qParser.getFileType()), raceId, qData);
-    db.addNewResults(qData, qSessionId);
-    int rSessionId =
-      db.addNewSession(getFileTypeById(rParser.getFileType()), raceId, rData);
-    db.addNewResults(rData, rSessionId);
-
+    int pSessionId = addSession<PXmlParser>(pFilePath->text(), raceId, db);
+    int qSessionId = addSession<QXmlParser>(qFilePath->text(), raceId, db);
+    int rSessionId = addSession<RXmlParser>(rFilePath->text(), raceId, db);
     db.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
-
     db.transactionCommit();//------------ transact commit
     QDialog::accept();
     emit addedRace(seasonW->getSeasonData());
@@ -283,6 +264,7 @@ void NewRaceDialog::layoutSetup()
   mainLayout->addWidget(buttonBox, 4, 0);
   setLayout(mainLayout);
 }
+
 //==========================RmSeason=================================//
 RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
                                      QWidget *parent)
