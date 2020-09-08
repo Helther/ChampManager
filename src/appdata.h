@@ -19,9 +19,11 @@ class UserData
 {
 public:
   UserData();
-
+  // inititalizes or resets DB and local data
   void init(bool isReset);
+  // adds season to the DB and local array
   SeasonData addSeason(const QString &name);
+  // repopulates seasons array
   void updateSeasons();
   ///SeasonData getCurrentSeason() { return currentSeason; }
   inline QVector<SeasonData> getSeasons() const { return seasons; }
