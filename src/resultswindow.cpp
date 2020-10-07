@@ -120,10 +120,16 @@ void Resultswindow::on_delRaceAct()
     auto currentItem = itemModel->itemFromIndex(index);
     if (currentItem != nullptr)
     {
-      int raceId = currentItem->data().value<int>();
-      DBHelper db;
-      db.delEntryFromTable(DBTableNames::Races, "race_id", raceId);
-      on_resultsChanged(currentSeason);
+      try
+      {
+        int raceId = currentItem->data().value<int>();
+        DBHelper db;
+        db.delEntryFromTable(DBTableNames::Races, "race_id", raceId);
+        on_resultsChanged(currentSeason);
+      } catch (std::exception &e)
+      {
+        QMessageBox::critical(this, "Deletion Error: ", e.what());
+      }
     }
   }
 }
@@ -146,6 +152,28 @@ void Resultswindow::on_compareLapsAct()
 }
 
 void Resultswindow::on_clearTableSelect() { tableView->clearSelection(); }
+
+void Resultswindow::on_delAllRacesAct()
+{
+  auto reply = QMessageBox::question(
+    this,
+    "Confirm deletion",
+    "Are you  sure you want to delete all races data, in the current season?",
+    QMessageBox::Yes | QMessageBox::No);
+  if (reply == QMessageBox::Yes)
+  {
+
+    try
+    {
+      DBHelper db;
+      db.delSeasonRaces(currentSeason.id);
+      on_resultsChanged(currentSeason);
+    } catch (std::exception &e)
+    {
+      QMessageBox::critical(this, "Deletion Error: ", e.what());
+    }
+  }
+}
 
 void Resultswindow::updateItemModel(const SeasonData &season)
 {
@@ -232,7 +260,10 @@ void Resultswindow::createContextMenus()
   treeMenu->addAction("Delete race result",
                       this,
                       &Resultswindow::on_delRaceAct);
-
+  treeMenu->addSeparator();
+  treeMenu->addAction("Delete all races in season",
+                      this,
+                      &Resultswindow::on_delAllRacesAct);
   tableMenu->addAction("Compare selected lapsTimes",
                        this,
                        &Resultswindow::on_compareLapsAct);
@@ -332,16 +363,6 @@ LapsCompModel::LapsCompModel(const LapsComp &lapsData, QObject *parent)
     bestLap(lapsData.bestLap), rows(lapTimes.size()), columns(2),
     bLapRow(getBLapRow())
 {}
-
-int LapsCompModel::rowCount(const QModelIndex & /*parent*/) const
-{
-  return rows;
-}
-
-int LapsCompModel::columnCount(const QModelIndex & /*parent*/) const
-{
-  return columns;
-}
 
 QVariant LapsCompModel::data(const QModelIndex &index, int role) const
 {

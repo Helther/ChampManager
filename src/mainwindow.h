@@ -23,7 +23,7 @@ public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-  UserData *getUserData()
+  inline UserData *getUserData()
   {
 #ifdef QT_DEBUG
     assert(userData != nullptr);
@@ -86,8 +86,12 @@ class ChooseSeason : public QWidget
   Q_OBJECT
 public:
   ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent = nullptr);
-  SeasonData getSeasonData();
+  inline SeasonData getSeasonData()
+  {
+    return seasonsCombo->currentData().value<SeasonData>();
+  }
   inline auto getSeasons() { return seasonsCopy; }
+  // repopulates season combo box and local array
   void setSeasons(const QVector<SeasonData> &sData);
 
 private:

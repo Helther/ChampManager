@@ -50,6 +50,7 @@ private slots:
   void on_delRaceAct();
   void on_compareLapsAct();
   void on_clearTableSelect();
+  void on_delAllRacesAct();
 
 private:
   //= construction methods
@@ -57,14 +58,14 @@ private:
   void viewWidgetsSetup();
   void setItemHeaderData();
   void createContextMenus();
-  QWidget *buildLapsView(const QVector<LapsComp> &lapsData);
+  [[nodiscard]] QWidget *buildLapsView(const QVector<LapsComp> &lapsData);
   //=
   // builds up tree item model with race list
   void updateItemModel(const SeasonData &season);
   // builds up model for race results
   void updateTableModel(int sessionId, bool isRace);
   // sets race view headers names after model rebuild
-  QVector<LapsComp> getLapsData();
+  [[nodiscard]] QVector<LapsComp> getLapsData();
 
   SeasonData currentSeason;
   DBHelper *dbHandler;
@@ -91,8 +92,14 @@ class LapsCompModel : public QAbstractTableModel
 
 public:
   LapsCompModel(const LapsComp &lapsData, QObject *parent = nullptr);
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  inline int rowCount(const QModelIndex & /*parent*/) const override
+  {
+    return rows;
+  }
+  inline int columnCount(const QModelIndex & /*parent*/) const override
+  {
+    return columns;
+  }
   QVariant data(const QModelIndex &index,
                 int role = Qt::DisplayRole) const override;
   QVariant headerData(int section,

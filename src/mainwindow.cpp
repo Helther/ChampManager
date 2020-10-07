@@ -117,7 +117,7 @@ void MainWindow::resetBdData()
       emit on_dbReseted();
     } catch (std::exception &e)
     {
-      QMessageBox::critical(this, "Reset Data Error", e.what());
+      QMessageBox::critical(this, "Reset Data Error: ", e.what());
     }
   }
 }
@@ -198,7 +198,6 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
   connect(this,
           &NewRaceDialog::addedRace,
           static_cast<MainWindow *>(parent),
@@ -231,7 +230,6 @@ void NewRaceDialog::accept()
   {
     Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
-    // transact lifetime is try block
     db.transactionStart();//------------ transact start
     int raceId = db.addNewRace(seasonId);
     int pSessionId = addSession<PXmlParser>(pFilePath->text(), raceId, db);
@@ -319,11 +317,6 @@ ChooseSeason::ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent)
   setLayout(layout);
   for (const auto &i : seasons)
     seasonsCombo->addItem(i.name, QVariant::fromValue(i));
-}
-
-SeasonData ChooseSeason::getSeasonData()
-{
-  return seasonsCombo->currentData().value<SeasonData>();
 }
 
 void ChooseSeason::setSeasons(const QVector<SeasonData> &sData)
