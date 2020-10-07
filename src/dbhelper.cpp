@@ -9,7 +9,7 @@ inline constexpr auto CREATE_RACES = R"(create table races
                                      seasons_fid INTEGER not null,
                                      constraint k_race_id primary key (race_id),
                                      constraint k_seasons_fid foreign key (seasons_fid)
-                                         references seasons(season_id)
+                                         references seasons (season_id)
                                             ON DELETE CASCADE))";
 inline constexpr auto CREATE_RESULTS = R"(create table race_results
                                        (res_id INTEGER not null,
@@ -44,24 +44,16 @@ inline constexpr auto CREATE_SESSIONS = R"(create table sessions
                                        constraint k_race_fid foreign key (race_fid)
                                             references races (race_id)
                                                 ON DELETE CASCADE))";
-
-DBHelper::DBHelper()
-{
-  dbConn = QSqlDatabase::database(connName);
-  if (dbConn.isOpen())
-  {
-    wasAlreadyOpen = true;
-    return;
-  }
-  dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
-  if (!dbConn.isValid())
-    throw std::runtime_error(
-      QString("DataBase init error: no valid driver").toStdString());
-  dbConn.setDatabaseName(dbName);
-  if (!dbConn.open())
-    throw std::runtime_error(QString("DataBase init error: ").toStdString()
-                             + dbConn.lastError().text().toStdString());
-}
+inline constexpr auto CREATE_INCIDENTS = R"(create table incidents
+                                        (inc_id INTEGER not null,
+                                        session_fid INTEGER not null,
+                                        first_driver TEXT,
+                                        second_driver TEXT,
+                                        constraint k_inc_id primary key (inc_id),
+                                        constraint k_session_fid foreign key (session_fid)
+                                            references sessions (ses_id)
+                                                ON DELETE CASCADE))";
+DBHelper::DBHelper() { initConnection(); }
 
 DBHelper::~DBHelper()
 {
@@ -87,7 +79,6 @@ bool DBHelper::initDB() const
   }
   return true;
 }
-
 void DBHelper::destroyDB() const
 {
   Perf p("destrdb");/// todo temp
@@ -126,6 +117,25 @@ void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
     q.addBindValue(QString::number(sessionId));
     for (const auto &i : driver.SeqElems) q.addBindValue(i.second);
     if (!q.exec()) checkSqlError("Insert New Race Res error", q.lastError());
+
+    addIncidents(inResults.incidents, sessionId);
+  }
+}
+
+void DBHelper::addIncidents(const QVector<StringPair> &incindents,
+                            int ses_id) const
+{// caller must start a transaction
+  QSqlQuery q(dbConn);
+  for (const auto &inc : incindents)
+  {
+    if (!q.exec(QString("insert into %1 (session_fid, first_driver, "
+                        "second_driver) values( %2, "
+                        "\"%3\", \"%4\")")
+                  .arg(DBTableNames::Incidents)
+                  .arg(ses_id)
+                  .arg(inc.first)
+                  .arg(inc.second)))
+      checkSqlError("Insert New incident error", q.lastError());
   }
 }
 
@@ -190,7 +200,7 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
   while (q.next())
   {
     retData.push_back(RaceData());
-    retData.last().raceId = q.value(0).value<int>();
+    retData.last().raceId = q.value(0).toInt();
   }
   for (auto &race : retData)
   {
@@ -202,13 +212,12 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
       checkSqlError("get race data, session list error", q.lastError());
     while (q.next())
     {
-      race.sessions.push_back(
-        { q.value(0).value<int>(), q.value(1).toString() });
+      race.sessions.push_back({ q.value(0).toInt(), q.value(1).toString() });
     }
     q.seek(0);
     race.date = q.value(2).toString();
     race.track = q.value(3).toString();
-    race.laps = q.value(4).value<int>();
+    race.laps = q.value(4).toInt();
   }
   return retData;
 }
@@ -217,13 +226,31 @@ QSqlError DBHelper::initResultsTables() const
 {// caller must start transaction
   Perf p("initdb");/// todo temp
   QSqlQuery init(dbConn);
-  if (!init.exec(CREATE_SEASON)) return init.lastError();
+  if (!init.exec(CREATE_SEASON)) return init.lastError();/// todo refactor
   if (!init.exec(CREATE_RACES)) return init.lastError();
   if (!init.exec(CREATE_RESULTS)) return init.lastError();
   if (!init.exec(CREATE_SESSIONS)) return init.lastError();
+  if (!init.exec(CREATE_INCIDENTS)) return init.lastError();
   return QSqlError();
 }
 
+void DBHelper::initConnection()
+{
+  dbConn = QSqlDatabase::database(connName);
+  if (dbConn.isOpen())
+  {
+    wasAlreadyOpen = true;
+    return;
+  }
+  dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
+  if (!dbConn.isValid())
+    throw std::runtime_error(
+      QString("DataBase init error: no valid driver").toStdString());
+  dbConn.setDatabaseName(dbName);
+  if (!dbConn.open())
+    throw std::runtime_error(QString("DataBase init error: ").toStdString()
+                             + dbConn.lastError().text().toStdString());
+}
 
 int DBHelper::addNewSession(const QString &type,
                             int raceId,
@@ -262,6 +289,19 @@ int DBHelper::addNewSession(const QString &type,
 void DBHelper::delSeasonData(int ses_id) const
 {
   delEntryFromTable(DBTableNames::Seasons, "season_id", ses_id);
+}
+
+void DBHelper::delSeasonRaces(int ses_id) const
+{
+  QSqlQuery q(dbConn);
+  if (!q.exec(QString("select race_id from %1 where seasons_fid = %2")
+                .arg(DBTableNames::Races)
+                .arg(ses_id)))
+    checkSqlError("all races in season deletion error", q.lastError());
+  QVector<int> raceids;
+  while (q.next()) raceids.push_back(q.value(0).toInt());
+  for (const auto i : raceids)
+    delEntryFromTable(DBTableNames::Races, "race_id", i);
 }
 
 void DBHelper::checkSessionsValidity(const QVector<int> &ids) const

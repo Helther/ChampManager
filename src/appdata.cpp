@@ -13,12 +13,12 @@ void UserData::init(bool isReset)
     {
       db.resetDB();
       updateSeasons();
-      addSeason("Season 1");/// adding default value
+      addSeason("Season 1");// adding default value
     } else
     {
       const bool isThereDB = db.initDB();
       updateSeasons();
-      if (!isThereDB) addSeason("Season 1");/// adding default value
+      if (!isThereDB) addSeason("Season 1");// adding default value
     }
     db.transactionCommit();//------------ transact commit
   } catch (std::exception &e)

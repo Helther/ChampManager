@@ -2,8 +2,7 @@
 #include <exception>
 #include <QDateTime>
 #include <QXmlStreamReader>
-//#ifdef QT_DEBUG QT_NO_DEBUG_OUTPUT
-//#endif
+
 
 Parser::Parser(QFile &file) : fileName(file.fileName())
 {
@@ -106,6 +105,28 @@ bool Parser::openFile(QFile &file, const QIODevice::OpenMode &mode)
   throw std::runtime_error("File doesn't exist");
 }
 
+RaceLogInfo XmlParser::getLogData(const QVector<QString> &Elems)
+{
+  QXmlStreamReader xml(fileData);
+  RaceLogInfo result;
+  try
+  {
+    result.incidents = processIncidents(xml, false);
+    result.drivers = processDrivers(xml, Elems);
+  } catch (std::exception &e)
+  {
+    throw std::runtime_error(QString("XMLRead error: ").toStdString()
+                             + e.what());
+  }
+  return result;
+}
+
+bool XmlParser::convertToCSV(const RaceLogInfo &dataSet, QFile &oFile) const
+{
+  /// todo
+  const auto rawStrings = preprocessDataSet(dataSet);
+}
+
 QVariant XmlParser::readFileContent()
 {
   try
@@ -199,7 +220,7 @@ RaceLogInfo XmlParser::readXMLLog(const QVector<QString> &ListOfElems)
   try
   {
     result.SeqElems = processMainLog(xml);
-    result.incidents = processIncidents(xml);
+    result.incidents = processIncidents(xml, true);
     result.drivers = processDrivers(xml, ListOfElems);
   } catch (std::exception &e)
   {
@@ -228,7 +249,8 @@ QVector<QPair<QString, QString>>
   return result;
 }
 
-QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml)
+QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml,
+                                                bool driversOnly)
 {
   const QString XMLName = "Incident";
   const QString XMLEndName = "Stream";
@@ -251,7 +273,10 @@ QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml)
   }
   if (incidents.isEmpty())// check if found something, return empty if not
     return QVector<StringPair>{};
-  return processEqualCombinations(incidents);
+  if (driversOnly)
+    return parseIncDriverName(incidents);
+  else
+    return processEqualCombinations(incidents);
 }
 
 QVector<StringPair>
@@ -357,6 +382,32 @@ QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
   for (const auto &i : data) dataS << i.second << ", ";
   lapString.remove(lapString.size() - 2, 2);
   return lapString;
+}
+
+QVector<QString> XmlParser::preprocessDataSet(const RaceLogInfo &dataSet) const
+{
+  /// todo
+  /// convert filetype to int/string then into category
+  /// incidents
+  /// find only unique entries, convert to bool column if driver had any
+  /// if there are no incs for driver then false
+}
+
+QVector<StringPair>
+  XmlParser::parseIncDriverName(const QVector<QString> &incindents) const
+{
+  QVector<StringPair> incidentData;
+  QString currentString;
+  const int minValidLineLength = 3;
+  for (const auto &i : incindents)////maybe check drivers names validity
+  {
+    currentString = i;
+    auto stringList = currentString.split("(", Qt::SkipEmptyParts);
+    if (stringList.size() < minValidLineLength) continue;
+    const auto Driver = stringList.first();
+    incidentData.push_back(StringPair(Driver, QString()));
+  }
+  return incidentData;
 }
 
 QVariant RXmlParser::readFileContent()

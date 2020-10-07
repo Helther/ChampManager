@@ -9,8 +9,6 @@
 #include <QGridLayout>
 #include <QErrorMessage>
 #include <QFileDialog>
-#include <parser.h>
-#include <dbhelper.h>
 #include <QMessageBox>
 
 #define DCTEST_DATA_DIR TESTDATA_PATH
@@ -85,6 +83,7 @@ void MainWindow::about()
 {
   QDialog *aboutDialog = new QDialog;
   aboutDialog->setAttribute(Qt::WA_DeleteOnClose);
+  aboutDialog->setWindowIcon(QIcon(APP_ICON));
   QDialogButtonBox *okButton = new QDialogButtonBox(QDialogButtonBox::Ok);
   connect(okButton, &QDialogButtonBox::accepted, aboutDialog, &QDialog::accept);
   QLabel *textLabel = new QLabel;
@@ -118,7 +117,7 @@ void MainWindow::resetBdData()
       emit on_dbReseted();
     } catch (std::exception &e)
     {
-      QMessageBox::critical(this, "Reset Data Error", e.what());
+      QMessageBox::critical(this, "Reset Data Error: ", e.what());
     }
   }
 }
@@ -194,12 +193,11 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   pFilePath->setText(QString(DCTEST_DATA_DIR) + QString("P.xml"));
   qFilePath->setText(QString(DCTEST_DATA_DIR) + QString("Q.xml"));
   rFilePath->setText(QString(DCTEST_DATA_DIR) + QString("R.xml"));
-  ///
+  /// end debug
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
   connect(this,
           &NewRaceDialog::addedRace,
           static_cast<MainWindow *>(parent),
@@ -232,30 +230,12 @@ void NewRaceDialog::accept()
   {
     Perf perf("add new race func");///todo temp
     int seasonId = seasonW->getSeasonData().id;
-    // transact lifetime is try block
     db.transactionStart();//------------ transact start
     int raceId = db.addNewRace(seasonId);
-    auto p = QFile(pFilePath->text());
-    auto q = QFile(qFilePath->text());
-    auto r = QFile(rFilePath->text());
-    auto pParser = PXmlParser(p);
-    auto pData = pParser.getParseData();
-    auto qParser = QXmlParser(q);
-    auto qData = qParser.getParseData();
-    auto rParser = RXmlParser(r);
-    auto rData = rParser.getParseData();
-    int pSessionId =
-      db.addNewSession(getFileTypeById(pParser.getFileType()), raceId, pData);
-    db.addNewResults(pData, pSessionId);
-    int qSessionId =
-      db.addNewSession(getFileTypeById(qParser.getFileType()), raceId, qData);
-    db.addNewResults(qData, qSessionId);
-    int rSessionId =
-      db.addNewSession(getFileTypeById(rParser.getFileType()), raceId, rData);
-    db.addNewResults(rData, rSessionId);
-
+    int pSessionId = addSession<PXmlParser>(pFilePath->text(), raceId, db);
+    int qSessionId = addSession<QXmlParser>(qFilePath->text(), raceId, db);
+    int rSessionId = addSession<RXmlParser>(rFilePath->text(), raceId, db);
     db.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
-
     db.transactionCommit();//------------ transact commit
     QDialog::accept();
     emit addedRace(seasonW->getSeasonData());
@@ -283,6 +263,7 @@ void NewRaceDialog::layoutSetup()
   mainLayout->addWidget(buttonBox, 4, 0);
   setLayout(mainLayout);
 }
+
 //==========================RmSeason=================================//
 RmSeasonResDialog::RmSeasonResDialog(const QVector<SeasonData> &seasons,
                                      QWidget *parent)
@@ -336,11 +317,6 @@ ChooseSeason::ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent)
   setLayout(layout);
   for (const auto &i : seasons)
     seasonsCombo->addItem(i.name, QVariant::fromValue(i));
-}
-
-SeasonData ChooseSeason::getSeasonData()
-{
-  return seasonsCombo->currentData().value<SeasonData>();
 }
 
 void ChooseSeason::setSeasons(const QVector<SeasonData> &sData)

@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
-#include <resultswindow.h>
 #include <QDialog>
 #include <QPushButton>
+#include <resultswindow.h>
 #include <appdata.h>
+#include <parser.h>
+#include <dbhelper.h>
 
 //forward decl
 class UserData;
@@ -21,7 +23,7 @@ public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-  UserData *getUserData()
+  inline UserData *getUserData()
   {
 #ifdef QT_DEBUG
     assert(userData != nullptr);
@@ -84,8 +86,12 @@ class ChooseSeason : public QWidget
   Q_OBJECT
 public:
   ChooseSeason(const QVector<SeasonData> &seasons, QWidget *parent = nullptr);
-  SeasonData getSeasonData();
+  inline SeasonData getSeasonData()
+  {
+    return seasonsCombo->currentData().value<SeasonData>();
+  }
   inline auto getSeasons() { return seasonsCopy; }
+  // repopulates season combo box and local array
   void setSeasons(const QVector<SeasonData> &sData);
 
 private:
@@ -129,6 +135,20 @@ private slots:
 private:
   void accept() override;
   void layoutSetup();
+
+  template<class Parser>
+  int addSession(const QString &filePath, int raceId, DBHelper &db)
+  {
+    auto file = QFile(filePath);
+    auto parser = Parser(file);
+    auto SessionData = parser.getParseData();
+    int sessionId = db.addNewSession(getFileTypeById(parser.getFileType()),
+                                     raceId,
+                                     SessionData);
+    db.addNewResults(SessionData, sessionId);
+    return sessionId;
+  }
+
   //================== Widgets ===================//
   ChooseSeason *seasonW;
   QPushButton *addSeasonButton;

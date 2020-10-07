@@ -56,7 +56,7 @@ protected:
 
 private:
   // just opens file with error catching
-  [[nodiscard]] bool openFile(QFile &file, const QIODevice::OpenMode &mode);
+  bool openFile(QFile &file, const QIODevice::OpenMode &mode);
 };
 
 class XmlParser : public Parser
@@ -66,6 +66,10 @@ public:
   {
     return readFileContent().value<RaceLogInfo>();
   }
+  // get driver and incident log data for dataset
+  [[nodiscard]] RaceLogInfo getLogData(const QVector<QString> &Elems);
+
+  bool convertToCSV(const RaceLogInfo &dataSet, QFile &oFile) const;
 
 protected:
   explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
@@ -74,8 +78,6 @@ protected:
 
   [[nodiscard]] FileType readFileType();
 
-  //=========================specific log parsing sub methods ==========
-  // xml
   [[nodiscard]] RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems);
 
 private:
@@ -86,26 +88,28 @@ private:
                          const QString &stopEndElem = "atEnd",
                          bool okIfDidntFind = false,
                          bool stopStartElem = false);
-  [[nodiscard]] QVector<QPair<QString, QString>>
-    processMainLog(QXmlStreamReader &xml);
+  QVector<QPair<QString, QString>> processMainLog(QXmlStreamReader &xml);
 
   // parse incident elements
-  [[nodiscard]] QVector<StringPair> processIncidents(QXmlStreamReader &xml);
+  QVector<StringPair> processIncidents(QXmlStreamReader &xml, bool driversOnly);
 
   // constructs vector of incidents without equal pairings
-  [[nodiscard]] QVector<StringPair>
+  QVector<StringPair>
     processEqualCombinations(const QVector<QString> &incindents) const;
 
   // parse drivers info
-  [[nodiscard]] QVector<DriverInfo>
-    processDrivers(QXmlStreamReader &xml, const QVector<QString> &seqData);
+  QVector<DriverInfo> processDrivers(QXmlStreamReader &xml,
+                                     const QVector<QString> &seqData);
 
   // parse driver lap times
-  [[nodiscard]] QPair<QString, QVector<QPair<int, double>>>
+  QPair<QString, QVector<QPair<int, double>>>
     processDriverLaps(QXmlStreamReader &xml);
 
   // creates csv string of lap times for db
   QString generateLapData(QVector<QPair<int, double>> data);
+  QVector<QString> preprocessDataSet(const RaceLogInfo &dataSet) const;
+  QVector<StringPair>
+    parseIncDriverName(const QVector<QString> &incindents) const;
 };
 
 class PXmlParser : public XmlParser
