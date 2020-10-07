@@ -137,10 +137,11 @@ private:
   {
     auto file = QFile(filePath);
     auto parser = Parser(file);
-    auto data = parser.getParseData();
-    int sessionId =
-      db.addNewSession(getFileTypeById(parser.getFileType()), raceId, data);
-    db.addNewResults(data, sessionId);
+    auto SessionData = parser.getParseData();
+    int sessionId = db.addNewSession(getFileTypeById(parser.getFileType()),
+                                     raceId,
+                                     SessionData);
+    db.addNewResults(SessionData, sessionId);
     return sessionId;
   }
 
