@@ -105,27 +105,6 @@ bool Parser::openFile(QFile &file, const QIODevice::OpenMode &mode)
   throw std::runtime_error("File doesn't exist");
 }
 
-RaceLogInfo XmlParser::getLogData(const QVector<QString> &Elems)
-{
-  QXmlStreamReader xml(fileData);
-  RaceLogInfo result;
-  try
-  {
-    result.incidents = processIncidents(xml, false);
-    result.drivers = processDrivers(xml, Elems);
-  } catch (std::exception &e)
-  {
-    throw std::runtime_error(QString("XMLRead error: ").toStdString()
-                             + e.what());
-  }
-  return result;
-}
-
-bool XmlParser::convertToCSV(const RaceLogInfo &dataSet, QFile &oFile) const
-{
-  /// todo
-  const auto rawStrings = preprocessDataSet(dataSet);
-}
 
 QVariant XmlParser::readFileContent()
 {
@@ -384,14 +363,6 @@ QString XmlParser::generateLapData(QVector<QPair<int, double>> data)
   return lapString;
 }
 
-QVector<QString> XmlParser::preprocessDataSet(const RaceLogInfo &dataSet) const
-{
-  /// todo
-  /// convert filetype to int/string then into category
-  /// incidents
-  /// find only unique entries, convert to bool column if driver had any
-  /// if there are no incs for driver then false
-}
 
 QVector<StringPair>
   XmlParser::parseIncDriverName(const QVector<QString> &incindents) const
@@ -630,4 +601,51 @@ bool ModParser::doWriteModFile(const QString &data)
     restoreFile(fileName, backUpRes.fileFullPath);
     return false;
   }
+}
+
+
+RaceLogInfo DataSetParser::readXMLLog(const QVector<QString> &ListOfElems)
+{
+  QXmlStreamReader xml(fileData);
+  RaceLogInfo result;
+  try
+  {
+    result.incidents = processIncidents(xml, false);
+    result.drivers = processDrivers(xml, ListOfElems);
+  } catch (std::exception &e)
+  {
+    throw std::runtime_error(QString("XMLRead error: ").toStdString()
+                             + e.what());
+  }
+  return result;
+}
+
+QVector<QString>
+  DataSetParser::preprocessDataSet(const RaceLogInfo &dataSet) const
+{
+  /// todo
+  /// first line are header names
+  /// convert filetype to int/string then into category
+  /// incidents
+  /// find only unique entries, convert to bool column if driver had any
+  /// if there are no incs for driver then false
+}
+
+bool DataSetParser::convertToCSV(const QVector<RaceLogInfo> &dataSet,
+                                 QFile &oFile) const
+{
+  if (!oFile.open(QIODevice::WriteOnly | QIODevice::Text)) return false;
+  for (const auto &logIngo : dataSet)
+  {
+    const auto rawStrings = preprocessDataSet(logIngo);
+    if (!rawStrings.isEmpty())
+    {
+      oFile.resize(0);
+      QTextStream stream(&oFile);
+      for (const auto &line : rawStrings) stream << line << Qt::endl;
+      return true;
+    }
+  }
+  if (oFile.exists()) oFile.remove();
+  return false;
 }

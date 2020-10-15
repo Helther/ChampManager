@@ -46,6 +46,7 @@ public:
   bool initDB() const;
   // deletes all tables in db, called if init has failed
   void destroyDB() const;
+  bool isValidDriver() const { return dbConn.isValid(); }
   // called when file was read
   void addNewResults(const RaceLogInfo &inResults, int sessionId) const;
   // called from addNewResults

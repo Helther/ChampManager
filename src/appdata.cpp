@@ -16,6 +16,9 @@ void UserData::init(bool isReset)
       addSeason("Season 1");// adding default value
     } else
     {
+      if (!db.isValidDriver())
+        throw std::runtime_error(
+          QString("DataBase init error: no valid driver").toStdString());
       const bool isThereDB = db.initDB();
       updateSeasons();
       if (!isThereDB) addSeason("Season 1");// adding default value

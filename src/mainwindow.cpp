@@ -225,7 +225,7 @@ void NewRaceDialog::updateSeasonsCombo(const SeasonData &season)
 
 void NewRaceDialog::accept()
 {
-  DBHelper db;///todo may throw
+  DBHelper db;
   try
   {
     Perf perf("add new race func");///todo temp
