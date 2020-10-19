@@ -176,7 +176,8 @@ QString XmlParser::findXMLElement(QXmlStreamReader &xml,
       result = xml.text().toString();
       break;
     }
-    if (xml.name() == "BestLapTime")/// todo temp solution for bLap parsing
+    /// todo temp solution for bLap parsing
+    if (xml.name() == "BestLapTime" && elemName == "Lap")
     {
       xml.readNext();
       result = xml.text().toString();
@@ -253,9 +254,9 @@ QVector<StringPair> XmlParser::processIncidents(QXmlStreamReader &xml,
   if (incidents.isEmpty())// check if found something, return empty if not
     return QVector<StringPair>{};
   if (driversOnly)
-    return parseIncDriverName(incidents);
-  else
     return processEqualCombinations(incidents);
+  else
+    return parseIncDriverName(incidents);
 }
 
 QVector<StringPair>
@@ -610,6 +611,8 @@ RaceLogInfo DataSetParser::readXMLLog(const QVector<QString> &ListOfElems)
   RaceLogInfo result;
   try
   {
+    //const QString XMLName = "RaceLaps";
+    //findXMLElement(xml, XMLName, XMLName);
     result.incidents = processIncidents(xml, false);
     result.drivers = processDrivers(xml, ListOfElems);
   } catch (std::exception &e)
@@ -620,32 +623,123 @@ RaceLogInfo DataSetParser::readXMLLog(const QVector<QString> &ListOfElems)
   return result;
 }
 
+/// dataset format
+/// +-------------+-----------+------+----------+---------+-----+
+/// | SessionType | Incidents | Name | TeamName | GridPos | Pos |
+/// +-------------+-----------+------+----------+---------+-----+
+/// | str         | Y/N       | str  | str      | INT     | INT |
+/// +-------------+-----------+------+----------+---------+-----+
 QVector<QString>
-  DataSetParser::preprocessDataSet(const RaceLogInfo &dataSet) const
+  DataSetParser::preprocessDataSet(const QPair<QString, RaceLogInfo> &dataSet,
+                                   bool displayHeaders)
 {
-  /// todo
-  /// first line are header names
-  /// convert filetype to int/string then into category
-  /// incidents
-  /// find only unique entries, convert to bool column if driver had any
-  /// if there are no incs for driver then false
+  if (dataSet.second.drivers.isEmpty())
+    throw std::runtime_error("preprocessData: no driver data");
+  const QString sessionType = "SessionType";
+  const QString incidents = "Incidents";
+  const char incY = 'Y';
+  const char incN = 'N';
+  QVector<QString> result;
+  bool noIncidents = false;
+  const bool isRace = dataSet.first == getFileTypeById(FileType::RaceLog);
+  if (dataSet.second.incidents.isEmpty()) noIncidents = true;
+  QVector<QString> headers{ sessionType, incidents };
+  for (const auto &i : seqElems::DataSetRElems) headers.push_back(i);
+  // check data table dimensions
+  const int headerSize = headers.size();
+  if (dataSet.second.drivers.at(0).SeqElems.size() == headerSize)
+    throw std::runtime_error("preprocessData: wrong data dimensions");
+  if (displayHeaders)
+    result.push_back(makeSCVLine(headers));// added headers row
+
+  for (const auto &driver : dataSet.second.drivers)
+  {
+    QVector<QString> line{ dataSet.first };
+    if (noIncidents)
+      line.push_back(QString{ incN });
+    else
+    {
+      const auto name = driver.SeqElems.at(0).second;// driver name element
+      if (hasIncidents(name, dataSet.second.incidents))
+        line.push_back(QString{ incY });
+      else
+        line.push_back(QString{ incN });
+    }// added session type and incidents values to the row
+    if (isRace)
+      for (const auto &i : driver.SeqElems) line.push_back(i.second);
+    else
+    {
+      for (const auto &i : driver.SeqElems)
+      {
+        if (i.first == "Position")
+        {
+          line.push_back("0");/// todo temp
+          line.push_back(i.second);
+        } else
+          line.push_back(i.second);
+      }
+    }
+    result.push_back(makeSCVLine(line));
+  }
+  return result;
 }
 
-bool DataSetParser::convertToCSV(const QVector<RaceLogInfo> &dataSet,
-                                 QFile &oFile) const
+QString DataSetParser::makeSCVLine(const QVector<QString> &data)
+{
+  if (data.isEmpty()) throw std::runtime_error("makeSCVLine: empty line");
+  bool firsVal = true;
+  QString result;
+  for (const auto &i : data)
+  {
+    if (firsVal)
+    {
+      result.push_back(i);
+      firsVal = false;
+    } else
+      result.push_back(',' + i);
+  }
+  return result;
+}
+
+bool DataSetParser::hasIncidents(const QString &driver,
+                                 const QVector<StringPair> &incidents)
+{
+  const auto result =
+    std::find_if(incidents.begin(), incidents.end(), [&driver](const auto &i) {
+      return i.first == driver;
+    });
+  return result != incidents.end();
+}
+
+bool DataSetParser::convertToCSV(
+  const QVector<QPair<QString, RaceLogInfo>> &dataSet,
+  QFile &oFile)
 {
   if (!oFile.open(QIODevice::WriteOnly | QIODevice::Text)) return false;
-  for (const auto &logIngo : dataSet)
+  oFile.resize(0);
+  QTextStream stream(&oFile);
+  bool first = true;
+  for (const auto &logInfo : dataSet)
   {
-    const auto rawStrings = preprocessDataSet(logIngo);
-    if (!rawStrings.isEmpty())
+    QVector<QString> rawStrings;
+    if (first)
     {
-      oFile.resize(0);
-      QTextStream stream(&oFile);
+      rawStrings = preprocessDataSet(logInfo, true);
+      first = false;
+    } else
+      rawStrings = preprocessDataSet(logInfo, false);
+    if (!rawStrings.isEmpty())
       for (const auto &line : rawStrings) stream << line << Qt::endl;
-      return true;
+    else
+    {
+      if (oFile.exists())
+      {
+        oFile.close();
+        oFile.remove();
+      }
+      return false;
     }
   }
-  if (oFile.exists()) oFile.remove();
-  return false;
+  if (oFile.isOpen()) oFile.close();
+  return true;
 }

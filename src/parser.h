@@ -4,6 +4,9 @@
 using namespace parserConsts;
 using namespace FileTypes;
 
+/// todo rework new race parsing alg
+inline const int MAX_PARSE_THREAD_COUNT = QThread::idealThreadCount() - 1;
+
 // input data for write elem finder
 struct WriteData
 {
@@ -87,7 +90,8 @@ protected:
   QVector<DriverInfo> processDrivers(QXmlStreamReader &xml,
                                      const QVector<QString> &seqData);
 
-private:
+  QVector<QPair<QString, QString>> processMainLog(QXmlStreamReader &xml);
+
   // reads through file using xml reader reference in search of given element
   // name, returns element value, if never found returns null qstring
   QString findXMLElement(QXmlStreamReader &xml,
@@ -95,8 +99,8 @@ private:
                          const QString &stopEndElem = "atEnd",
                          bool okIfDidntFind = false,
                          bool stopStartElem = false);
-  QVector<QPair<QString, QString>> processMainLog(QXmlStreamReader &xml);
 
+private:
   // constructs vector of incidents without equal pairings
   QVector<StringPair>
     processEqualCombinations(const QVector<QString> &incindents) const;
@@ -152,11 +156,20 @@ protected:
 class DataSetParser : public XmlParser
 {
 public:
+  explicit DataSetParser(QFile &file) : XmlParser(file) {}
   RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems) override;
-  bool convertToCSV(const QVector<RaceLogInfo> &dataSet, QFile &oFile) const;
+  // produces csv file with data given pairs of session type / drivers data
+  static bool convertToCSV(const QVector<QPair<QString, RaceLogInfo>> &dataSet,
+                           QFile &oFile);
 
 private:
-  QVector<QString> preprocessDataSet(const RaceLogInfo &dataSet) const;
+  // turns data elements to lines of csv's
+  static QVector<QString>
+    preprocessDataSet(const QPair<QString, RaceLogInfo> &dataSet,
+                      bool displayHeaders);
+  static QString makeSCVLine(const QVector<QString> &data);
+  static bool hasIncidents(const QString &driver,
+                           const QVector<StringPair> &incidents);
 };
 
 

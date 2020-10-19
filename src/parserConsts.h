@@ -52,6 +52,7 @@ inline QString &operator<<(QString &retString, const RaceLogInfo &log)
   for (const auto &i : log.drivers) retString << i;
   return retString;
 }
+
 [[nodiscard]] inline QString getRCDDataString(const DriverStats &data)
 {
   QString retString;
@@ -112,6 +113,14 @@ namespace seqElems {
     "FinishStatus",// values None, Finished Normally, DNF
     //"DNFReason"
   };
+  inline const QVector<QString> DataSetRElems{ "Name",
+                                               "TeamName",
+                                               "GridPos",
+                                               "Position" };
+  inline const QVector<QString> DataSetPQElems{ "Name",
+                                                "TeamName",
+                                                "Position" };
+
   inline const QVector<QString> DriversPQElements{
     "Name",// str
     "VehFile",// str
@@ -173,8 +182,8 @@ namespace FileTypes {
     Error
   };
 
-  inline QVector<QString> typeNames{ "Race", "Qualify", "Practice",
-                                     "rcd",  "HDV",     "veh" };
+  inline QVector<QString> typeNames{ "Race", "Qualify", "Practice", "rcd",
+                                     "HDV",  "veh",     "Error" };
 
   inline QString getFileTypeById(FileType type)
   {

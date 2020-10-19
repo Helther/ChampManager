@@ -35,6 +35,7 @@ struct RaceData
 //======================== DataBase interface =====================//
 // class that holds db connection object and perfoms all procedures
 // that involve db write or read
+// multitheading sync is done by blocking trough transaction mechanism
 //===========
 class DBHelper
 {
@@ -80,23 +81,28 @@ public:
 
   inline QSqlDatabase getDBConnection() { return dbConn; }
 
-  inline void transactionStart()
+  inline void transactionStartLock()
   {
+    lock();
     if (!dbConn.transaction())
       throw std::runtime_error("db transaction start error");
   }
-  inline void transactionCommit()
+  inline void transactionCommitUnlock()
   {
+    unlock();
     if (!dbConn.commit())
       throw std::runtime_error("db transaction commit error");
   }
-  inline void transactionRollback()
+  inline void transactionRollbackUnlock()
   {
+    unlock();
     if (!dbConn.rollback())
       throw std::runtime_error("db transaction rollback error");
   }
+
+  void lock() { mutex.lock(); }
+  void unlock() { mutex.unlock(); }
 #ifdef QT_DEBUG
-  ///debug
   void viewTable(const QString &tableName) const;
 #endif
 private:
@@ -108,6 +114,7 @@ private:
   // throws if there was an sql error
   void checkSqlError(const QString &msg, const QSqlError &error) const;
   //===========================data==========================//
+  QRecursiveMutex mutex;
   QSqlDatabase dbConn;
   bool wasAlreadyOpen = false;
   const QString dbDriverName = "QSQLITE";
@@ -120,5 +127,8 @@ private:
                                         DBTableNames::Sessions,
                                         DBTableNames::Incidents };
 };
+
+// global object for blocking db access
+static DBHelper dbObj;
 
 #endif// DBHELPER_H

@@ -8,6 +8,10 @@
 #include <parser.h>
 #include <dbhelper.h>
 
+static constexpr QEvent::Type GUI_NEW_RACE_SUCCESS_EVENT =
+  static_cast<QEvent::Type>(QEvent::User + 1);
+static constexpr QEvent::Type GUI_NEW_RACE_FAIL_EVENT =
+  static_cast<QEvent::Type>(QEvent::User + 2);
 //forward decl
 class UserData;
 //
@@ -18,6 +22,76 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
+  struct SessionData
+  {
+    FileType type;
+    RaceLogInfo data;
+  };
+
+  class GuiAddRaceSuccessEvent : public QEvent
+  {
+  public:
+    GuiAddRaceSuccessEvent(const SeasonData &Season)
+      : QEvent(GUI_NEW_RACE_SUCCESS_EVENT), season(Season)
+    {}
+    SeasonData season;
+  };
+
+  class GuiAddRaceFailEvent : public QEvent
+  {
+  public:
+    GuiAddRaceFailEvent(std::exception_ptr Except)
+      : QEvent(GUI_NEW_RACE_FAIL_EVENT), except(Except)
+    {}
+    std::exception_ptr except;
+  };
+
+  class NewSessionDBThread : public QThread
+  {
+  public:
+    NewSessionDBThread(MainWindow *MainW,
+                       const SeasonData &Season,
+                       const SessionData &PLog,
+                       const SessionData &QLog,
+                       const SessionData &RLog)
+      : mainW(MainW), season(Season), pLog(PLog), qLog(QLog), rLog(RLog)
+    {}
+
+  private:
+    void run() override;
+    MainWindow *mainW;
+    const SeasonData season;
+    std::exception_ptr except;
+    const SessionData pLog;
+    const SessionData qLog;
+    const SessionData rLog;
+  };
+
+  template<class Parser> class SessionParserThread : public QThread
+  {
+  public:
+    SessionParserThread(const QString &FilePath) : filePath(FilePath) {}
+    std::exception_ptr except;
+    RaceLogInfo SessionData;
+    FileType type;
+
+  private:
+    void run() override
+    {
+      try
+      {
+        auto file = QFile(filePath);
+        auto parser = Parser(file);
+        SessionData = parser.getParseData();
+        type = parser.getFileType();
+      } catch (...)
+      {
+        except = std::current_exception();
+      }
+    }
+    const QString filePath;
+  };
+
 
 public:
   explicit MainWindow(QWidget *parent = nullptr);
@@ -31,15 +105,20 @@ public:
     return userData;
   }
 signals:
-  void on_resultsChanged(const SeasonData &season);
-  void on_dbReseted();
+  void dbReseted();
+  void resultsChanged(const SeasonData &season);
 public slots:
   void on_seasonsChanged(const SeasonData);
-
+  // called when needed to add new race
+  void on_newRaceAccepted(const SeasonData &season,
+                          const QString &pFile,
+                          const QString &qFile,
+                          const QString &rFile);
 
   //============Menus & Actions===========//
 private slots:
-  // called when new race added
+
+  // called when open new race dialog
   void on_addNewRace();
   // called when season was removed
   void on_rmSeasonRes();
@@ -56,6 +135,8 @@ private:
   // creates actions for menus
   void createActions();
   void createMenus();
+  bool event(QEvent *event) override;
+
 
   UserData *userData;
   //=========== Widgets ==============//
@@ -118,6 +199,7 @@ private:
   QDialogButtonBox *buttonBox;
 };
 
+
 //======================New Race Dialog===========================//
 class NewRaceDialog : public QDialog
 {
@@ -127,7 +209,10 @@ public:
   explicit NewRaceDialog(const QVector<SeasonData> &seasons,
                          QWidget *parent = nullptr);
 signals:
-  void addedRace(const SeasonData &season);
+  void addedRace(const SeasonData &season,
+                 const QString &pFile,
+                 const QString &qFile,
+                 const QString &rFile);
 private slots:
   void on_addSeason();
   void updateSeasonsCombo(const SeasonData &season);
@@ -135,19 +220,6 @@ private slots:
 private:
   void accept() override;
   void layoutSetup();
-
-  template<class Parser>
-  int addSession(const QString &filePath, int raceId, DBHelper &db)
-  {
-    auto file = QFile(filePath);
-    auto parser = Parser(file);
-    auto SessionData = parser.getParseData();
-    int sessionId = db.addNewSession(getFileTypeById(parser.getFileType()),
-                                     raceId,
-                                     SessionData);
-    db.addNewResults(SessionData, sessionId);
-    return sessionId;
-  }
 
   //================== Widgets ===================//
   ChooseSeason *seasonW;
@@ -164,6 +236,7 @@ private:
   QPushButton *rBrowseButton;
   QDialogButtonBox *buttonBox;
 };
+
 
 //====================== Add New Season Dialog =====================//
 class AddSeason : public QDialog
@@ -182,8 +255,8 @@ private:
   QDialogButtonBox *buttonBox;
 };
 
-//===================== Browse button =========================//
 
+//===================== Browse button =========================//
 class BrowseButton : public QPushButton
 {
   Q_OBJECT
