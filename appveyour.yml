@@ -11,7 +11,7 @@ build_script:
 
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=QTDIR -G "MinGW Makefiles" .
 
-    cmake --build .
+    cmake --build . --target all
 
 #test_script:
 #- cmd: ctest -C Debug
