@@ -13,6 +13,6 @@ build_script:
 
     cmake --build . --target all
 
-#test_script:
+test_script:
 #- cmd: ctest -C Debug
 
