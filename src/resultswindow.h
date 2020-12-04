@@ -29,7 +29,6 @@ class Resultswindow : public QWidget
 
 public:
   explicit Resultswindow(QWidget *parent = nullptr);
-  ~Resultswindow();
   // called when the app is opened to prepare data views
   void init(const QVector<SeasonData> &seasons);
   // sets season combo up to date with main
@@ -68,7 +67,6 @@ private:
   [[nodiscard]] QVector<LapsComp> getLapsData();
 
   SeasonData currentSeason;
-  DBHelper *dbHandler;
   // list of db column id to hide in a table view for P,Q session
   const std::array<int, 6> resultsColumnsToHideR{ 0, 1, 3, 4, 10, 13 };
   // for R sessions

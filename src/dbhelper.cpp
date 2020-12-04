@@ -243,13 +243,8 @@ void DBHelper::initConnection()
     return;
   }
   dbConn = QSqlDatabase::addDatabase(dbDriverName, connName);
-  if (!dbConn.isValid())
-    throw std::runtime_error(
-      QString("DataBase init error: no valid driver").toStdString());
   dbConn.setDatabaseName(dbName);
-  if (!dbConn.open())
-    throw std::runtime_error(QString("DataBase init error: ").toStdString()
-                             + dbConn.lastError().text().toStdString());
+  dbConn.open();
 }
 
 int DBHelper::addNewSession(const QString &type,

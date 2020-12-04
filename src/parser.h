@@ -4,6 +4,9 @@
 using namespace parserConsts;
 using namespace FileTypes;
 
+/// todo rework new race parsing alg
+inline const int MAX_PARSE_THREAD_COUNT = QThread::idealThreadCount() - 1;
+
 // input data for write elem finder
 struct WriteData
 {
@@ -59,6 +62,7 @@ private:
   bool openFile(QFile &file, const QIODevice::OpenMode &mode);
 };
 
+
 class XmlParser : public Parser
 {
 public:
@@ -66,10 +70,7 @@ public:
   {
     return readFileContent().value<RaceLogInfo>();
   }
-  // get driver and incident log data for dataset
-  [[nodiscard]] RaceLogInfo getLogData(const QVector<QString> &Elems);
 
-  bool convertToCSV(const RaceLogInfo &dataSet, QFile &oFile) const;
 
 protected:
   explicit XmlParser(QFile &file) : Parser(file) { fileType = readFileType(); }
@@ -78,9 +79,19 @@ protected:
 
   [[nodiscard]] FileType readFileType();
 
-  [[nodiscard]] RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems);
+  [[nodiscard]] virtual RaceLogInfo
+    readXMLLog(const QVector<QString> &ListOfElems);
 
-private:
+protected:
+  // parse incident elements
+  QVector<StringPair> processIncidents(QXmlStreamReader &xml, bool driversOnly);
+
+  // parse drivers info
+  QVector<DriverInfo> processDrivers(QXmlStreamReader &xml,
+                                     const QVector<QString> &seqData);
+
+  QVector<QPair<QString, QString>> processMainLog(QXmlStreamReader &xml);
+
   // reads through file using xml reader reference in search of given element
   // name, returns element value, if never found returns null qstring
   QString findXMLElement(QXmlStreamReader &xml,
@@ -88,18 +99,12 @@ private:
                          const QString &stopEndElem = "atEnd",
                          bool okIfDidntFind = false,
                          bool stopStartElem = false);
-  QVector<QPair<QString, QString>> processMainLog(QXmlStreamReader &xml);
 
-  // parse incident elements
-  QVector<StringPair> processIncidents(QXmlStreamReader &xml, bool driversOnly);
-
+private:
   // constructs vector of incidents without equal pairings
   QVector<StringPair>
     processEqualCombinations(const QVector<QString> &incindents) const;
 
-  // parse drivers info
-  QVector<DriverInfo> processDrivers(QXmlStreamReader &xml,
-                                     const QVector<QString> &seqData);
 
   // parse driver lap times
   QPair<QString, QVector<QPair<int, double>>>
@@ -107,10 +112,10 @@ private:
 
   // creates csv string of lap times for db
   QString generateLapData(QVector<QPair<int, double>> data);
-  QVector<QString> preprocessDataSet(const RaceLogInfo &dataSet) const;
   QVector<StringPair>
     parseIncDriverName(const QVector<QString> &incindents) const;
 };
+
 
 class PXmlParser : public XmlParser
 {
@@ -122,6 +127,7 @@ public:
   }
 };
 
+
 class QXmlParser : public XmlParser
 {
 public:
@@ -131,6 +137,7 @@ public:
       throw std::runtime_error("fileType check error wrong file type");
   }
 };
+
 
 class RXmlParser : public XmlParser
 {
@@ -144,6 +151,27 @@ public:
 protected:
   QVariant readFileContent() override;
 };
+
+
+class DataSetParser : public XmlParser
+{
+public:
+  explicit DataSetParser(QFile &file) : XmlParser(file) {}
+  RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems) override;
+  // produces csv file with data given pairs of session type / drivers data
+  static bool convertToCSV(const QVector<QPair<QString, RaceLogInfo>> &dataSet,
+                           QFile &oFile);
+
+private:
+  // turns data elements to lines of csv's
+  static QVector<QString>
+    preprocessDataSet(const QPair<QString, RaceLogInfo> &dataSet,
+                      bool displayHeaders);
+  static QString makeSCVLine(const QVector<QString> &data);
+  static bool hasIncidents(const QString &driver,
+                           const QVector<StringPair> &incidents);
+};
+
 
 class ModParser : public Parser
 {
@@ -165,6 +193,7 @@ private:
     findWriteElem(WriteData &wData, const QString &elemName, const T &oVal);
 };
 
+
 class RCDParser : public ModParser
 {
 public:
@@ -183,6 +212,7 @@ public:
 private:
   DriverStats readRCD();
 };
+
 
 class VEHParser : public ModParser
 {
@@ -203,6 +233,7 @@ private:
   QVector<StringPair> readVEH();
 };
 
+
 class HDVParser : public ModParser
 {
 public:
@@ -221,6 +252,7 @@ public:
 private:
   QVector<StringPair> readHDV();
 };
+
 
 //===============================write mod file definition============
 template<typename T>

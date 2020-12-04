@@ -16,9 +16,9 @@
 #define POSITION_COL_NUM 10
 
 Resultswindow::Resultswindow(QWidget *parent)
-  : QWidget(parent), dbHandler(new DBHelper), treeView(new QTreeView),
+  : QWidget(parent), treeView(new QTreeView),
     itemModel(new QStandardItemModel(this)), tableView(new QTableView),
-    tableModel(new QSqlTableModel(this, dbHandler->getDBConnection())),
+    tableModel(new QSqlTableModel(this, dbObj.getDBConnection())),
     seasonsLabel(new QLabel("Results for season:")),
     seasonsCombo(new QComboBox), treeMenu(new QMenu), tableMenu(new QMenu)
 {
@@ -31,8 +31,6 @@ Resultswindow::Resultswindow(QWidget *parent)
           this,
           QOverload<int>::of(&Resultswindow::on_seasonChanged));
 }
-
-Resultswindow::~Resultswindow() { delete dbHandler; }
 
 void Resultswindow::init(const QVector<SeasonData> &seasons)
 {
@@ -123,8 +121,7 @@ void Resultswindow::on_delRaceAct()
       try
       {
         int raceId = currentItem->data().value<int>();
-        DBHelper db;
-        db.delEntryFromTable(DBTableNames::Races, "race_id", raceId);
+        dbObj.delEntryFromTable(DBTableNames::Races, "race_id", raceId);
         on_resultsChanged(currentSeason);
       } catch (std::exception &e)
       {
@@ -165,8 +162,7 @@ void Resultswindow::on_delAllRacesAct()
 
     try
     {
-      DBHelper db;
-      db.delSeasonRaces(currentSeason.id);
+      dbObj.delSeasonRaces(currentSeason.id);
       on_resultsChanged(currentSeason);
     } catch (std::exception &e)
     {
@@ -179,28 +175,34 @@ void Resultswindow::updateItemModel(const SeasonData &season)
 {
   Perf p("updateItemModel func");///todo temp
   if (itemModel->rowCount() != 0) itemModel->clear();
-  DBHelper db;
-  auto raceData = db.getRaceData(season.id);
-  for (int i = 0; i < raceData.size(); ++i)
+  try
   {
-    QStandardItem *root = itemModel->invisibleRootItem();
-    QStandardItem *race = new QStandardItem{ raceData.at(i).track };
-    race->setData(QVariant::fromValue(raceData.at(i).raceId));
-    root->insertRow(i,
-                    { race,
-                      new QStandardItem{ QString::number(raceData.at(i).laps) },
-                      new QStandardItem{ raceData.at(i).date } });
-    for (const auto &session : raceData.at(i).sessions)
+    auto raceData = dbObj.getRaceData(season.id);
+    for (int i = 0; i < raceData.size(); ++i)
     {
+      QStandardItem *root = itemModel->invisibleRootItem();
+      QStandardItem *race = new QStandardItem{ raceData.at(i).track };
+      race->setData(QVariant::fromValue(raceData.at(i).raceId));
+      root->insertRow(
+        i,
+        { race,
+          new QStandardItem{ QString::number(raceData.at(i).laps) },
+          new QStandardItem{ raceData.at(i).date } });
+      for (const auto &session : raceData.at(i).sessions)
+      {
 
-      QStandardItem *sess = new QStandardItem{ session.second };// set type
-      sess->setData(QVariant::fromValue(
-        QPair<int, QString>(session.first, session.second)));// set id
-      race->appendRow(sess);
+        QStandardItem *sess = new QStandardItem{ session.second };// set type
+        sess->setData(QVariant::fromValue(
+          QPair<int, QString>(session.first, session.second)));// set id
+        race->appendRow(sess);
+      }
     }
+    treeView->setModel(itemModel);
+    setItemHeaderData();
+  } catch (std::exception &e)
+  {
+    QMessageBox::critical(this, "Deletion Error: ", e.what());
   }
-  treeView->setModel(itemModel);
-  setItemHeaderData();
 }
 
 void Resultswindow::updateTableModel(int sessionId, bool isRace)

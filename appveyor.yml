@@ -4,16 +4,14 @@ clone_folder: c:\projects\cm
 
 install:
   - set QTDIR=C:\Qt\5.14.2\mingw73_64
-  - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
+  - set PATH=%QTDIR%\bin;C:\Qt\tools\mingw730_64\bin;%PATH%
 
 build_script:
 - cmd: >-
 
-    mkdir build
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=QTDIR -G "MinGW Makefiles" .
 
-    cd build
-
-    cmake --build . --config "Release"
-
-test_script:
-- cmd: ctest -C Debug
+    cmake --build . --target all
+    
+test:
+  off

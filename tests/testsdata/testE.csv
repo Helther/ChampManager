@@ -1,0 +1,61 @@
+SessionType,Incidents,Name,TeamName,GridPos,Position
+Practice,N,Sebastian Vettel,Scuderia Ferrari,0,1
+Practice,N,Kimi Raikkonen,Scuderia Ferrari,0,2
+Practice,N,Carlos Sainz,Aston Martin Red Bull Racing,0,3
+Practice,Y,Lewis Hamilton,Mercedes AMG Petronas Motorsport,0,4
+Practice,N,Valtteri Bottas,Mercedes AMG Petronas Motorsport,0,5
+Practice,Y,Fernando Alonso,McLaren F1 Team,0,6
+Practice,N,Max Verstappen,Aston Martin Red Bull Racing,0,7
+Practice,N,Lando Norris,McLaren F1 Team,0,8
+Practice,N,Daniel Ricciardo,Renault Sport F1 Team,0,9
+Practice,N,Nico Hulkenberg,Renault Sport F1 Team,0,10
+Practice,N,Kevin Magnussen,Haas F1 Team,0,11
+Practice,N,Esteban Ocon,Sahara Force India F1 Team,0,12
+Practice,Y,Player ,Alfa Romeo Sauber F1 Team,0,13
+Practice,N,JeanEric Verne,Red Bull Toro Rosso Honda,0,14
+Practice,Y,Romain Grosjean,Sahara Force India F1 Team,0,15
+Practice,Y,Pascal Werhlein,Red Bull Toro Rosso Honda,0,16
+Practice,N,Charles Leclerc,Alfa Romeo Sauber F1 Team,0,17
+Practice,Y,Robert Kubica,Williams Martini Racing,0,18
+Practice,N,Sergio Perez,Haas F1 Team,0,19
+Practice,Y,Lance Stroll,Williams Martini Racing,0,20
+Qualify,N,Sebastian Vettel,Scuderia Ferrari,0,1
+Qualify,N,Max Verstappen,Aston Martin Red Bull Racing,0,2
+Qualify,N,Kimi Raikkonen,Scuderia Ferrari,0,3
+Qualify,N,Carlos Sainz,Aston Martin Red Bull Racing,0,4
+Qualify,N,Valtteri Bottas,Mercedes AMG Petronas Motorsport,0,5
+Qualify,N,Lewis Hamilton,Mercedes AMG Petronas Motorsport,0,6
+Qualify,N,Fernando Alonso,McLaren F1 Team,0,7
+Qualify,N,Daniel Ricciardo,Renault Sport F1 Team,0,8
+Qualify,N,Nico Hulkenberg,Renault Sport F1 Team,0,9
+Qualify,N,Esteban Ocon,Sahara Force India F1 Team,0,10
+Qualify,N,Romain Grosjean,Sahara Force India F1 Team,0,11
+Qualify,N,Sergio Perez,Haas F1 Team,0,12
+Qualify,N,Lando Norris,McLaren F1 Team,0,13
+Qualify,N,Kevin Magnussen,Haas F1 Team,0,14
+Qualify,N,Pascal Werhlein,Red Bull Toro Rosso Honda,0,15
+Qualify,N,Robert Kubica,Williams Martini Racing,0,16
+Qualify,N,JeanEric Verne,Red Bull Toro Rosso Honda,0,17
+Qualify,N,Lance Stroll,Williams Martini Racing,0,18
+Qualify,N,Charles Leclerc,Alfa Romeo Sauber F1 Team,0,19
+Qualify,N,Player ,Alfa Romeo Sauber F1 Team,0,20
+Race,N,Kimi Raikkonen,Scuderia Ferrari,3,1
+Race,N,Valtteri Bottas,Mercedes AMG Petronas Motorsport,5,2
+Race,Y,Carlos Sainz,Aston Martin Red Bull Racing,4,3
+Race,N,Max Verstappen,Aston Martin Red Bull Racing,2,8
+Race,N,Sebastian Vettel,Scuderia Ferrari,1,9
+Race,Y,Lewis Hamilton,Mercedes AMG Petronas Motorsport,6,13
+Race,Y,Fernando Alonso,McLaren F1 Team,7,4
+Race,Y,Nico Hulkenberg,Renault Sport F1 Team,9,14
+Race,Y,Kevin Magnussen,Haas F1 Team,14,7
+Race,N,Daniel Ricciardo,Renault Sport F1 Team,8,5
+Race,N,Romain Grosjean,Sahara Force India F1 Team,11,6
+Race,N,Lando Norris,McLaren F1 Team,13,16
+Race,N,Esteban Ocon,Sahara Force India F1 Team,10,15
+Race,N,Charles Leclerc,Alfa Romeo Sauber F1 Team,19,11
+Race,N,Robert Kubica,Williams Martini Racing,16,19
+Race,N,Pascal Werhlein,Red Bull Toro Rosso Honda,15,10
+Race,Y,JeanEric Verne,Red Bull Toro Rosso Honda,17,18
+Race,Y,Player ,Alfa Romeo Sauber F1 Team,20,17
+Race,N,Lance Stroll,Williams Martini Racing,18,12
+Race,Y,Sergio Perez,Haas F1 Team,12,20

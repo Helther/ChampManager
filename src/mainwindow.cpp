@@ -42,13 +42,10 @@ MainWindow::MainWindow(QWidget *parent)
   setWindowIcon(QIcon(APP_ICON));
 
   connect(this,
-          &MainWindow::on_resultsChanged,
+          &MainWindow::resultsChanged,
           resultsW,
           &Resultswindow::on_resultsChanged);
-  connect(this,
-          &MainWindow::on_dbReseted,
-          resultsW,
-          &Resultswindow::on_dbReset);
+  connect(this, &MainWindow::dbReseted, resultsW, &Resultswindow::on_dbReset);
 }
 
 MainWindow::~MainWindow()
@@ -60,6 +57,44 @@ MainWindow::~MainWindow()
 void MainWindow::on_seasonsChanged(const SeasonData)
 {
   resultsW->updateSeasons(getUserData()->getSeasons(), false);
+}
+
+void MainWindow::on_newRaceAccepted(const SeasonData &season,
+                                    const QString &pFile,
+                                    const QString &qFile,
+                                    const QString &rFile)
+{
+  try
+  {
+    Perf perf("add new race parse logs");///todo temp
+    SessionParserThread<PXmlParser> pParser(pFile);
+    SessionParserThread<QXmlParser> qParser(qFile);
+    SessionParserThread<RXmlParser> rParser(rFile);
+    pParser.start();
+    qParser.start();
+    rParser.start();
+    pParser.wait();
+    qParser.wait();
+    rParser.wait();
+    /// todo take into account ideal thread count
+    std::array<std::exception_ptr, 3> excepts{ pParser.except,
+                                               qParser.except,
+                                               rParser.except };
+    for (const auto &e : excepts)
+    {
+      if (e) std::rethrow_exception(e);
+    }
+    auto *addToDBThread = new NewSessionDBThread(
+      this,
+      season,
+      /*SessionData*/ { pParser.type, pParser.SessionData },
+      { qParser.type, qParser.SessionData },
+      { rParser.type, rParser.SessionData });
+    addToDBThread->start();
+  } catch (std::exception &e)
+  {
+    QMessageBox::critical(this, "Add Results Error", e.what());
+  }
 }
 
 
@@ -114,7 +149,7 @@ void MainWindow::resetBdData()
     {
       userData->init(true);// reset user data
       resultsW->init(getUserData()->getSeasons());
-      emit on_dbReseted();
+      emit dbReseted();
     } catch (std::exception &e)
     {
       QMessageBox::critical(this, "Reset Data Error: ", e.what());
@@ -170,6 +205,25 @@ void MainWindow::createMenus()
   helpMenu->addAction(licenseAct);
   helpMenu->addAction(aboutAct);
 }
+
+bool MainWindow::event(QEvent *event)
+{
+	switch (static_cast<int>(event->type()))
+  {
+  case GUI_NEW_RACE_SUCCESS_EVENT: {
+    qDebug() << "new race success";/// todo
+    emit resultsChanged(static_cast<GuiAddRaceSuccessEvent *>(event)->season);
+    return true;
+  }
+  case GUI_NEW_RACE_FAIL_EVENT: {
+    qDebug() << "new race fail";///todo
+    return true;
+  }
+  default:
+    return QMainWindow::event(event);
+  }
+}
+
 //==========================NewRace=================================//
 NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
                              QWidget *parent)
@@ -201,7 +255,7 @@ NewRaceDialog::NewRaceDialog(const QVector<SeasonData> &seasons,
   connect(this,
           &NewRaceDialog::addedRace,
           static_cast<MainWindow *>(parent),
-          &MainWindow::on_resultsChanged);
+          &MainWindow::on_newRaceAccepted);
 
   layoutSetup();
 }
@@ -225,24 +279,16 @@ void NewRaceDialog::updateSeasonsCombo(const SeasonData &season)
 
 void NewRaceDialog::accept()
 {
-  DBHelper db;///todo may throw
-  try
+  if (pFilePath->text().isEmpty() || qFilePath->text().isEmpty()
+      || rFilePath->text().isEmpty())
+    QMessageBox::warning(this, "Error", "Wrong file path");
+  else
   {
-    Perf perf("add new race func");///todo temp
-    int seasonId = seasonW->getSeasonData().id;
-    db.transactionStart();//------------ transact start
-    int raceId = db.addNewRace(seasonId);
-    int pSessionId = addSession<PXmlParser>(pFilePath->text(), raceId, db);
-    int qSessionId = addSession<QXmlParser>(qFilePath->text(), raceId, db);
-    int rSessionId = addSession<RXmlParser>(rFilePath->text(), raceId, db);
-    db.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
-    db.transactionCommit();//------------ transact commit
+    emit addedRace(seasonW->getSeasonData(),
+                   pFilePath->text(),
+                   qFilePath->text(),
+                   rFilePath->text());
     QDialog::accept();
-    emit addedRace(seasonW->getSeasonData());
-  } catch (std::exception &e)
-  {
-    db.transactionRollback();
-    QMessageBox::critical(this, "Add Results Error", e.what());
   }
 }
 
@@ -297,8 +343,9 @@ void RmSeasonResDialog::acceptedSg()
     if (seasonW->getSeasons().size() <= 1)
       throw std::runtime_error("can't delete the only season");
     auto currSeason = seasonW->getSeasonData();
-    DBHelper db;
-    db.delSeasonData(currSeason.id);
+    dbObj.lock();
+    dbObj.delSeasonData(currSeason.id);
+    dbObj.unlock();
     QDialog::accept();
     emit removed(currSeason);
   } catch (std::exception &e)
@@ -361,8 +408,9 @@ void AddSeason::accept()
         == seasons.end()
       && name.size() > 0)
   {
-    auto newSeason =
-      static_cast<MainWindow *>(p->parent())->getUserData()->addSeason(name);
+    auto newSeason = static_cast<MainWindow *>(p->parent())
+                       ->getUserData()
+                       ->addSeason(name);///add try
     QDialog::accept();
     emit addedSeason(newSeason);
     return;
@@ -390,5 +438,36 @@ void BrowseButton::chooseFile()
     if (pathLinePtr == nullptr)
       throw std::runtime_error("Browse bad path line obj");
     pathLinePtr->setText(fileName);
+  }
+}
+
+void MainWindow::NewSessionDBThread::run()
+{
+  try
+  {
+    Perf perf("add new race db proccess");///todo temp
+    const int seasonId = season.id;
+    dbObj.transactionStartLock();//------------ transact lock start
+    int raceId = dbObj.addNewRace(seasonId);
+
+    int pSessionId =
+      dbObj.addNewSession(getFileTypeById(pLog.type), raceId, pLog.data);
+    dbObj.addNewResults(pLog.data, pSessionId);
+    int qSessionId =
+      dbObj.addNewSession(getFileTypeById(qLog.type), raceId, qLog.data);
+    dbObj.addNewResults(qLog.data, qSessionId);
+    int rSessionId =
+      dbObj.addNewSession(getFileTypeById(rLog.type), raceId, rLog.data);
+    dbObj.addNewResults(rLog.data, rSessionId);
+
+    dbObj.checkSessionsValidity({ pSessionId, qSessionId, rSessionId });
+    dbObj.transactionCommitUnlock();//------------ transact unlock commit
+    QApplication::postEvent(mainW, new GuiAddRaceSuccessEvent(season));
+    deleteLater();
+  } catch (std::exception &e)
+  {
+    dbObj.transactionRollbackUnlock();//---------- transact unlock rollback
+    deleteLater();
+    QApplication::postEvent(mainW, new GuiAddRaceFailEvent(except));
   }
 }
