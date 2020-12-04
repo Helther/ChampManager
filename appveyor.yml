@@ -13,5 +13,5 @@ build_script:
 
     cmake --build . --target all
     
-test_script:
-   cmd: >- echo dummy test
+test:
+  off
