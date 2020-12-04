@@ -1,0 +1,18 @@
+image:
+  - Visual Studio 2019
+clone_folder: c:\projects\cm
+
+install:
+  - set QTDIR=C:\Qt\5.14.2\mingw73_64
+  - set PATH=%QTDIR%\bin;C:\Qt\tools\mingw730_64\bin;%PATH%
+
+build_script:
+- cmd: >-
+
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=QTDIR -G "MinGW Makefiles" .
+
+    cmake --build .
+
+#test_script:
+#- cmd: ctest -C Debug
+

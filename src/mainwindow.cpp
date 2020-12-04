@@ -208,7 +208,7 @@ void MainWindow::createMenus()
 
 bool MainWindow::event(QEvent *event)
 {
-  switch (event->type())
+	switch (static_cast<int>(event->type()))
   {
   case GUI_NEW_RACE_SUCCESS_EVENT: {
     qDebug() << "new race success";/// todo
