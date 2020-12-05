@@ -48,5 +48,5 @@ if(ENABLE_TESTING)
     "Building Tests."
   )
   add_subdirectory(tests)
-		add_test(ParserTest tests/test_parser 1)
+  add_test(ParserTest tests/test_parser 1)
 endif()

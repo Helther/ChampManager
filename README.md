@@ -1,6 +1,7 @@
 # Champoinship Manager
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kvvutrl02yk93396/branch/master?svg=true)](https://ci.appveyor.com/project/Helther/champmanager/branch/master)
+[![Build Status](https://travis-ci.org/Helther/ChampManager.svg?branch=master)](https://travis-ci.org/Helther/ChampManager)
 
 <img align=right src="rsc/better_icon.png" width='128' alt='Icon'>
 
@@ -46,8 +47,8 @@ The following compilers should work:
 Target platforms are Windows and Linux. You can build main target via CMake
 From build directory:
 ```
-	$ cmake -DCMAKE_BUILD_TYPE=%TypeName% -DCMAKE_PREFIX_PATH=%QTDIR% -G "%Generator name%" .
-	$ cmake --build . --target ChampManager 
+ $ cmake -DCMAKE_BUILD_TYPE=%TypeName% -DCMAKE_PREFIX_PATH=%QTDIR% -G "%Generator name%" .
+ $ cmake --build . --target ChampManager
 ```
 Specifying for example either "MinGW Makefiles" for Windows or "Unix Makefiles" for Linux with Qt installation directory, and a desired build type. 
 Or use qmake with .pro file, but to run the tests you need to CMake
@@ -57,7 +58,7 @@ For testing was used CMake's ctest [ctest docs](https://cmake.org/cmake/help/lat
 ### Building the tests
 ctests are build via CMake by specifying test target.
 ```
-	$ cmake --build . --target test_parser
+ $ cmake --build . --target test_parser
 ```
 
 ### Running the tests

@@ -1,0 +1,47 @@
+language: cpp
+os: linux
+compiler: gcc
+sudo: required
+dist: bionic
+
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - g++-7
+      - gcc-7
+      - clang++-6.0
+      - clang-6.0
+
+before_install:
+  # repo for Qt
+  - sudo apt-add-repository --yes ppa:beineri/opt-qt-5.14.2-bionic
+  - sudo apt-get -qq update
+
+install:
+  # install Qt and it's dependencies
+  - sudo apt-get --yes install qt514base
+  - sudo apt-get --yes install mesa-common-dev libglu1-mesa-dev
+
+before_script:
+  # Qt variables
+  - QTDIR="/opt/qt514"
+  - PATH="$QTDIR/bin:$PATH"
+  - source /opt/qt514/bin/qt514-env.sh
+
+  # Check versions of gcc, g++, clang, clang++ and cmake
+  - gcc -v && g++ -v && clang-6.0 --version && clang++-6.0 --version && cmake --version
+
+script:
+  # cmake build of the project
+  - mkdir gcc_build
+  - cd ./gcc_build
+  - cmake -DCMAKE_C_COMPILER=gcc-7 -DCMAKE_CXX_COMPILER=g++-7 -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/opt/qt514/lib/cmake -G "Unix Makefiles" ..
+  - cmake --build .
+  - cd ..
+  - mkdir clang_build
+  - cd ./clang_build
+  - cmake -DCMAKE_C_COMPILER=clang-6.0 -DCMAKE_CXX_COMPILER=clang++-6.0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/opt/qt514/lib/cmake -G "Unix Makefiles" ..
+  - cmake --build .
+  
