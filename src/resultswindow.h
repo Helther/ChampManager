@@ -4,14 +4,8 @@
 #include <QWidget>
 #include <appdata.h>
 #include <QAbstractTableModel>
+#include <lapscomparewidget.h>
 
-// used to initialize a model for viewing lap comparisons
-struct LapsComp
-{
-  QString driver;
-  QString laps;
-  QString bestLap;
-};
 
 //forward decl
 class QTreeView;
@@ -57,7 +51,6 @@ private:
   void viewWidgetsSetup();
   void setItemHeaderData();
   void createContextMenus();
-  [[nodiscard]] QWidget *buildLapsView(const QVector<LapsComp> &lapsData);
   //=
   // builds up tree item model with race list
   void updateItemModel(const SeasonData &season);
@@ -82,40 +75,6 @@ private:
   //================== Context Menus ===================//
   QMenu *treeMenu;
   QMenu *tableMenu;
-};
-
-class LapsCompModel : public QAbstractTableModel
-{
-  Q_OBJECT
-
-public:
-  LapsCompModel(const LapsComp &lapsData, QObject *parent = nullptr);
-  inline int rowCount(const QModelIndex & /*parent*/) const override
-  {
-    return rows;
-  }
-  inline int columnCount(const QModelIndex & /*parent*/) const override
-  {
-    return columns;
-  }
-  QVariant data(const QModelIndex &index,
-                int role = Qt::DisplayRole) const override;
-  QVariant headerData(int section,
-                      Qt::Orientation orientation,
-                      int role) const override;
-
-private:
-  QStringList parseLaps(const QString &lapsString);
-  // returns -1 if there was no bestlap
-  int getBLapRow() const;
-  // convets time string from x.xxx to x:xx.xxx
-  QString convertToLapTime(const QString &lapTime) const;
-
-  const QStringList lapTimes;
-  const QString bestLap;
-  const int rows;
-  const int columns;
-  const int bLapRow;
 };
 
 #endif// RESULTSWINDOW_H

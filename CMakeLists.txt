@@ -32,9 +32,17 @@ set(SOURCES src/main.cpp
     src/resultswindow.cpp
     src/mainwindow.cpp
     src/appdata.cpp
+    src/lapscomparewidget.cpp
     src/mainwindow.ui
     rsc/cm.qrc)
-add_executable(${project_name} ${SOURCES} )
+set(HEADERS src/parser.h
+      src/parserConsts.h
+      src/dbhelper.h
+      src/resultswindow.h
+      src/mainwindow.h
+      src/appdata.h
+      src/lapscomparewidget.h)
+add_executable(${project_name} ${SOURCES} ${HEADERS})
 target_link_libraries(${project_name} PRIVATE project_options project_warnings Qt5::Core Qt5::Widgets Qt5::Sql)
 
 option(ENABLE_TESTING "Enable Test Builds" ON)
