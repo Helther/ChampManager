@@ -134,14 +134,13 @@ void Resultswindow::on_delRaceAct()
 void Resultswindow::on_compareLapsAct()
 {
   Perf p("compare laps");///todo temp
-  QWidget *lapsW = nullptr;
+  LapsCompareWidget *lapsW = nullptr;
   try
   {
-    lapsW = buildLapsView(getLapsData());
-    if (lapsW != nullptr) lapsW->show();
+    lapsW = new LapsCompareWidget(getLapsData());
+    lapsW->show();
   } catch (std::exception &e)
   {
-    if (lapsW != nullptr) delete lapsW;
     QMessageBox::critical(this,
                           "Error",
                           QString("Can't show comparison: ") + e.what());
@@ -274,45 +273,6 @@ void Resultswindow::createContextMenus()
                        &Resultswindow::on_clearTableSelect);
 }
 
-QWidget *Resultswindow::buildLapsView(const QVector<LapsComp> &lapsData)
-{
-  QWidget *lapsW = new QWidget;
-  lapsW->setAttribute(Qt::WA_DeleteOnClose);
-  lapsW->setWindowTitle("Lap Times Compare");
-  int rowCounter = 0;
-  int currentRow = 0;
-  int maxRowElemCount = MAX_LAPSCOMPARE_ROW_SIZE;
-  if (lapsData.isEmpty()) return nullptr;
-  QGridLayout *lapsLayout = new QGridLayout;
-  for (const auto &i : lapsData)
-  {
-    LapsCompModel *lapsModel = new LapsCompModel(i);
-    QTableView *lapsView = new QTableView;
-    lapsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    lapsView->setAlternatingRowColors(true);
-    lapsView->setModel(lapsModel);
-    lapsView->resizeColumnsToContents();
-    lapsView->resizeRowsToContents();
-    QGroupBox *lapsGroup = new QGroupBox;
-    QGridLayout *lapsGrid = new QGridLayout;
-    QLabel *lbl = new QLabel("Driver: " + i.driver);
-    lbl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    lapsGrid->addWidget(lbl, 0, 0);
-    lapsGrid->addWidget(lapsView, 1, 0, 3, 1);
-    lapsGroup->setLayout(lapsGrid);
-    lapsLayout->addWidget(lapsGroup, currentRow, rowCounter);
-    rowCounter++;
-    if (rowCounter > maxRowElemCount)
-    {
-      currentRow++;
-      rowCounter = 0;
-    }
-  }
-  lapsW->setLayout(lapsLayout);
-  return lapsW;
-}
-
-
 void Resultswindow::layoutSetup()
 {
   QGridLayout *mainLayout = new QGridLayout;
@@ -358,91 +318,4 @@ void Resultswindow::viewWidgetsSetup()
           &QTableView::customContextMenuRequested,
           this,
           &Resultswindow::on_tableViewContextMenu);
-}
-
-LapsCompModel::LapsCompModel(const LapsComp &lapsData, QObject *parent)
-  : QAbstractTableModel(parent), lapTimes(parseLaps(lapsData.laps)),
-    bestLap(lapsData.bestLap), rows(lapTimes.size()), columns(2),
-    bLapRow(getBLapRow())
-{}
-
-QVariant LapsCompModel::data(const QModelIndex &index, int role) const
-{
-  int row = index.row();
-  int col = index.column();
-  for (int i = 0; i < lapTimes.size(); ++i)
-  {
-    switch (role)
-    {
-    case Qt::DisplayRole:
-      if (row == i && col == 0) return QString(QString::number(i + 1));
-      if (row == i && col == 1) return convertToLapTime(lapTimes.at(i));
-      break;
-    case Qt::FontRole:
-      if (bLapRow != -1 && row == bLapRow && col == 1)
-      {//change font only for bestlap
-        QFont boldFont;
-        boldFont.setBold(true);
-        boldFont.setItalic(true);
-        boldFont.setUnderline(true);
-        return boldFont;
-      }
-      break;
-    default:
-      break;
-    }
-  }
-  return QVariant();
-}
-
-QVariant LapsCompModel::headerData(int section,
-                                   Qt::Orientation orientation,
-                                   int role) const
-{
-  if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-  {
-    switch (section)
-    {
-    case 0:
-      return QString("№");
-    case 1:
-      return QString("time in sec");
-    }
-  }
-  return QVariant();
-}
-
-QStringList LapsCompModel::parseLaps(const QString &lapsString)
-{
-  if (lapsString.isEmpty()) return QStringList();
-  return lapsString.split(", ");
-}
-
-int LapsCompModel::getBLapRow() const
-{
-  if (qFuzzyCompare(bestLap.toDouble(), 0)) return -1;
-  for (int i = 0; i < lapTimes.size(); ++i)
-    if (abs(bestLap.toDouble() - lapTimes.at(i).toDouble()) < 0.002) return i;
-  // not good but works with given values ranges and adjusts for rounding issue
-  //in the log files
-  throw std::runtime_error("lapsCompModel: cant match best lap");
-}
-
-QString LapsCompModel::convertToLapTime(const QString &lapTime) const
-{
-  auto sections = lapTime.split('.');
-  QString result;
-  for (int i = 0; i < sections.size(); ++i)
-  {
-    if (i == 0)
-    {
-      int minutes = static_cast<int>(sections[0].toFloat() / 60.f);
-      int seconds = static_cast<int>(fmodf(sections[0].toFloat(), 60.f));
-      result.append(QString::number(minutes) + ':' + QString::number(seconds));
-    }
-    if (i == 1) result.append("." + sections[1]);
-  }
-  if (result == "0:0")// case for invalid lap time
-    return "-:----";
-  return result;
 }
