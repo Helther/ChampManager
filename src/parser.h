@@ -4,7 +4,6 @@
 using namespace parserConsts;
 using namespace FileTypes;
 
-/// todo rework new race parsing alg
 inline const int MAX_PARSE_THREAD_COUNT = QThread::idealThreadCount() - 1;
 
 // input data for write elem finder

@@ -78,7 +78,7 @@ bool Parser::restoreFile(const QString &filePath,
   if (bFile.open(QIODevice::ReadOnly) && file.open(QIODevice::WriteOnly)
       && file.write(bFile.readAll()) != -1)
   {
-    qDebug() << "restor Backup err: File " << file.fileName()
+    qDebug() << "restore Backup: File " << file.fileName()
              << " restored succesfully\n";
     // delete backup
     if (bFile.exists()) bFile.remove();

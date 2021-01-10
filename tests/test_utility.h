@@ -18,6 +18,11 @@ void ASSERT_EQUAL(const QString &testName, const T &lhs, const T &rhs)
                              + rhsString.toStdString());
 }
 
+void ASSERT_FAIL(const QString &msg)
+{
+  throw std::runtime_error("assertion failed: " + msg.toStdString());
+}
+
 void TEST_BEGIN(const QString &name)
 {
   qDebug() << "------------------- Running Test " << name << " ---------------";

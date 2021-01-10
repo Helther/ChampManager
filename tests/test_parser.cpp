@@ -87,20 +87,59 @@ void testDataSetParser()
 
 void testXMLParser() { testXMLFileRead(); }
 
+void testFileBackupRestore()
+{
+  TEST_BEGIN("Parser backup/restore test");
+  const QString testFilePath = TESTDATA_PATH + testFiles[0];
+  const QString backupFilePath = TESTDATA_PATH + QString("backup.xml");
+  QFile testFile(testFilePath);
+  QFile backupFile(backupFilePath);
+  // setup backupfile
+  testFile.open(QIODevice::ReadOnly);
+  backupFile.open(QIODevice::WriteOnly);
+  backupFile.write(testFile.readAll());
+  backupFile.close();
+  testFile.close();
+
+  const auto result = Parser::backupFile(backupFilePath, TESTDATA_PATH);
+  if (!result.result)
+  {
+    backupFile.remove();
+    ASSERT_FAIL("Backup failed");
+  }
+  auto newBackupFile = QFile(result.fileFullPath);
+  // change original file contents
+  backupFile.open(QIODevice::ReadWrite);
+  const QString original = backupFile.readAll();
+  backupFile.resize(0);
+  backupFile.write("test");
+  backupFile.close();
+
+  if (!Parser::restoreFile(backupFilePath, result.fileFullPath))
+  {
+    backupFile.remove();
+    newBackupFile.remove();
+    ASSERT_FAIL("Restore failed");
+  }
+  backupFile.open(QIODevice::ReadOnly);
+  const QString restored = backupFile.readAll();
+  backupFile.close();
+  newBackupFile.remove();
+  backupFile.remove();
+  ASSERT_EQUAL("File content compare", original, restored);
+
+  TEST_END();
+}
 
 int main()
 {
   testXMLParser();
   testDataSetParser();
+  testFileBackupRestore();
   return 0;
 }
 
 /*
-/// backup restore test
- Parser::backupFile(currentPath + "P.xml", currentPath);
- Parser::restoreFile(currentPath + "testF.rcd", currentPath +
-"testB.rcd");
-
 /// write file test
 
 QFile writefile(currentPath + "writeTest.rcd");

@@ -67,16 +67,27 @@ void MainWindow::on_newRaceAccepted(const SeasonData &season,
   try
   {
     Perf perf("add new race parse logs");///todo temp
+
     SessionParserThread<PXmlParser> pParser(pFile);
     SessionParserThread<QXmlParser> qParser(qFile);
     SessionParserThread<RXmlParser> rParser(rFile);
-    pParser.start();
-    qParser.start();
-    rParser.start();
-    pParser.wait();
-    qParser.wait();
-    rParser.wait();
-    /// todo take into account ideal thread count
+    if (MAX_PARSE_THREAD_COUNT >= 3)
+    {
+      pParser.start();
+      qParser.start();
+      rParser.start();
+      pParser.wait();
+      qParser.wait();
+      rParser.wait();
+    } else
+    {
+      pParser.start();
+      pParser.wait();
+      qParser.start();
+      qParser.wait();
+      rParser.start();
+      rParser.wait();
+    }
     std::array<std::exception_ptr, 3> excepts{ pParser.except,
                                                qParser.except,
                                                rParser.except };
@@ -208,15 +219,14 @@ void MainWindow::createMenus()
 
 bool MainWindow::event(QEvent *event)
 {
-	switch (static_cast<int>(event->type()))
+  switch (static_cast<int>(event->type()))
   {
   case GUI_NEW_RACE_SUCCESS_EVENT: {
-    qDebug() << "new race success";/// todo
     emit resultsChanged(static_cast<GuiAddRaceSuccessEvent *>(event)->season);
     return true;
   }
   case GUI_NEW_RACE_FAIL_EVENT: {
-    qDebug() << "new race fail";///todo
+    QMessageBox::warning(this, "Error", "Failed to add race result");
     return true;
   }
   default:
