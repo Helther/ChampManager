@@ -1,4 +1,6 @@
-# Champoinship Manager
+# Championship Manager
+
+# Project is currently on hold for an unforeseeable future
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kvvutrl02yk93396/branch/master?svg=true)](https://ci.appveyor.com/project/Helther/champmanager/branch/master)
 [![Build Status](https://travis-ci.org/Helther/ChampManager.svg?branch=master)](https://travis-ci.org/Helther/ChampManager)
@@ -19,7 +21,7 @@ The list of included features so far:
  * inspecting detailed info of a selected race session via details view
  * all actions are syncronized with the database
 ## Usage
-The app consists of tabs, of which only results tab available for now. 
+
 Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
 
 ![select sessions](rsc/preview1.gif)
