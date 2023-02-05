@@ -1,5 +1,4 @@
-#ifndef LAPSCOMPAREWIDGET_H
-#define LAPSCOMPAREWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QTableWidget>
@@ -32,4 +31,3 @@ private:
 
 };
 
-#endif// LAPSCOMPAREWIDGET_h

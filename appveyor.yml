@@ -3,15 +3,19 @@ image:
 clone_folder: c:\projects\cm
 
 install:
-  - set QTDIR=C:\Qt\5.14.2\mingw73_64
-  - set PATH=%QTDIR%\bin;C:\Qt\tools\mingw730_64\bin;%PATH%
+  - set QTDIR=C:\Qt\5.15.2\mingw81_64
+  - set PATH=%QTDIR%\bin;C:\Qt\tools\mingw810_64\bin;%PATH%
 
 build_script:
 - cmd: >-
 
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=QTDIR -G "MinGW Makefiles" .
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QTDIR%\lib\cmake\Qt5 -G "MinGW Makefiles" .
 
     cmake --build . --target all
-    
-test:
-  off
+
+test_script:
+  - cmd: ctest -C Release -VV --output-on-failure --output-junit parserTest_res.xml
+  
+after_test:
+  - ps: $wc = New-Object 'System.Net.WebClient'
+  - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\parserTest_res.xml))
