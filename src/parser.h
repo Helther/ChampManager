@@ -1,6 +1,8 @@
-#ifndef parser_H
-#define parser_H
+#pragma once
+
 #include <parserConsts.h>
+
+
 using namespace parserConsts;
 using namespace FileTypes;
 
@@ -36,8 +38,7 @@ public:
   // deletes backup and empy file path if not successful
   static BackupData backupFile(const QString &filePath,
                                const QString &backupPath) noexcept;
-  static bool restoreFile(const QString &filePath,
-                          const QString &backupPath) noexcept;
+  static bool restoreFile(const QString &filePath, const QString &backupPath) noexcept;
 
 
   //=============================getters===========================/
@@ -78,8 +79,7 @@ protected:
 
   [[nodiscard]] FileType readFileType();
 
-  [[nodiscard]] virtual RaceLogInfo
-    readXMLLog(const QVector<QString> &ListOfElems);
+  [[nodiscard]] virtual RaceLogInfo readXMLLog(const QVector<QString> &ListOfElems);
 
 protected:
   // parse incident elements
@@ -101,18 +101,15 @@ protected:
 
 private:
   // constructs vector of incidents without equal pairings
-  QVector<StringPair>
-    processEqualCombinations(const QVector<QString> &incindents) const;
+  QVector<StringPair> processEqualCombinations(const QVector<QString> &incindents) const;
 
 
   // parse driver lap times
-  QPair<QString, QVector<QPair<int, double>>>
-    processDriverLaps(QXmlStreamReader &xml);
+  QPair<QString, QVector<QPair<int, double>>> processDriverLaps(QXmlStreamReader &xml);
 
   // creates csv string of lap times for db
   QString generateLapData(QVector<QPair<int, double>> data);
-  QVector<StringPair>
-    parseIncDriverName(const QVector<QString> &incindents) const;
+  QVector<StringPair> parseIncDriverName(const QVector<QString> &incindents) const;
 };
 
 
@@ -163,12 +160,10 @@ public:
 
 private:
   // turns data elements to lines of csv's
-  static QVector<QString>
-    preprocessDataSet(const QPair<QString, RaceLogInfo> &dataSet,
-                      bool displayHeaders);
+  static QVector<QString> preprocessDataSet(const QPair<QString, RaceLogInfo> &dataSet,
+                                            bool displayHeaders);
   static QString makeSCVLine(const QVector<QString> &data);
-  static bool hasIncidents(const QString &driver,
-                           const QVector<StringPair> &incidents);
+  static bool hasIncidents(const QString &driver, const QVector<StringPair> &incidents);
 };
 
 
@@ -177,15 +172,17 @@ class ModParser : public Parser
 public:
   explicit ModParser(QFile &file) : Parser(file) { fileType = readFileType(); }
 
+  // returns true if write was successfull
+  virtual bool writeChanges() = 0;
+  static void delJunkInLine(QString &line, bool delWhiteSpace);
 
-  // looks for values into specific element names given names/values list
-  template<typename T>
-  bool updateModFileData(const QVector<WriteDataInput<T>> &input);
-
-private:
+protected:
   [[nodiscard]] FileType readFileType();
   // writes resulting changes to a file
   bool doWriteModFile(const QString &data);
+  // looks for and updates values with specific element names given names/values list
+  // returns true if write was successfull
+  template<typename T> bool updateModFileData(const QVector<WriteDataInput<T>> &input);
   // looks for element with a given name and value, returns true if successful
   template<typename T>
   [[nodiscard]] bool
@@ -200,16 +197,25 @@ public:
   {
     if (fileType != FileType::RCD)
       throw std::runtime_error("fileType check error wrong file type");
+    data = RCDParser::readFileContent().value<DriverStats>();
   }
-  QVariant readFileContent() override;
-
-  [[nodiscard]] DriverStats getParseData()
-  {
-    return readFileContent().value<DriverStats>();
-  }
+  // rewrites whole file with new data
+  bool writeChanges() override;
+  [[nodiscard]] DriverStats getParseData() { return data; }
+  [[nodiscard]] QString getVehClassName() const { return vehClassName; }
+  // modify and add driver info
+  // if new entry name then add it
+  void addDriver(const QString &name);
+  void modifyEntry(const QString &name, RCDEntries entry, double newVal);
+  void removeEntry(const QString &name);
 
 private:
-  DriverStats readRCD();
+  QVariant readFileContent() override;
+  const QString ignoreEntry = "default";
+  const double minValue = 0.;
+  const double maxValue = 100.;
+  DriverStats data;
+  QString vehClassName;
 };
 
 
@@ -220,16 +226,19 @@ public:
   {
     if (fileType != FileType::VEH)
       throw std::runtime_error("fileType check error wrong file type");
+    originalData = currentData =
+      VEHParser::readFileContent().value<QVector<StringPair>>();
   }
-  QVariant readFileContent() override;
 
-  [[nodiscard]] QVector<StringPair> getParseData()
-  {
-    return readFileContent().value<QVector<StringPair>>();
-  }
+  void modifyDriverName(const QString &newVal);
+  // replaces lines with new values
+  bool writeChanges() override;
+  [[nodiscard]] QVector<StringPair> getParseData() { return currentData; }
 
 private:
-  QVector<StringPair> readVEH();
+  QVariant readFileContent() override;
+  QVector<StringPair> originalData;
+  QVector<StringPair> currentData;
 };
 
 
@@ -240,16 +249,71 @@ public:
   {
     if (fileType != FileType::HDV)
       throw std::runtime_error("fileType check error wrong file type");
+    data = HDVParser::readFileContent().value<HDVParams>();
   }
-  QVariant readFileContent() override;
-
-  [[nodiscard]] QVector<StringPair> getParseData()
+  explicit HDVParser(QFile &file, const HDVParams &inMissingParams)
+    : ModParser(file), missingParams(inMissingParams)
   {
-    return readFileContent().value<QVector<StringPair>>();
+    if (fileType != FileType::HDV)
+      throw std::runtime_error("fileType check error wrong file type");
+    data = HDVParser::readFileContent().value<HDVParams>();
   }
+
+  static QString getElemValueStr(const QString &elemName, const QString &line);
+
+  // read-only parser
+  bool writeChanges() override { return false; }
+
+  [[nodiscard]] HDVParams getParseData() { return data; }
 
 private:
-  QVector<StringPair> readHDV();
+  QVariant readFileContent() override;
+  HDVParams missingParams;
+  HDVParams data;
+};
+
+
+// used for vehicle-Upgrades INI files
+// looks for specified perfomance-related entries
+// if some entries are missing in ini file, passes them to the HDV parser
+class INIParser : public ModParser
+{
+public:
+  struct TokenInfo
+  {
+    long long upgradeTokenPos = -1;
+    long long upgradeTokenSize = -1;
+    bool initialized() const { return upgradeTokenPos != -1 && upgradeTokenSize != -1; }
+  };
+
+  explicit INIParser(QFile &file) : ModParser(file)
+  {
+    if (fileType != FileType::INI)
+      throw std::runtime_error("fileType check error wrong file type");
+    data = INIParser::readFileContent().value<HDVParams>();
+  }
+  // replaces or adds specific token
+  bool writeChanges() override;
+  [[nodiscard]] HDVParams getParseData() { return data; }
+  //modify or add specific HDV elems
+  // if modifying newVal must converted to QString from a number
+  void modifyEntry(HDVEntries entry, const QString &newVal);
+
+  static double getValueFromStr(const QString &str);
+  static QString getStrValueForEntry(HDVEntries entry,
+                                     const QString &newValue,
+                                     const QString &oldValStr);
+
+  HDVParams getMissingData() const { return missingData; }
+
+private:
+  // read all available HDVElements in INI file and add missing to missingData
+  // return found HDVParams map
+  QVariant readFileContent() override;
+
+  TokenInfo info;
+  HDVParams missingData;
+  HDVParams data;
 };
 
 
@@ -260,7 +324,7 @@ bool ModParser::updateModFileData(const QVector<WriteDataInput<T>> &input)
   auto backupData = fileData;
   for (auto i : input)
   {
-    QString oVal, nVal;// transform input values to string
+    QString oVal, nVal;  // transform input values to string
     QTextStream valS(&oVal);
     valS << i.oldVal;
     valS.setString(&nVal);
@@ -268,7 +332,8 @@ bool ModParser::updateModFileData(const QVector<WriteDataInput<T>> &input)
     // look for element
     int initIndex = -1;
     WriteData dataStruct{ QTextStream(&fileData), QString(), initIndex };
-    if (!findWriteElem(dataStruct, i.elemName, oVal)) return false;
+    if (!findWriteElem(dataStruct, i.elemName, oVal))
+      return false;
     // backup fileData member
     // insert the new element into fileData
     const auto originalLineLength = dataStruct.line.size();
@@ -283,9 +348,7 @@ bool ModParser::updateModFileData(const QVector<WriteDataInput<T>> &input)
 }
 
 template<typename T>
-bool ModParser::findWriteElem(WriteData &wData,
-                              const QString &elemName,
-                              const T &oVal)
+bool ModParser::findWriteElem(WriteData &wData, const QString &elemName, const T &oVal)
 {
   while (!wData.data.atEnd())
   {
@@ -309,4 +372,3 @@ bool ModParser::findWriteElem(WriteData &wData,
   return true;
 }
 
-#endif// Parser_H

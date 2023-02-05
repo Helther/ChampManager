@@ -1,0 +1,507 @@
+//[[gMa1.002f (c)2015    ]] [[            ]]
+F1_2020_AM_SP
+{
+  default
+  {
+    StepDistance = 3.9
+    StepSpeed1 = 30
+    StepSpeed2 = 53
+    StepSpeed3 = 67
+    StepSpeed4 = 83
+    StepSpeed5 = 101
+    StepSpeed6 = 120
+    StepSpeed7 = 152
+    StepSpeed8 = 190
+    CorneringCaution = 150.0
+    UnderSteerEffectOnThrottleMulti =500.0
+    UnderSteerEffectOnLineMulti=70.0
+    StartSkill = 98.0
+    FearOfWalls = 150.0
+  }
+
+Max Verstappen
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 99
+QualifySpeed = 99
+WetSpeed = 99
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Lewis Hamilton
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 97
+QualifySpeed = 97
+WetSpeed = 99
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Charles Leclerc
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 95
+QualifySpeed = 95
+WetSpeed = 95
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Daniel Ricciardo
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 94
+QualifySpeed = 94
+WetSpeed = 94
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Sergio Perez
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 91
+QualifySpeed = 90
+WetSpeed = 90
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Nico Hulkenberg
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 89
+QualifySpeed = 89
+WetSpeed = 89
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Carlos Sainz
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 89
+QualifySpeed = 89
+WetSpeed = 89
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Pierre Gasly
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 88
+QualifySpeed = 88
+WetSpeed = 88
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Lando Norris
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 87
+QualifySpeed = 88
+WetSpeed = 87
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+George Russell
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 86
+QualifySpeed = 92
+WetSpeed = 86
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Valtteri Bottas
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 85
+QualifySpeed = 88
+WetSpeed = 80
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Esteban Ocon
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 84
+QualifySpeed = 84
+WetSpeed = 88
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Sebastian Vettel
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 83
+QualifySpeed = 83
+WetSpeed = 83
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Kimi Raikkonen
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 82
+QualifySpeed = 82
+WetSpeed = 82
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Lance Stroll
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 81
+QualifySpeed = 80
+WetSpeed = 86
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Alexander Albon
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 80
+QualifySpeed = 80
+WetSpeed = 80
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Daniil Kvyat
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 80
+QualifySpeed = 80
+WetSpeed = 80
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Romain Grosjean
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 80
+QualifySpeed = 80
+WetSpeed = 80
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Kevin Magnussen
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 80
+QualifySpeed = 80
+WetSpeed = 80
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Antonio Giovinazzi
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 78
+QualifySpeed = 80
+WetSpeed = 78
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+Nicholas Latifi
+{
+Nationality = -
+DateofBirth = 01-01-2000
+Starts = 0
+Poles = 0
+Wins = 0
+DriversChampionships = 0
+Aggression = 50
+Reputation = 90
+Courtesy = 90
+Composure = 90
+Speed = 79
+QualifySpeed = 78
+WetSpeed = 78
+StartSkill = 98
+Crash = 5
+Recovery = 90
+CompletedLaps = 99
+MinRacingSkill = 99
+}
+
+
+
+}
+

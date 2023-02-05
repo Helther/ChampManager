@@ -20,6 +20,7 @@ void UserData::init(bool isReset)
           QString("DataBase init error: no valid driver").toStdString());
       const bool isThereDB = dbObj.initDB();
       updateSeasons();
+
       if (!isThereDB) addSeason("Season 1");// adding default value
     }
     dbObj.transactionCommitUnlock();

@@ -1,0 +1,215 @@
+F1_2020_AM_SP
+{
+Alexander Albon
+{
+Aggression = 50
+Composure = 90
+Speed = 80
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Antonio Giovinazzi
+{
+Aggression = 50
+Composure = 90
+Speed = 78
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Carlos Sainz
+{
+Aggression = 50
+Composure = 90
+Speed = 89
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Charles Leclerc
+{
+Aggression = 50
+Composure = 90
+Speed = 95
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Daniel Ricciardo
+{
+Aggression = 50
+Composure = 90
+Speed = 94
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Daniil Kvyat
+{
+Aggression = 50
+Composure = 90
+Speed = 80
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Esteban Ocon
+{
+Aggression = 50
+Composure = 90
+Speed = 88
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+George Russell
+{
+Aggression = 50
+Composure = 90
+Speed = 86
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Kevin Magnussen
+{
+Aggression = 50
+Composure = 90
+Speed = 80
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Kimi Raikkonen
+{
+Aggression = 50
+Composure = 90
+Speed = 82
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Lance Stroll
+{
+Aggression = 50
+Composure = 90
+Speed = 86
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Lando Norris
+{
+Aggression = 50
+Composure = 90
+Speed = 87
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Lewis Hamilton
+{
+Aggression = 50
+Composure = 90
+Speed = 99
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Max Verstappen
+{
+Aggression = 50
+Composure = 90
+Speed = 99
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Nicholas Goatifi
+{
+Aggression = 100
+Composure = 0
+Speed = 100
+StartSkill = 100
+MinRacingSkill = 100
+
+}
+
+Nico Hulkenberg
+{
+Aggression = 50
+Composure = 90
+Speed = 89
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Pierre Gasly
+{
+Aggression = 50
+Composure = 90
+Speed = 88
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Romain Grosjean
+{
+Aggression = 50
+Composure = 90
+Speed = 80
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Sebastian Vettel
+{
+Aggression = 50
+Composure = 90
+Speed = 83
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Sergio Perez
+{
+Aggression = 50
+Composure = 90
+Speed = 90
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+Valtteri Bottas
+{
+Aggression = 50
+Composure = 90
+Speed = 80
+StartSkill = 98
+MinRacingSkill = 99
+
+}
+
+
+}
+

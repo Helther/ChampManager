@@ -16,11 +16,11 @@
 #define POSITION_COL_NUM 10
 
 Resultswindow::Resultswindow(QWidget *parent)
-  : QWidget(parent), treeView(new QTreeView),
-    itemModel(new QStandardItemModel(this)), tableView(new QTableView),
+  : QWidget(parent), treeView(new QTreeView(this)),
+    itemModel(new QStandardItemModel(this)), tableView(new QTableView(this)),
     tableModel(new QSqlTableModel(this, dbObj.getDBConnection())),
-    seasonsLabel(new QLabel("Results for season:")),
-    seasonsCombo(new QComboBox), treeMenu(new QMenu), tableMenu(new QMenu)
+    seasonsLabel(new QLabel("Results for season:")), seasonsCombo(new QComboBox),
+    treeMenu(new QMenu), tableMenu(new QMenu)
 {
   layoutSetup();
   viewWidgetsSetup();
@@ -39,24 +39,22 @@ void Resultswindow::init(const QVector<SeasonData> &seasons)
     seasonsCombo->itemData(seasonsCombo->currentIndex()).value<SeasonData>();
   updateItemModel(seasonData);
   connect(treeView->selectionModel(),
-          &QItemSelectionModel::selectionChanged,
+          &QItemSelectionModel::currentChanged,
           this,
-          &Resultswindow::on_selectionChanged);
+          &Resultswindow::on_currentChanged);
   currentSeason = seasonData;
 }
 
-void Resultswindow::updateSeasons(const QVector<SeasonData> &seasons,
-                                  bool isInit)
+void Resultswindow::updateSeasons(const QVector<SeasonData> &seasons, bool isInit)
 {
   seasonsCombo->clear();
-  for (auto &&i : seasons)
-    seasonsCombo->addItem(i.name, QVariant::fromValue(i));
+  for (auto &&i : seasons) seasonsCombo->addItem(i.name, QVariant::fromValue(i));
   if (!isInit) on_seasonChanged(seasonsCombo->currentIndex());
 }
 
 void Resultswindow::on_resultsChanged(const SeasonData &season)
 {
-  if (currentSeason.id == season.id)// do nothing if added to a different season
+  if (currentSeason.id == season.id)  // do nothing if added to a different season
     updateItemModel(season);
   tableModel->clear();
 }
@@ -69,9 +67,8 @@ void Resultswindow::on_dbReset()
 
 void Resultswindow::on_seasonChanged(int seasonComboIndex)
 {
-  auto seasonData =
-    seasonsCombo->itemData(seasonComboIndex).value<SeasonData>();
-  if (seasonData.id != currentSeason.id)// do nothing if still the same season
+  auto seasonData = seasonsCombo->itemData(seasonComboIndex).value<SeasonData>();
+  if (seasonData.id != currentSeason.id)  // do nothing if still the same season
   {
     updateItemModel(seasonData);
     currentSeason = seasonData;
@@ -79,9 +76,9 @@ void Resultswindow::on_seasonChanged(int seasonComboIndex)
   }
 }
 
-void Resultswindow::on_selectionChanged(const QItemSelection &curSelection)
+void Resultswindow::on_currentChanged(const QModelIndex &selected)
 {
-  auto currentItem = itemModel->itemFromIndex(curSelection.indexes().first());
+  auto currentItem = itemModel->itemFromIndex(selected);
   if (currentItem != nullptr && currentItem->parent() != nullptr)
   {
     auto sessionData = currentItem->data().value<QPair<int, QString>>();
@@ -106,8 +103,7 @@ void Resultswindow::on_treeViewContextMenu(const QPoint &point)
 void Resultswindow::on_tableViewContextMenu(const QPoint &point)
 {
   auto index = tableView->indexAt(point);
-  if (index.isValid())
-    tableMenu->exec(tableView->viewport()->mapToGlobal(point));
+  if (index.isValid()) tableMenu->exec(tableView->viewport()->mapToGlobal(point));
 }
 
 void Resultswindow::on_delRaceAct()
@@ -133,17 +129,16 @@ void Resultswindow::on_delRaceAct()
 
 void Resultswindow::on_compareLapsAct()
 {
-  Perf p("compare laps");///todo temp
-  LapsCompareWidget *lapsW = nullptr;
+  Perf p("compare laps");  ///todo temp
   try
   {
-    lapsW = new LapsCompareWidget(getLapsData());
+    LapsCompareWidget * lapsW = new LapsCompareWidget(getLapsData(), this);
     lapsW->show();
   } catch (std::exception &e)
   {
     QMessageBox::critical(this,
                           "Error",
-                          QString("Can't show comparison: ") + e.what());
+                          QString("Can't show lap comparison: ") + e.what());
   }
 }
 
@@ -172,7 +167,7 @@ void Resultswindow::on_delAllRacesAct()
 
 void Resultswindow::updateItemModel(const SeasonData &season)
 {
-  Perf p("updateItemModel func");///todo temp
+  Perf p("updateItemModel func");  ///todo temp
   if (itemModel->rowCount() != 0) itemModel->clear();
   try
   {
@@ -182,17 +177,16 @@ void Resultswindow::updateItemModel(const SeasonData &season)
       QStandardItem *root = itemModel->invisibleRootItem();
       QStandardItem *race = new QStandardItem{ raceData.at(i).track };
       race->setData(QVariant::fromValue(raceData.at(i).raceId));
-      root->insertRow(
-        i,
-        { race,
-          new QStandardItem{ QString::number(raceData.at(i).laps) },
-          new QStandardItem{ raceData.at(i).date } });
+      root->insertRow(i,
+                      { race,
+                        new QStandardItem{ QString::number(raceData.at(i).laps) },
+                        new QStandardItem{ raceData.at(i).date } });
       for (const auto &session : raceData.at(i).sessions)
       {
 
-        QStandardItem *sess = new QStandardItem{ session.second };// set type
+        QStandardItem *sess = new QStandardItem{ session.second };  // set type
         sess->setData(QVariant::fromValue(
-          QPair<int, QString>(session.first, session.second)));// set id
+          QPair<int, QString>(session.first, session.second)));  // set id
         race->appendRow(sess);
       }
     }
@@ -206,18 +200,16 @@ void Resultswindow::updateItemModel(const SeasonData &season)
 
 void Resultswindow::updateTableModel(int sessionId, bool isRace)
 {
-  Perf p("updateTableModel func");/// todo temp
+  Perf p("updateTableModel func");  /// todo temp
   tableModel->setTable(DBTableNames::RaceRes);
   tableModel->setFilter(QString("session_fid = \"%1\"").arg(sessionId));
   tableModel->setSort(POSITION_COL_NUM, Qt::SortOrder::AscendingOrder);
   tableModel->select();
   tableView->setModel(tableModel);
   if (isRace)
-    for (const auto &i : resultsColumnsToHideR)
-      tableView->setColumnHidden(i, true);
+    for (int i : resultsColumnsToHideR) tableView->setColumnHidden(i, true);
   else
-    for (const auto &i : resultsColumnsToHidePQ)
-      tableView->setColumnHidden(i, true);
+    for (int i : resultsColumnsToHidePQ) tableView->setColumnHidden(i, true);
   tableView->resizeColumnsToContents();
 }
 
@@ -237,9 +229,8 @@ QVector<LapsComp> Resultswindow::getLapsData()
       auto laps = tableModel->index(i.row(), lapsColId);
       auto bLap = tableModel->index(i.row(), bestLapId);
       if (name.isValid() && laps.isValid() && bLap.isValid())
-        lapsData.push_back({ name.data().toString(),
-                             laps.data().toString(),
-                             bLap.data().toString() });
+        lapsData.push_back(
+          { name.data().toString(), laps.data().toString(), bLap.data().toString() });
       continue;
     }
     throw std::runtime_error("Compare Laps Creation error");
@@ -252,15 +243,12 @@ void Resultswindow::setItemHeaderData()
   itemModel->setHorizontalHeaderItem(0, new QStandardItem("Track/Session"));
   itemModel->setHorizontalHeaderItem(1, new QStandardItem("Num Of Laps"));
   itemModel->setHorizontalHeaderItem(2, new QStandardItem("Date-Time"));
-  for (int i = 0; i < itemModel->columnCount(); ++i)
-    treeView->resizeColumnToContents(i);
+  for (int i = 0; i < itemModel->columnCount(); ++i) treeView->resizeColumnToContents(i);
 }
 
 void Resultswindow::createContextMenus()
 {
-  treeMenu->addAction("Delete race result",
-                      this,
-                      &Resultswindow::on_delRaceAct);
+  treeMenu->addAction("Delete race result", this, &Resultswindow::on_delRaceAct);
   treeMenu->addSeparator();
   treeMenu->addAction("Delete all races in season",
                       this,
@@ -268,9 +256,7 @@ void Resultswindow::createContextMenus()
   tableMenu->addAction("Compare selected lapsTimes",
                        this,
                        &Resultswindow::on_compareLapsAct);
-  tableMenu->addAction("Clear selection",
-                       this,
-                       &Resultswindow::on_clearTableSelect);
+  tableMenu->addAction("Clear selection", this, &Resultswindow::on_clearTableSelect);
 }
 
 void Resultswindow::layoutSetup()

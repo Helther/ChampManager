@@ -26,23 +26,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 include_directories(src)
-set(SOURCES src/main.cpp
-    src/parser.cpp
-    src/dbhelper.cpp
-    src/resultswindow.cpp
-    src/mainwindow.cpp
-    src/appdata.cpp
-    src/lapscomparewidget.cpp
-    src/mainwindow.ui
-    rsc/cm.qrc)
-set(HEADERS src/parser.h
-      src/parserConsts.h
-      src/dbhelper.h
-      src/resultswindow.h
-      src/mainwindow.h
-      src/appdata.h
-      src/lapscomparewidget.h)
-add_executable(${project_name} ${SOURCES} ${HEADERS})
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+file(GLOB_RECURSE HEADERS ${SRC_DIR}/*.h)
+file(GLOB_RECURSE SOURCES ${SRC_DIR}/*.cpp)
+set(QT_CUSTOM src/mainwindow.ui
+	rsc/cm.qrc)
+add_executable(${project_name} ${SOURCES} ${HEADERS} ${QT_CUSTOM})
 target_link_libraries(${project_name} PRIVATE project_options project_warnings Qt5::Core Qt5::Widgets Qt5::Sql)
 
 option(ENABLE_TESTING "Enable Test Builds" ON)

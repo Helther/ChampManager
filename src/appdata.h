@@ -1,7 +1,7 @@
-#ifndef APPDATA_H
-#define APPDATA_H
+#pragma once
 
 #include <QtCore>
+
 
 struct SeasonData
 {
@@ -34,4 +34,3 @@ private:
   QVector<SeasonData> seasons;
 };
 
-#endif// APPDATA_H

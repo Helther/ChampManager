@@ -1,10 +1,10 @@
-#ifndef RESULTSWINDOW_H
-#define RESULTSWINDOW_H
+#pragma once
 
 #include <QWidget>
 #include <appdata.h>
 #include <QAbstractTableModel>
 #include <lapscomparewidget.h>
+#include <array>
 
 
 //forward decl
@@ -37,7 +37,7 @@ public slots:
   // used when new season selected
 private slots:
   void on_seasonChanged(int seasonComboIndex);
-  void on_selectionChanged(const QItemSelection &curSelection);
+  void on_currentChanged(const QModelIndex &selected);
   void on_treeViewContextMenu(const QPoint &point);
   void on_tableViewContextMenu(const QPoint &point);
   void on_delRaceAct();
@@ -77,4 +77,3 @@ private:
   QMenu *tableMenu;
 };
 
-#endif// RESULTSWINDOW_H

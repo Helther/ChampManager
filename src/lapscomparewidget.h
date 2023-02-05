@@ -18,7 +18,10 @@ class LapsCompareWidget : public QTableWidget
   Q_OBJECT
 
 public:
-  LapsCompareWidget(const QVector<LapsComp> &lapsData, QWidget *parent = nullptr);
+  explicit LapsCompareWidget(const QVector<LapsComp> &lapsData, QWidget *parent = nullptr);
+
+protected:
+  QSize sizeHint() const override;
 
 private:
   QStringList parseLaps(const QString &lapsString);

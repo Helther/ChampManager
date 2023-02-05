@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
+
 #include <QMainWindow>
 #include <QDialog>
 #include <QPushButton>
@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow
   class GuiAddRaceSuccessEvent : public QEvent
   {
   public:
-    GuiAddRaceSuccessEvent(const SeasonData &Season)
+    explicit GuiAddRaceSuccessEvent(const SeasonData &Season)
       : QEvent(GUI_NEW_RACE_SUCCESS_EVENT), season(Season)
     {}
     SeasonData season;
@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow
   class GuiAddRaceFailEvent : public QEvent
   {
   public:
-    GuiAddRaceFailEvent(std::exception_ptr Except)
+    explicit GuiAddRaceFailEvent(std::exception_ptr Except)
       : QEvent(GUI_NEW_RACE_FAIL_EVENT), except(Except)
     {}
     std::exception_ptr except;
@@ -70,7 +70,7 @@ class MainWindow : public QMainWindow
   template<class Parser> class SessionParserThread : public QThread
   {
   public:
-    SessionParserThread(const QString &FilePath) : filePath(FilePath) {}
+    explicit SessionParserThread(const QString &FilePath) : filePath(FilePath) {}
     std::exception_ptr except;
     RaceLogInfo SessionData;
     FileType type;
@@ -274,4 +274,3 @@ private:
   QString filter;
 };
 
-#endif// MAINWINDOW_H

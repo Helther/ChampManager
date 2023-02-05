@@ -1,14 +1,16 @@
-# Championship Manager
-
-# Project is currently on hold for an unforeseeable future
+# rF2 Championship Manager
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kvvutrl02yk93396/branch/master?svg=true)](https://ci.appveyor.com/project/Helther/champmanager/branch/master)
-[![Build Status](https://travis-ci.org/Helther/ChampManager.svg?branch=master)](https://travis-ci.org/Helther/ChampManager)
 
 <img align=right src="rsc/better_icon.png" width='128' alt='Icon'>
 
-Championship Manager is a cross platform desktop application for accessing log files, which have been created after participating in a race weekend by a rFactor 2 api.
-After adding logs to Championship Manager, they get proccessed and stored in SQLite database instance for later viewing via the results tab.
+rF2 Championship Manager is a Windows application for creating and running and configuring a
+full-fledged racing career in rFactor2 app.
+
+It accesses log files, which have been created after participating in a race weekend by a rFactor 2 app.
+After adding logs to rF2 Championship Manager, they get proccessed and stored in SQLite database instance for later viewing via the results tab.
+
+It is most similar to [rFactor2 Log Analyzer](https://forum.studio-397.com/index.php?threads/rfactor2-log-analyzer-ver-2-with-offline-and-league-championship-manager.48117/) at the moment.
 
 <img align=center src="rsc/sreenshot1.png" width='1024' alt='Screen'>
 
@@ -19,7 +21,7 @@ The list of included features so far:
  * adding race logs to separate seasons
  * navigating race list in a gui view filtered by a season
  * inspecting detailed info of a selected race session via details view
- * all actions are syncronized with the database
+ * auto-save to the database
 ## Usage
 
 Results tab includes races list on the left and details view on the right, which is accessible by selecting a session on the left.
@@ -53,7 +55,6 @@ From build directory:
  $ cmake --build . --target ChampManager
 ```
 Specifying for example either "MinGW Makefiles" for Windows or "Unix Makefiles" for Linux with Qt installation directory, and a desired build type. 
-Or use qmake with .pro file, but to run the tests you need to CMake
 
 ## Testing
 For testing was used CMake's ctest [ctest docs](https://cmake.org/cmake/help/latest/manual/ctest.1.html). So far there is one unit test, for the file parser.
@@ -66,19 +67,21 @@ ctests are build via CMake by specifying test target.
 ### Running the tests
 To run built tests
 ```
- $ ctest -C Debug
+ $ ctest -C %BuildType% -VV --output-on-failure 
 ```
 
 ## Versioning
 
 0.1 - added file parsing capabilities
 
-0.2 - added and integrated gui for results viewing
+0.2 - added prototype gui for results viewing
+
+0.3 - finished config file parsers
 
 ### Future plans
 
  * add user profile with championship settings and statistics
- * add gui for viewing/add/editing championship participants
+ * add gui for viewing/add/editing championship participants using game's SDK
  * add championship progression after every new race and season with periodic updates to teams and drivers
 
 ## License

@@ -1,7 +1,7 @@
-#ifndef DBHELPER_H
-#define DBHELPER_H
+#pragma once
 #include <QtSql>
 #include <parserConsts.h>
+
 
 namespace DBTableNames {
 inline const QString Races = "races";
@@ -29,13 +29,13 @@ struct RaceData
   QString track;
   int laps;
   QString date;
-  QVector<QPair<int, QString>> sessions;// first - session id, second - type
+  QVector<QPair<int, QString>> sessions;  // first - session id, second - type
 };
 
 //======================== DataBase interface =====================//
 // class that holds db connection object and perfoms all procedures
 // that involve db write or read
-// multitheading sync is done by blocking trough transaction mechanism
+// multitheading sync is done by blocking through transaction mechanism
 //===========
 class DBHelper
 {
@@ -57,9 +57,8 @@ public:
   // inserts new entry into seasons table
   [[nodiscard]] int addNewSeason(const QString &name) const;
   // inserts new entry into sessions table
-  [[nodiscard]] int addNewSession(const QString &type,
-                                  int raceId,
-                                  const RaceLogInfo &sesData) const;
+  [[nodiscard]] int
+    addNewSession(const QString &type, int raceId, const RaceLogInfo &sesData) const;
   // deletes tables entries in races and rec_res and sessions tables
   // corresponding to a given season
   void delSeasonData(int ses_id) const;
@@ -68,32 +67,29 @@ public:
   // checks whether sessions a part of the same race
   void checkSessionsValidity(const QVector<int> &ids) const;
   // deletes row with a given id in a table, where primary column name is idCol
-  void delEntryFromTable(const QString &table,
-                         const QString &idColName,
-                         int id) const;
+  void delEntryFromTable(const QString &table, const QString &idColName, int id) const;
   // delets all entries from all tables
   void resetDB();
   // select from all table columns
-  [[nodiscard]] QVector<QVector<QVariant>>
-    getData(const QString &tableName) const;
+  [[nodiscard]] QVector<QVector<QVariant>> getData(const QString &tableName) const;
   // return data for building results item model
   [[nodiscard]] QVector<RaceData> getRaceData(int seasonId);
 
-  inline QSqlDatabase getDBConnection() { return dbConn; }
+  QSqlDatabase getDBConnection() { return dbConn; }
 
-  inline void transactionStartLock()
+  void transactionStartLock()
   {
     lock();
     if (!dbConn.transaction())
       throw std::runtime_error("db transaction start error");
   }
-  inline void transactionCommitUnlock()
+  void transactionCommitUnlock()
   {
     unlock();
     if (!dbConn.commit())
       throw std::runtime_error("db transaction commit error");
   }
-  inline void transactionRollbackUnlock()
+  void transactionRollbackUnlock()
   {
     unlock();
     if (!dbConn.rollback())
@@ -120,7 +116,7 @@ private:
   const QString dbDriverName = "QSQLITE";
   QString connName = "dbConn";
   const QString dbName = "CMM.db3";
-  const QString dbPath = "./";/// todo temp
+  const QString dbPath = "./";  /// todo temp
   const QVector<QString> allTableNames{ DBTableNames::Races,
                                         DBTableNames::RaceRes,
                                         DBTableNames::Seasons,
@@ -131,4 +127,3 @@ private:
 // global object for blocking db access
 static DBHelper dbObj;
 
-#endif// DBHELPER_H

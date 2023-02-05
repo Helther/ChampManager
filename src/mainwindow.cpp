@@ -127,7 +127,8 @@ void MainWindow::on_rmSeasonRes()
 
 void MainWindow::about()
 {
-  QDialog *aboutDialog = new QDialog;
+  QDialog *aboutDialog = new QDialog(this);
+  aboutDialog->setModal(true);
   aboutDialog->setAttribute(Qt::WA_DeleteOnClose);
   aboutDialog->setWindowIcon(QIcon(APP_ICON));
   QDialogButtonBox *okButton = new QDialogButtonBox(QDialogButtonBox::Ok);
@@ -474,7 +475,7 @@ void MainWindow::NewSessionDBThread::run()
     dbObj.transactionCommitUnlock();//------------ transact unlock commit
     QApplication::postEvent(mainW, new GuiAddRaceSuccessEvent(season));
     deleteLater();
-  } catch (std::exception &e)
+  } catch (std::exception &)
   {
     dbObj.transactionRollbackUnlock();//---------- transact unlock rollback
     deleteLater();

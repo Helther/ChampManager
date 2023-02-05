@@ -1,26 +1,34 @@
 ﻿#include "lapscomparewidget.h"
 #include <QtCore>
 #include <QTableWidgetItem>
+#include <QSizePolicy>
+#include <QHeaderView>
+
 
 LapsCompareWidget::LapsCompareWidget(const QVector<LapsComp> &lapsData,
                                      QWidget *parent)
-  : QTableWidget(parent)
+  : QTableWidget(nullptr)  // no parent nedeed for dialog window
 {
   if (lapsData.isEmpty()) throw std::runtime_error("Invalid lap time data");
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle("Lap Times Compare");
+  setWindowTitle("Lap Times Comparison");
   setWindowIcon(QIcon(":/better_icon.png"));
   setEditTriggers(NoEditTriggers);
+  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   int maxLapsCount = 0;
-  int initialRowCount = 200;/// todo bad!
-  setRowCount(initialRowCount);
+  std::vector<QStringList> parsedLaps;
   setColumnCount(lapsData.size());
+  for (int i = 0; i < lapsData.size(); ++i)  // find num of laps to display
+  {
+    parsedLaps.push_back(parseLaps(lapsData.at(i).laps));
+    if (maxLapsCount < parsedLaps.back().size()) maxLapsCount = parsedLaps.back().size();
+  }
+  setRowCount(maxLapsCount);
   for (int i = 0; i < lapsData.size(); ++i)
   {
-    const auto lapsStrList = parseLaps(lapsData.at(i).laps);
     setHorizontalHeaderItem(i, new QTableWidgetItem(lapsData.at(i).driver));
     int lapRow = 0;
-    for (const auto &lapStr : lapsStrList)
+    for (const auto &lapStr : parsedLaps.at(i))
     {
       const auto itemStr = convertToLapTime(lapStr);
       auto item = new QTableWidgetItem(itemStr);
@@ -34,14 +42,24 @@ LapsCompareWidget::LapsCompareWidget(const QVector<LapsComp> &lapsData,
       }
       setItem(lapRow++, i, item);
     }
-    if (maxLapsCount < lapsStrList.size()) maxLapsCount = lapsStrList.size();
   }
   for (int i = 0; i < maxLapsCount; ++i)
     setVerticalHeaderItem(i, new QTableWidgetItem(QString::number(i + 1)));
-  setRowCount(maxLapsCount);
-  resizeColumnsToContents();
-  resizeRowsToContents();
-  resize(720, 480);/// todo smarter resize to contents
+  setMaximumSize(parent->size());
+}
+
+QSize LapsCompareWidget::sizeHint() const
+{
+  const QSize padding{40, 40};
+  const QSize maxContentSize = maximumSize() + padding;
+  QSize contentSize;
+  for(int i = 0; i < columnCount(); ++i)
+    contentSize.setWidth(contentSize.width() + horizontalHeader()->sectionSize(i));
+  for(int i = 0; i < rowCount(); ++i)
+    contentSize.setHeight(contentSize.height() + verticalHeader()->sectionSize(i));
+  return contentSize.width() > maxContentSize.width() ||
+      contentSize.height() > maxContentSize.height() ?
+      maximumSize() : contentSize + padding;
 }
 
 QStringList LapsCompareWidget::parseLaps(const QString &lapsString)
@@ -72,7 +90,7 @@ QString LapsCompareWidget::convertToLapTime(const QString &lapTime) const
     }
     if (i == 1) result.append("." + sections[1]);
   }
-  if (result == "0:0")// case for invalid lap time
+  if (result == "0:0")  // case for invalid lap time
     return "-:----";
   return result;
 }

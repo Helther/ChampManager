@@ -1,0 +1,44 @@
+// The first section defines what maps to load for the new vehicle skinning technology.
+// The first line defines a "prefix" to be used for all generic maps.
+// Currently, generic maps are used for the livery, wing, driver, driver arms, driver helmet, and pit crew.
+// The second line will replace the default livery with the new specified, for the track specified.
+// The format is as follows:
+//
+// DefaultLivery="PREFIX"       // PREFIX is the base texture map name, assumed to be BMP unless specified
+// PitCrewLivery="PREFIX"       // This is only needed if it differs from the default livery PREFIX
+// TrackLivery="TRACK, PREFIX"  // TRACK is the track name as defined in the event GDB
+// TrackLivery="TRACK, PREFIX"  // For example, "2001_Monza"
+// TrackLivery="TRACK, PREFIX"  // You can have an infinite # of these lines
+
+DefaultLivery="F122_HA_47.dds"
+MaterialOverride="F122_HA_BaseMat.json"
+
+Extra1="Stickers"
+Extra2="Rims"
+Extra7="HelmetNew"
+Extra8="Gloves"
+Extra9="Gloves"
+
+HDVehicle=ASMG_FH22.hdv
+Graphics=ASMG_FH22.gen
+Spinner=ASMG_FH22_Spinner.gen
+GenString=SCHU                                             // Used to generate GMT names in *.gen file
+Sounds=ASMG_FH22.sfx                      // Sounds=default.sfx
+Cameras=ASMG_FH22.cam                       // Defaults to default.cfg in UserData directory
+HeadPhysics=HeadPhysics.ini                            // Affects driver eyepoint only
+Cockpit=ASMG_FH22_CockpitInfo.ini
+Upgrades=ASMG_FH22_Upgrades.ini
+
+Number=47
+Team="F1 2022 Haas"
+PitGroup="Group10"
+Driver="Mick Schumacher"
+Description="#47 Mick Schumacher"
+Engine="V6 Turbo"
+Manufacturer="Advanced Simulation"
+
+Classes="ASMG_F1_2022,ASMG_F1_2022_Haas"
+
+FullTeamName="F1 2022 Haas F1 Team"
+
+Category="Formula 1,F1 2022 Season,Haas F1 Team"

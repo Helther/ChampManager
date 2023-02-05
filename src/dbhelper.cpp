@@ -73,15 +73,14 @@ bool DBHelper::initDB() const
   for (const auto &table : allTableNames)
   {
     if (!dbConn.tables().contains(table))
-      throw std::runtime_error(
-        QString("Init DB error: table not found - ").toStdString()
-        + table.toStdString());
+      throw std::runtime_error(QString("Init DB error: table not found - ").toStdString()
+                               + table.toStdString());
   }
   return true;
 }
 void DBHelper::destroyDB() const
 {
-  Perf p("destrdb");/// todo temp
+  Perf p("destrdb");  /// todo temp
   const QString query = "drop table ";
   QSqlQuery q(dbConn);
   QSqlError destroyError;
@@ -97,9 +96,8 @@ void DBHelper::destroyDB() const
 }
 
 void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
-{// caller must start transaction
-  const QString queryColumns{ "insert into " + DBTableNames::RaceRes
-                              + " ( session_fid" };
+{  // caller must start transaction
+  const QString queryColumns{ "insert into " + DBTableNames::RaceRes + " ( session_fid" };
   const QString queryValues{ "values (?" };
   QSqlQuery q(dbConn);
   for (const auto &driver : inResults.drivers)
@@ -122,9 +120,8 @@ void DBHelper::addNewResults(const RaceLogInfo &inResults, int sessionId) const
   }
 }
 
-void DBHelper::addIncidents(const QVector<StringPair> &incindents,
-                            int ses_id) const
-{// caller must start a transaction
+void DBHelper::addIncidents(const QVector<StringPair> &incindents, int ses_id) const
+{  // caller must start a transaction
   QSqlQuery q(dbConn);
   for (const auto &inc : incindents)
   {
@@ -142,9 +139,7 @@ void DBHelper::addIncidents(const QVector<StringPair> &incindents,
 int DBHelper::addNewRace(int seasonId) const
 {
   QSqlQuery q(dbConn);
-  q.prepare("insert into " + DBTableNames::Races + R"((
-    seasons_fid
-    ) values (?))");
+  q.prepare("insert into " + DBTableNames::Races + "(seasons_fid) values (?)");
   q.addBindValue(seasonId);
   if (!q.exec()) checkSqlError("add new race error", q.lastError());
   return q.lastInsertId().toInt();
@@ -168,7 +163,9 @@ void DBHelper::viewTable(const QString &tableName) const
   while (q.next())
   {
     for (int i = 0; i < q.record().count(); ++i)
-    { qDebug() << q.record().fieldName(i) << q.value(i).toString() << " "; }
+    {
+      qDebug() << q.record().fieldName(i) << q.value(i).toString() << " ";
+    }
     qDebug() << '\n';
   }
 }
@@ -204,11 +201,10 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
   }
   for (auto &race : retData)
   {
-    if (!q.exec(
-          QString("select ses_id, type, TimeString, TrackCourse, RaceLaps "
-                  "from %1 where race_fid = %2")
-            .arg(DBTableNames::Sessions)
-            .arg(race.raceId)))
+    if (!q.exec(QString("select ses_id, type, TimeString, TrackCourse, RaceLaps "
+                        "from %1 where race_fid = %2")
+                  .arg(DBTableNames::Sessions)
+                  .arg(race.raceId)))
       checkSqlError("get race data, session list error", q.lastError());
     while (q.next())
     {
@@ -223,10 +219,10 @@ QVector<RaceData> DBHelper::getRaceData(int seasonId)
 }
 
 QSqlError DBHelper::initResultsTables() const
-{// caller must start transaction
-  Perf p("initdb");/// todo temp
+{  // caller must start transaction
+  Perf p("initdb");  /// todo temp
   QSqlQuery init(dbConn);
-  if (!init.exec(CREATE_SEASON)) return init.lastError();/// todo refactor
+  if (!init.exec(CREATE_SEASON)) return init.lastError();  /// todo refactor
   if (!init.exec(CREATE_RACES)) return init.lastError();
   if (!init.exec(CREATE_RESULTS)) return init.lastError();
   if (!init.exec(CREATE_SESSIONS)) return init.lastError();
@@ -251,18 +247,16 @@ int DBHelper::addNewSession(const QString &type,
                             int raceId,
                             const RaceLogInfo &sesData) const
 {
-  const auto time =
-    std::find_if(sesData.SeqElems.begin(),
-                 sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "TimeString"; });
+  const auto time = std::find_if(sesData.SeqElems.begin(),
+                                 sesData.SeqElems.end(),
+                                 [](const auto &i) { return i.first == "TimeString"; });
   const auto trackName =
-    std::find_if(sesData.SeqElems.begin(),
-                 sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "TrackCourse"; });
-  const auto lapsNum =
-    std::find_if(sesData.SeqElems.begin(),
-                 sesData.SeqElems.end(),
-                 [](const auto &i) { return i.first == "RaceLaps"; });
+    std::find_if(sesData.SeqElems.begin(), sesData.SeqElems.end(), [](const auto &i) {
+      return i.first == "TrackCourse";
+    });
+  const auto lapsNum = std::find_if(sesData.SeqElems.begin(),
+                                    sesData.SeqElems.end(),
+                                    [](const auto &i) { return i.first == "RaceLaps"; });
   if (trackName == sesData.SeqElems.end() || lapsNum == sesData.SeqElems.end()
       || time == sesData.SeqElems.end())
     throw std::runtime_error("add new session error: data incomplete");
@@ -295,21 +289,19 @@ void DBHelper::delSeasonRaces(int ses_id) const
     checkSqlError("all races in season deletion error", q.lastError());
   QVector<int> raceids;
   while (q.next()) raceids.push_back(q.value(0).toInt());
-  for (const auto i : raceids)
-    delEntryFromTable(DBTableNames::Races, "race_id", i);
+  for (const auto i : raceids) delEntryFromTable(DBTableNames::Races, "race_id", i);
 }
 
 void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
-{// caller must start transaction
+{  // caller must start transaction
   SessionData SData;
   bool first = true;
   for (auto id : ids)
   {
     QSqlQuery q(dbConn);
-    auto query =
-      QString("select TrackCourse, RaceLaps from %1 where ses_id = %2")
-        .arg(DBTableNames::Sessions)
-        .arg(QString::number(id));
+    auto query = QString("select TrackCourse, RaceLaps from %1 where ses_id = %2")
+                   .arg(DBTableNames::Sessions)
+                   .arg(QString::number(id));
     if (!q.exec(query)) checkSqlError("session validity error", q.lastError());
     q.next();
     if (first)
@@ -329,7 +321,7 @@ void DBHelper::checkSessionsValidity(const QVector<int> &ids) const
 void DBHelper::delEntryFromTable(const QString &table,
                                  const QString &idColName,
                                  int id) const
-{// caller must start transaction
+{  // caller must start transaction
   QSqlQuery q(dbConn);
   // exec this to activate Fkeys On actions
   if (!q.exec("PRAGMA foreign_keys=ON"))
@@ -342,8 +334,8 @@ void DBHelper::delEntryFromTable(const QString &table,
 }
 
 void DBHelper::resetDB()
-{// caller must start transaction
-  Perf p("reset db");/// todo temp
+{  // caller must start transaction
+  Perf p("reset db");  /// todo temp
   QSqlQuery q(dbConn);
   for (const auto &table : allTableNames)
     if (!q.exec(QString("delete from %1").arg(table)))
@@ -353,6 +345,5 @@ void DBHelper::resetDB()
 void DBHelper::checkSqlError(const QString &msg, const QSqlError &error) const
 {
   if (error.type() != QSqlError::NoError)
-    throw std::runtime_error(msg.toStdString() + " : "
-                             + error.text().toStdString());
+    throw std::runtime_error(msg.toStdString() + " : " + error.text().toStdString());
 }

@@ -1,9 +1,59 @@
-#ifndef PARSERCONSTS_H
-#define PARSERCONSTS_H
+#pragma once
+
 #include <QtCore>
 
+
 using StringPair = QPair<QString, QString>;
-using DriverStats = QVector<QVector<StringPair>>;
+
+struct HDVData
+{
+  QString prefix;
+  QString name;
+  QString value;
+  bool operator==(const HDVData& other) const
+  { return prefix == other.prefix && name == other.name && value == other.value; }
+};
+Q_DECLARE_METATYPE(HDVData)
+
+enum class HDVEntries {
+  FWSetting = 0,
+  FWDragParams,
+  FWLiftParams,
+  RWSetting,
+  RWDragParams,
+  RWLiftParams,
+  BodyDragBase,
+  DiffuserBasePlus,
+  GeneralPowerMult
+};
+
+using HDVParams = QMap<HDVEntries, HDVData>;
+Q_DECLARE_METATYPE(HDVParams)
+
+
+inline constexpr double RCD_DEFAULT_VALUE = 100.;
+
+struct RCDData
+{
+  QString name;
+  double value;
+};
+
+enum class RCDEntries
+{
+  Aggression = 0,
+  Composure,
+  Speed,
+  StartSkill,
+  MinRacingSkill
+};
+
+Q_DECLARE_METATYPE(RCDData)
+
+using RCDParams = QMap<RCDEntries, RCDData>;
+
+using DriverStats = QMap<QString, RCDParams>;
+Q_DECLARE_METATYPE(DriverStats)
 
 
 // backup function return type
@@ -53,14 +103,24 @@ inline QString &operator<<(QString &retString, const RaceLogInfo &log)
   return retString;
 }
 
-[[nodiscard]] inline QString getRCDDataString(const DriverStats &data)
+inline QString &operator<<(QString &retString, const HDVParams &data)
 {
-  QString retString;
+  QTextStream s(&retString);
+  s << "==========HDV data========" << Qt::endl;
+  for (const auto &i : data)
+    s << i.prefix << Qt::endl << i.name << '=' << i.value << Qt::endl;
+  return retString;
+}
+
+inline QString &operator<<(QString &retString, const DriverStats &data)
+{
   QTextStream s(&retString);
   s << "==========RCD data========\n";
-  for (const auto &i : data)
+  for (auto i = data.begin(); i != data.end(); i++)
   {
-    for (const auto &j : i) s << j.first << " " << j.second << '\n';
+    s << i.key() << Qt::endl;
+    for (const auto &j : i.value()) s << j.name << "=" << j.value << Qt::endl;
+    s << Qt::endl;
   }
   return retString;
 }
@@ -70,20 +130,13 @@ inline QString &operator<<(QString &retString, const RaceLogInfo &log)
   QString retString;
   QTextStream s(&retString);
   s << "==========VEH data========\n";
-  for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
+  for (const auto &i : data) s << i.first << "=" << i.second << '\n';
   return retString;
 }
 
-[[nodiscard]] inline QString getHDVDataString(const QVector<StringPair> &data)
-{
-  QString retString;
-  QTextStream s(&retString);
-  s << "==========HDV data========\n";
-  for (const auto &i : data) qDebug() << i.first << " " << i.second << '\n';
-  return retString;
-}
 
 namespace parserConsts {
+
 namespace seqElems {
 
   // names of xml elements
@@ -134,42 +187,50 @@ namespace seqElems {
     "Lap",// vector of lap times
     "BestLapTime",// double
   };
-  inline const QVector<QString> RCDElements{
-    "Aggression",// double
-    "Composure",// double
-    "Speed",// double
-    "StartSkill",// double
-    "MinRacingSkill"// double
+
+
+  inline const RCDParams RCDElements{
+    {RCDEntries::Aggression, {"Aggression", RCD_DEFAULT_VALUE}},
+    {RCDEntries::Composure, {"Composure", RCD_DEFAULT_VALUE}},
+    {RCDEntries::Speed, {"Speed", RCD_DEFAULT_VALUE}},
+    {RCDEntries::StartSkill, {"StartSkill", RCD_DEFAULT_VALUE}},
+    {RCDEntries::MinRacingSkill, {"MinRacingSkill", RCD_DEFAULT_VALUE}}
   };
-  inline const QVector<QString> HDVElements{
-    "FWSetting",// int
-    "FWDragParams",// double
-    "FWLiftParams",// double
-    "RWSetting",// int
-    "RWDragParams",// double
-    "RWLiftParams",// double
-    "BodyDragBase",// double
-    "RadiatorDrag",// double
-    "RadiatorLift",// double
-    "BrakeDuctDrag",// double
-    "BrakeDuctLift",// double
-    "DiffuserBasePlus",// double
-    "DiffuserDraftLiftMult",// double
-    "DiffuserSideways",// double
-    "GeneralTorqueMult",// double
-    "GeneralPowerMult",// double
-    "GeneralEngineBrakeMult"// double
+
+  inline const HDVParams HDVElements{
+    {HDVEntries::FWSetting, {"[FRONTWING]", "FWSetting", ""}},// int
+    {HDVEntries::FWDragParams, {"[FRONTWING]", "FWDragParams", ""}},// double
+    {HDVEntries::FWLiftParams, {"[FRONTWING]", "FWLiftParams", ""}},// double
+    {HDVEntries::RWSetting, {"[REARWING]", "RWSetting", ""}},// int
+    {HDVEntries::RWDragParams, {"[REARWING]", "RWDragParams", ""}},// double
+    {HDVEntries::RWLiftParams, {"[REARWING]", "RWLiftParams", ""}},// double
+    {HDVEntries::BodyDragBase, {"[BODYAERO]", "BodyDragBase", ""}},// double
+    //"RadiatorDrag",// double
+    //"RadiatorLift",// double
+    //"BrakeDuctDrag",// double
+    //"BrakeDuctLift",// double
+    {HDVEntries::DiffuserBasePlus, {"[DIFFUSER]", "DiffuserBasePlus", ""}},// double
+    //"DiffuserDraftLiftMult",// double
+    //"DiffuserSideways",// double
+    //"GeneralTorqueMult",// double
+    {HDVEntries::GeneralPowerMult, {"[ENGINE]", "GeneralPowerMult", ""}}// double
+    //"GeneralEngineBrakeMult"// double
   };
 
   inline const QVector<QString> VEHElements{
-    "DefaultLivery",// str
     "HDVehicle",// str
-    "Team",// str
-    "Driver",// str
-    "Engine",// str
-    "Classes",// str
-    "Category"// str
+    "Upgrades",// str
+    "Driver",// str surrounded with ""
+    "Classes"// str surrounded with ""
   };
+  enum VEHElemIndexes
+  {
+    HDVehicle = 0,
+    Upgrades,
+    Driver,
+    Classes
+  };
+
 }// namespace seqElems
 namespace FileTypes {
   enum class FileType {
@@ -179,20 +240,33 @@ namespace FileTypes {
     RCD,
     HDV,
     VEH,
+    INI,
     Error
   };
 
   inline QVector<QString> typeNames{ "Race", "Qualify", "Practice", "rcd",
-                                     "HDV",  "veh",     "Error" };
+                                     "hdv", "veh", "ini", "Error" };
 
   inline QString getFileTypeById(FileType type)
   {
     return typeNames.at(static_cast<int>(type));
   }
 }
+namespace INIFile {
+  inline const QString tokenUpgradeType = "UpgradeType";
+  inline const QString tokenUpgradeLevel = "UpgradeLevel";
+  inline const QString tokenUpgradeTypeName = "\"CMM Perfomance\"";
+  inline const QString tokenUpgradeLevelName = "\"Current\"";
+  inline const QString elemPrefix = "HDV=";
+  inline const char tokenValBegin = '=';
+  inline const char tokenOpen = '{';
+  inline const char tokenClose = '}';
+}
 }// namespace parserConsts
 
-/// todo debug
+
+
+/// todo temp for debug
 #include <chrono>
 class Perf
 {
@@ -213,4 +287,3 @@ private:
   std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
 };
 
-#endif// PARSERCONSTS_H
