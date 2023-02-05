@@ -324,8 +324,7 @@ int main()
   testHDVAndINIParser();
   testRCDParser();
   testVEHParser();
-  if (true)
-    ASSERT_FAIL("oops");
+
   return 0;
 }
 
