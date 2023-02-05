@@ -45,7 +45,7 @@ The following compilers should work:
 
 2. [CMake 3.12+](https://cmake.org/)
 
-3. [Qt 5.14.1+(Qt5Widgets, Qt5Gui, Qt5Core, Qt5Sql)](https://www.qt.io/)
+3. [Qt 5.15.2+(Qt5Widgets, Qt5Gui, Qt5Core, Qt5Sql)](https://www.qt.io/)
 
 ### Build
 Target platforms are Windows and Linux. You can build main target via CMake
