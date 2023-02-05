@@ -9,9 +9,9 @@ install:
 build_script:
 - cmd: >-
 
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QTDIR%\lib\cmake\Qt5 -G "MinGW Makefiles" .
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QTDIR%\lib\cmake\Qt5 -G "MinGW Makefiles" .
 
-	cmake --build . --target all
+    cmake --build . --target all
 
 test_script:
   ctest -C Release -VV --output-on-failure --output-junit parserTest_res.xml
