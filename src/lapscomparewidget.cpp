@@ -28,7 +28,7 @@ LapsCompareWidget::LapsCompareWidget(const QVector<LapsComp> &lapsData,
   {
     setHorizontalHeaderItem(i, new QTableWidgetItem(lapsData.at(i).driver));
     int lapRow = 0;
-    for (const auto &lapStr : parsedLaps.at(i))
+    for (const auto &lapStr : parsedLaps[i])
     {
       const auto itemStr = convertToLapTime(lapStr);
       auto item = new QTableWidgetItem(itemStr);
