@@ -212,8 +212,8 @@ public:
 private:
   QVariant readFileContent() override;
   const QString ignoreEntry = "default";
-  const double minValue = 0.;
-  const double maxValue = 100.;
+  // const double minValue = 0.;  // TODO used when modifying values
+  // const double maxValue = 100.;
   DriverStats data;
   QString vehClassName;
 };
