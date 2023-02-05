@@ -51,8 +51,8 @@ BackupData Parser::backupFile(const QString &filePath, const QString &backupPath
   if (file.open(QIODevice::ReadOnly) && bFile.open(QIODevice::WriteOnly)
       && bFile.write(file.readAll()) != -1)
   {
-    qDebug() << "backUp: File " << file.fileName()
-             << " backed up succesfully. New file is" << bFile.fileName() << "\n";
+    //qDebug() << "backUp: File " << file.fileName()
+    //         << " backed up succesfully. New file is" << bFile.fileName() << "\n";
     if (file.isOpen())
       file.close();
     if (bFile.isOpen())
@@ -65,7 +65,7 @@ BackupData Parser::backupFile(const QString &filePath, const QString &backupPath
     bFile.close();
   if (bFile.exists())
     bFile.remove();
-  qDebug() << "backUp: couldn't open or write file\n";
+  //qDebug() << "backUp: couldn't open or write file\n";
   return BackupData{ false, QString{} };
 }
 
@@ -75,14 +75,14 @@ bool Parser::restoreFile(const QString &filePath, const QString &backupPath) noe
   QFile bFile(backupPath);
   if (!file.exists() || !bFile.exists())
   {
-    qDebug() << "Restore backup error: nowhere or nothing to restore\n";
+    //qDebug() << "Restore backup error: nowhere or nothing to restore\n";
     return false;
   }
   file.resize(0);
   if (bFile.open(QIODevice::ReadOnly) && file.open(QIODevice::WriteOnly)
       && file.write(bFile.readAll()) != -1)
   {
-    qDebug() << "restore Backup: File " << file.fileName() << " restored succesfully\n";
+    //qDebug() << "restore Backup: File " << file.fileName() << " restored succesfully\n";
     // delete backup
     if (bFile.exists())
       bFile.remove();
@@ -92,7 +92,7 @@ bool Parser::restoreFile(const QString &filePath, const QString &backupPath) noe
     file.close();
   if (bFile.isOpen())
     bFile.close();
-  qDebug() << "restore backup err: could open or write the file\n";
+  //qDebug() << "restore backup err: could open or write the file\n";
   return false;
 }
 
