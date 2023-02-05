@@ -9,9 +9,11 @@ install:
 build_script:
 - cmd: >-
 
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=QTDIR -G "MinGW Makefiles" .
+  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QTDIR%\lib\cmake\Qt5 -G "MinGW Makefiles" .
 
-    cmake --build . --target all
-    
-test:
-  off
+  cmake --build . --target all
+
+test_script:
+  ctest -C Release -VV --output-on-failure --output-junit parserTest_res.xml
+  $wc = New-Object 'System.Net.WebClient'
+  $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\parserTest_res.xml))
